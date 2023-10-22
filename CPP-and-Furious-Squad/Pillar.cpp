@@ -28,19 +28,28 @@ Pillar& Pillar::operator=(const Pillar& other)
 
 std::ostream& operator<<(std::ostream& out, const Pillar& pillar)
 {
-	out << "Pillar color: " << (pillar.m_color == Color::RED ? "RED" : "BLACK");
+	out << "Pillar color: " << Pillar::ToString(pillar.m_color);
 	out << "\nConnected peaks: ";
 	for (const Direction& direction : pillar.m_peaks)
-	{
-		switch (direction)
-		{
-		case Direction::NORTH: out << "NORTH "; break;
-		case Direction::SOUTH: out << "SOUTH "; break;
-		case Direction::EAST: out << "EAST "; break;
-		case Direction::WEST: out << "WEST "; break;
-		}
-	}
+		out << Pillar::ToString(direction) << " ";
 	return out;
+}
+
+std::string_view Pillar::ToString(Color color)
+{
+	return color == Color::RED ? "RED" : "BLACK";
+}
+
+std::string_view Pillar::ToString(Direction direction)
+{
+	switch (direction)
+	{
+	case Direction::NORTH: return "NORTH";
+	case Direction::SOUTH: return "SOUTH";
+	case Direction::EAST: return "EAST";
+	case Direction::WEST: return "WEST";
+	default: throw std::invalid_argument("Invalid Direction value!");
+	}
 }
 
 void Pillar::ConnectTo(const Pillar& other)

@@ -2,6 +2,8 @@
 
 #include "Enums.h"
 #include <iostream>
+#include <string>
+#include <string_view>
 #include <vector>
 
 class Pillar
@@ -15,6 +17,9 @@ public:
 	~Pillar();
 	Pillar& operator=(const Pillar& other);
 	friend std::ostream& operator<<(std::ostream& out, const Pillar& pillar);
+
+	static std::string_view ToString(Color color);
+	static std::string_view ToString(Direction direction);
 
 	void ConnectTo(const Pillar& other);
 };
