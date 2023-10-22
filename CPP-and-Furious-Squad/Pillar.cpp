@@ -42,3 +42,8 @@ std::ostream& operator<<(std::ostream& out, const Pillar& pillar)
 	}
 	return out;
 }
+
+void Pillar::ConnectTo(const Pillar& other)
+{
+	throw std::logic_error("Method not yet implemented!");
+}
