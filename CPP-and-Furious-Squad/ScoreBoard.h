@@ -10,5 +10,6 @@ public:
 	~ScoreBoard();
 	ScoreBoard(const ScoreBoard& other);
 	ScoreBoard& operator=(const ScoreBoard& other);
+
 };
 
