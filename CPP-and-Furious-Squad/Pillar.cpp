@@ -52,7 +52,7 @@ std::string_view Pillar::ToString(Direction direction)
 	}
 }
 
-void Pillar::ConnectTo(const Pillar& other)
+const Bridge& Pillar::ConnectTo(const Pillar& other)
 {
 	throw std::logic_error("Method not yet implemented!");
 }

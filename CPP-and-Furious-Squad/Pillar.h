@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Enums.h"
+#include "Bridge.h"
 #include <iostream>
 #include <string>
 #include <string_view>
@@ -21,5 +22,5 @@ public:
 	static std::string_view ToString(Color color);
 	static std::string_view ToString(Direction direction);
 
-	void ConnectTo(const Pillar& other);
+	const Bridge& ConnectTo(const Pillar& other);
 };

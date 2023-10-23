@@ -34,3 +34,8 @@ std::ostream& operator<<(std::ostream& out, const Bridge& bridge)
 
 	return out;
 }
+
+bool Bridge::isValidBetween(const Pillar& startPillar, const Pillar& endPillar)
+{
+	throw std::logic_error("Method not yet implemented!");
+}
