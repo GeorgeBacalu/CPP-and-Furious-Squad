@@ -1,18 +1,20 @@
 #include "Pillar.h"
+#include "Bridge.h"
 
-Pillar::Pillar() : m_position{ 0, 0 }, m_color { rand() % 2 ? Color::RED : Color::BLACK } 
+Color Pillar::GetRandomColor()
+{
+	return rand() % 2 ? Color::RED : Color::BLACK;
+}
+
+Pillar::Pillar() : m_position{ 0, 0 }, m_color{ GetRandomColor() }
 {
 }
 
-Pillar::Pillar(const std::pair<uint8_t, uint8_t>& position, Color color) : m_position{ position }, m_color { color } 
+Pillar::Pillar(const std::pair<uint8_t, uint8_t>& position, Color color) : m_position{ position }, m_color{ color }
 {
 }
 
-Pillar::Pillar(const Pillar& other) : m_position{ other.m_position }, m_color{ other.m_color } 
-{
-}
-
-Pillar::~Pillar()
+Pillar::Pillar(const Pillar& other) : m_position{ other.m_position }, m_color{ other.m_color }
 {
 }
 
@@ -26,8 +28,27 @@ Pillar& Pillar::operator=(const Pillar& other)
 	return *this;
 }
 
-std::istream& operator>>(std::istream& in, Pillar& pillar) {
-	const std::unordered_map<std::string, Color> s_colorMap = { {"RED", Color::RED}, {"BLACK", Color::BLACK} };
+Pillar::Pillar(Pillar&& other) noexcept : m_position{ std::move(other.m_position) }, m_color{ other.m_color }
+{
+	other.m_position = { 0, 0 };
+	other.m_color = GetRandomColor();
+}
+
+Pillar& Pillar::operator=(Pillar&& other) noexcept
+{
+	if (this != &other)
+	{
+		m_position = std::move(other.m_position);
+		m_color = other.m_color;
+		other.m_position = { 0, 0 };
+		other.m_color = GetRandomColor();
+	}
+	return *this;
+}
+
+std::istream& operator>>(std::istream& in, Pillar& pillar) 
+{
+	static const std::unordered_map<std::string, Color> s_colorMap = { {"RED", Color::RED}, {"BLACK", Color::BLACK} };
 	std::string colorString;
 	if (!(in >> pillar.m_position.first >> pillar.m_position.second >> colorString))
 		throw std::invalid_argument("Error reading pillar input!");
@@ -44,28 +65,30 @@ std::ostream& operator<<(std::ostream& out, const Pillar& pillar)
 	return out << "Position: (" << x << ", " << y << "), Color: " << (static_cast<int>(pillar.m_color) == 0 ? "RED" : "BLACK") << "\n";
 }
 
-const Point& Pillar::GetPosition() const 
-{ 
-	return m_position; 
+const Point& Pillar::GetPosition() const
+{
+	return m_position;
 }
 
-void Pillar::SetPosition(const Point& position) 
-{ 
+void Pillar::SetPosition(const Point& position)
+{
+	if (position.first >= BOARD_SIZE && position.second >= BOARD_SIZE)
+		throw std::out_of_range("Invalid position values!");
 	m_position = position;
 }
 
-void Pillar::SetPosition(uint8_t x, uint8_t y) 
-{ 
-	m_position = { x, y };
+void Pillar::SetPosition(uint8_t x, uint8_t y)
+{
+	SetPosition({ x, y });
 }
 
-Color Pillar::GetColor() const 
-{ 
+Color Pillar::GetColor() const
+{
 	return m_color;
 }
 
-void Pillar::SetColor(Color color) 
-{ 
+void Pillar::SetColor(Color color)
+{
 	m_color = color;
 }
 
