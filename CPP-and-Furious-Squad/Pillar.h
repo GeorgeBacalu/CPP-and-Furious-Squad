@@ -21,6 +21,7 @@ public:
 	Pillar(const Pillar& other);
 	~Pillar();
 	Pillar& operator=(const Pillar& other);
+	friend std::istream& operator>>(std::istream& in, Pillar& pillar);
 	friend std::ostream& operator<<(std::ostream& out, const Pillar& pillar);
 
 	Bridge BuildBridgeTo(const Pillar& other);

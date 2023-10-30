@@ -26,6 +26,18 @@ Pillar& Pillar::operator=(const Pillar& other)
 	return *this;
 }
 
+std::istream& operator>>(std::istream& in, Pillar& pillar) {
+	const std::unordered_map<std::string, Color> s_colorMap = { {"RED", Color::RED}, {"BLACK", Color::BLACK} };
+	std::string colorString;
+	if (!(in >> pillar.m_position.first >> pillar.m_position.second >> colorString))
+		throw std::invalid_argument("Error reading pillar input!");
+	const auto& [x, y] = pillar.m_position;
+	if (x >= BOARD_SIZE || y >= BOARD_SIZE || s_colorMap.find(colorString) == s_colorMap.end())
+		throw std::invalid_argument("Invalid pillar input!");
+	pillar.m_color = s_colorMap.at(colorString);
+	return in;
+}
+
 std::ostream& operator<<(std::ostream& out, const Pillar& pillar)
 {
 	const auto& [x, y] = pillar.m_position;
