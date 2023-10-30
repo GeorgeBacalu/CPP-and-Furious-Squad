@@ -29,15 +29,10 @@ Pillar& Pillar::operator=(const Pillar& other)
 std::ostream& operator<<(std::ostream& out, const Pillar& pillar)
 {
 	const auto& [x, y] = pillar.m_position;
-	return out << "Position: (" << x << ", " << y << "), Color: " << Pillar::ToString(pillar.m_color) << "\n";
+	return out << "Position: (" << x << ", " << y << "), Color: " << (static_cast<int>(pillar.m_color) == 0 ? "RED" : "BLACK") << "\n";
 }
 
-std::string_view Pillar::ToString(Color color)
-{
-	return color == Color::RED ? "RED" : "BLACK";
-}
-
-const Bridge& Pillar::ConnectTo(const Pillar& other)
+Bridge Pillar::BuildBridgeTo(const Pillar& other)
 {
 	throw std::logic_error("Method not yet implemented!");
 }
