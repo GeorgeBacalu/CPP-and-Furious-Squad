@@ -1,26 +1,25 @@
 #pragma once
 
-#include "Enums.h"
-#include "Bridge.h"
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <string_view>
-#include <vector>
+#include "Bridge.h"
+#include "Utils.h"
 
 class Pillar
 {
-	Color m_color;
-	std::vector<Direction> m_peaks;
+	std::pair<uint8_t, uint8_t> m_position;
+	Color m_color : 1;
 public:
 	Pillar();
-	Pillar(Color color, const std::vector<Direction>& peaks);
+	Pillar(const std::pair<uint8_t, uint8_t>& position, Color color);
 	Pillar(const Pillar& other);
 	~Pillar();
 	Pillar& operator=(const Pillar& other);
 	friend std::ostream& operator<<(std::ostream& out, const Pillar& pillar);
 
 	static std::string_view ToString(Color color);
-	static std::string_view ToString(Direction direction);
 
 	const Bridge& ConnectTo(const Pillar& other);
 };
