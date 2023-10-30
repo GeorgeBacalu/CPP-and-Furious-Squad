@@ -13,18 +13,20 @@ class Bridge
 	bool CheckBridgeValid(const Bridge& bridge);
 	bool CheckNoIntersections(const Bridge& bridge);
 
-public :
+public:
 
 	Bridge();
 	Bridge(const Pillar& startPillar, const Pillar& endPillar, Color color);
 	Bridge(const Bridge& other);
-	~Bridge();
+	Bridge(Bridge&& other) noexcept;
+	Bridge& operator=(const Bridge& other);
+	Bridge& operator=(Bridge&& other) noexcept;
+	~Bridge() = default;
 
 	const Pillar& GetStartPillar() const;
 	const Pillar& GetEndPillar() const;
 	Color GetColor() const;
 
-	Bridge& operator=(const Bridge& other);
 	friend std::istream& operator>>(std::istream& in, Bridge& bridge);
 	friend std::ostream& operator<<(std::ostream& out, const Bridge& bridge);
 

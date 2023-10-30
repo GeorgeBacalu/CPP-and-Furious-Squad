@@ -6,19 +6,15 @@ Color Bridge::GetRandomColor()
 }
 
 
-Bridge::Bridge() : m_startPillar{ Pillar() }, m_endPillar{ Pillar()}, m_color{GetRandomColor()}
+Bridge::Bridge() : m_startPillar{ Pillar() }, m_endPillar{ Pillar() }, m_color{ GetRandomColor() }
 {
 }
 
-Bridge::Bridge(const Pillar& startPillar, const Pillar& endPillar, Color color) : m_startPillar{ startPillar }, m_endPillar(endPillar), m_color{color}
+Bridge::Bridge(const Pillar& startPillar, const Pillar& endPillar, Color color) : m_startPillar{ startPillar }, m_endPillar(endPillar), m_color{ color }
 {
 }
 
 Bridge::Bridge(const Bridge& other) : m_startPillar{ other.m_startPillar }, m_endPillar(other.m_endPillar)
-{
-}
-
-Bridge::~Bridge()
 {
 }
 
@@ -48,6 +44,28 @@ Bridge& Bridge::operator=(const Bridge& other)
 	return*this;
 }
 
+Bridge& Bridge::operator=(Bridge&& other) noexcept
+{
+	if (this != &other)
+	{
+		m_startPillar = std::move(other.m_startPillar);
+		m_endPillar = std::move(other.m_endPillar);
+		m_color = other.m_color;
+		other.m_startPillar = Pillar();
+		other.m_endPillar = Pillar();
+		other.m_color = GetRandomColor();
+	}
+
+	return*this;
+}
+
+Bridge::Bridge(Bridge&& other) noexcept : m_startPillar{ std::move(other.m_startPillar) }, m_endPillar{ std::move(other.m_endPillar) }, m_color{ other.m_color }
+{
+	other.m_startPillar = Pillar();
+	other.m_endPillar = Pillar();
+	other.m_color = GetRandomColor();
+}
+
 std::istream& operator>>(std::istream& in, Bridge& bridge)
 {
 	if (!(in >> bridge.m_startPillar >> bridge.m_endPillar))
@@ -59,7 +77,7 @@ std::istream& operator>>(std::istream& in, Bridge& bridge)
 	{
 		throw std::invalid_argument("Can't build bridge between this pillars.");
 	}
-	
+
 	return in;
 }
 
