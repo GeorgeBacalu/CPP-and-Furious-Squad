@@ -44,6 +44,31 @@ std::ostream& operator<<(std::ostream& out, const Pillar& pillar)
 	return out << "Position: (" << x << ", " << y << "), Color: " << (static_cast<int>(pillar.m_color) == 0 ? "RED" : "BLACK") << "\n";
 }
 
+const Point& Pillar::GetPosition() const 
+{ 
+	return m_position; 
+}
+
+void Pillar::SetPosition(const Point& position) 
+{ 
+	m_position = position;
+}
+
+void Pillar::SetPosition(uint8_t x, uint8_t y) 
+{ 
+	m_position = { x, y };
+}
+
+Color Pillar::GetColor() const 
+{ 
+	return m_color;
+}
+
+void Pillar::SetColor(Color color) 
+{ 
+	m_color = color;
+}
+
 Bridge Pillar::BuildBridgeTo(const Pillar& other)
 {
 	throw std::logic_error("Method not yet implemented!");

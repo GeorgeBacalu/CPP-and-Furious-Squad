@@ -3,7 +3,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
-#include <string_view>
 #include <unordered_map>
 #include "Utils.h"
 
@@ -23,6 +22,12 @@ public:
 	Pillar& operator=(const Pillar& other);
 	friend std::istream& operator>>(std::istream& in, Pillar& pillar);
 	friend std::ostream& operator<<(std::ostream& out, const Pillar& pillar);
+
+	const Point& GetPosition() const;
+	void SetPosition(const Point& position);
+	void SetPosition(uint8_t x, uint8_t y);
+	Color GetColor() const;
+	void SetColor(Color color);
 
 	Bridge BuildBridgeTo(const Pillar& other);
 };
