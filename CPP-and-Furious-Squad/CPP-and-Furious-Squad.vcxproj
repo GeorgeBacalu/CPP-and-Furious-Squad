@@ -129,12 +129,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Bridge.h" />
-    <ClInclude Include="Enums.h" />
+    <ClInclude Include="GameBoard.h" />
     <ClInclude Include="Pillar.h" />
+    <ClInclude Include="PrintGameBoard.h" />
+    <ClInclude Include="ScoreBoard.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bridge.cpp" />
+    <ClCompile Include="GameBoard.cpp" />
     <ClCompile Include="Pillar.cpp" />
+    <ClCompile Include="PrintGameBoard.cpp" />
+    <ClCompile Include="ScoreBoard.cpp" />
+    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

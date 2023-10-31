@@ -134,3 +134,6 @@ std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
 	}
 	return out;
 }
+
+uint16_t GameBoard::s_size = 0;
+std::vector<std::vector<Pillar*>> GameBoard::s_matrix = std::vector<std::vector<Pillar*>>();
