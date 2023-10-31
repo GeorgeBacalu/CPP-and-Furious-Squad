@@ -1,67 +1,36 @@
 #include "GameBoard.h"
-
+uint16_t GameBoard::s_size = 0;
+std::vector<std::vector<std::optional<Pillar>>>GameBoard::s_matrix;
+GameBoard* GameBoard::instance = NULL;
 GameBoard::GameBoard()
 {
-	s_size = 24;
+	GameBoard::s_size = 24;
 	for (uint16_t i = 0; i < s_size; ++i)
 	{
-		std::vector<Pillar*> row;
+		std::vector<std::optional<Pillar>> row;
 		for (uint16_t j = 0; j < s_size; ++j)
 		{
-			row.push_back(nullptr);
+			row.push_back(std::optional<Pillar>{});
 		}
-		s_matrix.push_back(row);
+		GameBoard::s_matrix.push_back(row);
 	}
 }
-
-GameBoard::GameBoard(const uint16_t& size, const std::vector<std::vector<Pillar*>>& matrix)
+GameBoard* GameBoard::getInstance()
 {
-	s_size = size;
-	s_matrix= std::vector<std::vector<Pillar*>>();
-	for (uint16_t i = 0; i < s_size; ++i)
+	if (instance == NULL)
 	{
-		std::vector<Pillar*> row;
-		for (uint16_t j = 0; j < s_size; ++j)
-		{
-			Pillar *aux= new Pillar(*matrix[i][j]);
-			row.push_back(aux);
-		}
-		s_matrix.push_back(row);
+		instance = new GameBoard();
+		return instance;
 	}
+	else
+		return instance;
 }
-
-GameBoard::GameBoard(const GameBoard& gb)
-{
-	s_size = gb.s_size;
-	s_matrix = gb.s_matrix;
-}
-
-GameBoard& GameBoard::operator=(const GameBoard& gb)
-{
-
-	if (this != &gb)
-	{
-		s_size = gb.s_size; 
-		s_matrix = gb.s_matrix;
-	}
-	return *this;
-}
-
-GameBoard::~GameBoard()
-{
-	for (uint16_t i = 0; i < s_size; ++i)
-	{
-		for (uint16_t j = 0; j < s_size; ++j)
-			delete s_matrix[i][j];
-	}
-}
-
-uint8_t GameBoard::getSize()
+uint16_t GameBoard::getSize()
 {
 	return s_size;
 }
 
-std::vector<std::vector<Pillar*>> GameBoard::getMatrix()
+std::vector<std::vector<std::optional<Pillar>>> GameBoard::getMatrix()
 {
 	return s_matrix;
 }
@@ -124,7 +93,6 @@ void GameBoard::ResetGame()
 	}
 }
 
-
 std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
 {
 	for (uint16_t i = 0; i < gb.s_size; i++)
@@ -135,5 +103,3 @@ std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
 	return out;
 }
 
-uint16_t GameBoard::s_size = 0;
-std::vector<std::vector<Pillar*>> GameBoard::s_matrix = std::vector<std::vector<Pillar*>>();
