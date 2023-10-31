@@ -12,8 +12,29 @@ class GameBoard
 	GameBoard();
 public:
 	GameBoard(const GameBoard& obj) = delete;
+	friend std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
+	{
+		for (uint16_t i = 0; i < gb.s_size; i++)
+		{
+			for (uint16_t j = 0; j < gb.s_size; j++)
+			{
+				if (!gb.s_matrix[i][j].has_value())
+					out << 0 << " ";
+				else
+				{
+					if (static_cast<int>(gb.s_matrix[i][j].value().GetColor()) == 0)
+						out << 1 << " ";
+					else
+						out << 2 << " ";
+				}
+			}
+			out << "\n";
+
+		}
+		return out;
+	}
 	static GameBoard* getInstance();
-	~GameBoard() = default;
+	~GameBoard()=default;
 	//getR/setR
 	uint16_t getSize();
 	std::vector<std::vector<std::optional<Pillar>>> getMatrix();
