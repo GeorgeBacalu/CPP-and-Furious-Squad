@@ -4,23 +4,48 @@ PrintGameBoard::PrintGameBoard(uint16_t dimension): m_dimension{dimension}
 {
 }
 
-void PrintGameBoard::printGameBoard()
+bool findPillar(const std::vector<Pillar>& pillars, const std::pair<int, int>& position, Pillar& p)
+{
+	for (auto pillar : pillars)
+	{
+		if (pillar.GetPosition() == position)
+		{
+			p = pillar;
+			return true;
+		}
+	}
+	return false;
+}
+
+void PrintGameBoard::print(const std::vector<Pillar>& pillars)
 {
 	//set width of each cell to 2
 	std::cout.width(2);
-	for (int i = 0; i < m_dimension + 4; i++)
+
+	Pillar p;
+
+	system("CLS");
+
+	std::cout << "  " << std::setfill('.') << std::setw(m_dimension + 1) << "\n";
+	std::cout << "  " << std::setfill('-') << std::setw(m_dimension + 1) << "\n";
+	for(int i=0;i<m_dimension;i++)
 	{
-		if (i == 0 or i == m_dimension + 3)
+		std::cout<<".|";
+		for(int j=0;j<m_dimension;j++)
 		{
-			std::cout << "  " << std::setfill('.') << std::setw(m_dimension+1) << "\n";
+			if(findPillar(pillars, std::make_pair(i,j),p))
+			{
+				if (p.GetColor() == Color::BLACK)
+					std::cout << "B";
+				else if (p.GetColor() == Color::RED)
+					std::cout << "R";
+			}
+			else
+				std::cout<<".";
 		}
-		else if(i==1 or i==m_dimension+2)
-		{
-			std::cout << "  " << std::setfill('-') << std::setw(m_dimension+1) << "\n";
-		}
-		else
-		{
-			std::cout<< ".|"<< std::setfill('.') << std::setw(m_dimension+3) << "|.\n";
-		}
+		std::cout<<"|.\n";
 	}
+	std::cout << "  " << std::setfill('-') << std::setw(m_dimension + 1) << "\n";
+	std::cout << "  " << std::setfill('.') << std::setw(m_dimension + 1) << "\n";
+	std::cout<<"Dimension: "<<m_dimension<<"\n";
 }
