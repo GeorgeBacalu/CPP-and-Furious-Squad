@@ -21,7 +21,7 @@ public:
 	void setMatrix(std::vector<std::vector<Pillar*>>);
 	//logic methods
 	void PlacePillar(uint16_t row , uint16_t column);
-	void RemoveePillar(uint16_t row, uint16_t column);
+	void RemovePillar(uint16_t row, uint16_t column);
 	bool IsFreeFoundation(uint16_t row, uint16_t column);
 	void ResetGame();
 

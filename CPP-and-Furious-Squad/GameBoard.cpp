@@ -47,6 +47,15 @@ GameBoard& GameBoard::operator=(const GameBoard& gb)
 	return *this;
 }
 
+GameBoard::~GameBoard()
+{
+	for (uint16_t i = 0; i < s_size; ++i)
+	{
+		for (uint16_t j = 0; j < s_size; ++j)
+			delete s_matrix[i][j];
+	}
+}
+
 uint8_t GameBoard::getSize()
 {
 	return s_size;
@@ -85,6 +94,7 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 		//the changes to color and rules for bridges are to be implemented later 
 	}
 }
+
 
 void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 {
