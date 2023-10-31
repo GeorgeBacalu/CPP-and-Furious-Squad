@@ -40,15 +40,15 @@ void GameBoard::setSize(uint16_t size)
 	s_size = size;
 }
 
-void GameBoard::setMatrix(std::vector<std::vector<Pillar*>> matrix )
+void GameBoard::setMatrix(std::vector<std::vector<std::optional<Pillar>>> matrix)
 {
-	s_matrix = std::vector<std::vector<Pillar*>>();
+	s_matrix = std::vector<std::vector<std::optional<Pillar>>>();
 	for (uint16_t i = 0; i < s_size; ++i)
 	{
-		std::vector<Pillar*> row;
+		std::vector<std::optional<Pillar>> row;
 		for (uint16_t j = 0; j < s_size; ++j)
 		{
-			Pillar* aux = new Pillar(*matrix[i][j]);
+			std::optional<Pillar> aux{ matrix[i][j] };
 			row.push_back(aux);
 		}
 		s_matrix.push_back(row);
@@ -59,22 +59,22 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 {
 	if (IsFreeFoundation(row, column))
 	{
-		s_matrix[row][column] = new Pillar();
+		Pillar P;
+		P.SetPosition(std::make_pair(row, column));
+		s_matrix[row][column] = std::optional<Pillar>{ P };
 		//the changes to color and rules for bridges are to be implemented later 
 	}
 }
 
-
 void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 {
-	s_matrix[row][column] = nullptr;
+	if (!IsFreeFoundation(row, column))
+		s_matrix[row][column] = std::optional<Pillar>{};
 }
 
 bool GameBoard::IsFreeFoundation(uint16_t row, uint16_t column)
 {
-	if (s_matrix[row][column] == nullptr)
-		return true;
-	return false;
+	return !s_matrix[row][column].has_value();
 }
 
 void GameBoard::ResetGame()
@@ -88,7 +88,7 @@ void GameBoard::ResetGame()
 		for (uint16_t i = 0; i < s_size; ++i)
 		{
 			for (uint16_t j = 0; j < s_size; ++j)
-				s_matrix[i][j] = nullptr;
+				s_matrix[i][j] = std::optional<Pillar>{};
 		}
 	}
 }
