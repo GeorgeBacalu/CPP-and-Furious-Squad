@@ -138,7 +138,6 @@
   <ItemGroup>
     <ClCompile Include="Bridge.cpp" />
     <ClCompile Include="GameBoard.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Pillar.cpp" />
     <ClCompile Include="PrintGameBoard.cpp" />
     <ClCompile Include="ScoreBoard.cpp" />
