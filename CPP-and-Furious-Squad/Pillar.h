@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include "Utils.h"
 
-using Point = std::pair<uint8_t, uint8_t>;
+using Point = std::pair<uint16_t, uint16_t>;
 
 class Bridge;
 
@@ -29,7 +29,7 @@ public:
 
 	const Point& GetPosition() const;
 	void SetPosition(const Point& position);
-	void SetPosition(uint8_t x, uint8_t y);
+	void SetPosition(uint16_t x, uint16_t y);
 	Color GetColor() const;
 	void SetColor(Color color);
 

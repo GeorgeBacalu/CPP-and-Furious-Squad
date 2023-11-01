@@ -10,7 +10,7 @@ Pillar::Pillar() : m_position{ 0, 0 }, m_color{ GetRandomColor() }
 {
 }
 
-Pillar::Pillar(const std::pair<uint8_t, uint8_t>& position, Color color) : m_position{ position }, m_color{ color }
+Pillar::Pillar(const Point& position, Color color) : m_position{ position }, m_color{ color }
 {
 }
 
@@ -50,8 +50,10 @@ std::istream& operator>>(std::istream& in, Pillar& pillar)
 {
 	static const std::unordered_map<std::string, Color> s_colorMap = { {"RED", Color::RED}, {"BLACK", Color::BLACK} };
 	std::string colorString;
-	if (!(in >> pillar.m_position.first >> pillar.m_position.second >> colorString))
+	if (!(in >> pillar.m_position.first >> pillar.m_position.second >> colorString)) {
+		pillar.m_position = { 0, 0 };
 		throw std::invalid_argument("Error reading pillar input!");
+	}
 	const auto& [x, y] = pillar.m_position;
 	if (x >= BOARD_SIZE || y >= BOARD_SIZE || s_colorMap.find(colorString) == s_colorMap.end())
 		throw std::invalid_argument("Invalid pillar input!");
@@ -77,7 +79,7 @@ void Pillar::SetPosition(const Point& position)
 	m_position = position;
 }
 
-void Pillar::SetPosition(uint8_t x, uint8_t y)
+void Pillar::SetPosition(uint16_t x, uint16_t y)
 {
 	SetPosition({ x, y });
 }
