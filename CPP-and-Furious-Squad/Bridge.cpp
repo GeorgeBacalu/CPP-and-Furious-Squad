@@ -49,7 +49,7 @@ std::istream& operator>>(std::istream& in, Bridge& bridge)
 		bridge.m_endPillar = Pillar();
 		throw std::invalid_argument("Error while reading bridge input.");
 	}
-	if (!bridge.IsValid(bridge))
+	if (!bridge.IsValid())
 		throw std::invalid_argument("Can't build bridge between this pillars.");
 	return in;
 }
@@ -70,27 +70,34 @@ const Pillar& Bridge::GetEndPillar() const
 }
 
 
-bool Bridge::IsValid(const Bridge& bridge)
+bool Bridge::IsValid()
 {
-	return CheckSameColor(bridge) && CheckDistinctPositions(bridge) && CheckBridgeValid(bridge) && CheckNoIntersections(bridge);
+	return CheckSameColor() && CheckDistinctPositions() && CheckBridgeValid() && CheckNoIntersections();
 }
 
-bool Bridge::CheckSameColor(const Bridge& bridge)
+bool Bridge::CheckSameColor()
+{
+	if (this->m_startPillar.GetColor() == this->m_endPillar.GetColor())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Bridge::CheckDistinctPositions()
 {
 	return true;
 }
 
-bool Bridge::CheckDistinctPositions(const Bridge& bridge)
+bool Bridge::CheckBridgeValid()
 {
 	return true;
 }
 
-bool Bridge::CheckBridgeValid(const Bridge& bridge)
-{
-	return true;
-}
-
-bool Bridge::CheckNoIntersections(const Bridge& bridge)
+bool Bridge::CheckNoIntersections()
 {
 	return true;
 }

@@ -7,10 +7,10 @@ class Bridge
 	Pillar m_startPillar;
 	Pillar m_endPillar;
 
-	bool CheckSameColor(const Bridge& bridge);
-	bool CheckDistinctPositions(const Bridge& bridge);
-	bool CheckBridgeValid(const Bridge& bridge);
-	bool CheckNoIntersections(const Bridge& bridge);
+	bool CheckSameColor();
+	bool CheckDistinctPositions();
+	bool CheckBridgeValid();
+	bool CheckNoIntersections();
 public:
 	Bridge();
 	Bridge(const Pillar& startPillar, const Pillar& endPillar);
@@ -25,5 +25,5 @@ public:
 	const Pillar& GetStartPillar() const;
 	const Pillar& GetEndPillar() const;
 
-	bool IsValid(const Bridge& bridge);
+	bool IsValid();
 };
