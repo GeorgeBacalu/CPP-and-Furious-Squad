@@ -89,7 +89,14 @@ bool Bridge::CheckSameColor()
 
 bool Bridge::CheckDistinctPositions()
 {
-	return true;
+	if (this->m_startPillar.GetPosition().first != this->m_endPillar.GetPosition().first && this->m_startPillar.GetPosition().second != this->m_endPillar.GetPosition().second)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool Bridge::CheckBridgeValid()
