@@ -33,5 +33,5 @@ public:
 	Color GetColor() const;
 	void SetColor(Color color);
 
-	Bridge BuildBridgeTo(const Pillar& other);
+	Bridge BuildBridgeTo(const Pillar& targetPillar);
 };

@@ -46,7 +46,7 @@ Pillar& Pillar::operator=(Pillar&& other) noexcept
 	return *this;
 }
 
-std::istream& operator>>(std::istream& in, Pillar& pillar) 
+std::istream& operator>>(std::istream& in, Pillar& pillar)
 {
 	static const std::unordered_map<std::string, Color> s_colorMap = { {"RED", Color::RED}, {"BLACK", Color::BLACK} };
 	std::string colorString;
@@ -94,7 +94,23 @@ void Pillar::SetColor(Color color)
 	m_color = color;
 }
 
-Bridge Pillar::BuildBridgeTo(const Pillar& other)
+Bridge Pillar::BuildBridgeTo(const Pillar& targetPillar)
 {
-	throw std::logic_error("Method not yet implemented!");
+	if (this->m_color != targetPillar.m_color)
+		throw std::invalid_argument("Pillars must be of the same color to build a bridge!");
+	bool isTargetPillarPositionValid = false;
+	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets = {
+		{2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+		{1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+	};
+	for (const auto& [offsetX, offsetY] : bridgeAllowedOffsets) {
+		if (this->m_position.first == targetPillar.m_position.first + offsetX && this->m_position.second == targetPillar.m_position.second + offsetY) {
+			isTargetPillarPositionValid = true;
+			break;
+		}
+	}
+	if (!isTargetPillarPositionValid)
+		throw std::invalid_argument("Target pillar is in an invalid position relative to the first one!");
+	Bridge bridge = Bridge(*this, targetPillar);
+	return bridge;
 }
