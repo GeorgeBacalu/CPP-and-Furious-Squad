@@ -101,7 +101,27 @@ bool Bridge::CheckDistinctPositions()
 
 bool Bridge::CheckBridgeValid()
 {
-	return true;
+	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets = {
+		{2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+		{1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+	};
+
+	for (int index = 0; index < bridgeAllowedOffsets.size(); index++)
+	{
+		uint16_t startPillarX = this->m_startPillar.GetPosition().first;
+		uint16_t startPillarY = this->m_startPillar.GetPosition().second;
+		uint16_t endPillarX = this->m_endPillar.GetPosition().first;
+		uint16_t endPillarY = this->m_endPillar.GetPosition().second;
+		uint16_t offsetX = bridgeAllowedOffsets[index].first;
+		uint16_t offsetY = bridgeAllowedOffsets[index].second;
+		
+		if (startPillarX == endPillarX + offsetX && startPillarY == endPillarY + offsetY)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool Bridge::CheckNoIntersections()
