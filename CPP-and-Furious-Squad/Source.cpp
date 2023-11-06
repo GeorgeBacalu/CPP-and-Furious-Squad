@@ -45,10 +45,11 @@ void readPillars(std::vector<Pillar>& pillars) {
 	Pillar pillar;
 	while (true) {
 		try {
-			if (!(inPillar >> pillar)) break;
+			inPillar >> pillar;
 			pillars.push_back(pillar);
 		}
 		catch (const std::invalid_argument& e) {
+			std::cerr << e.what() << std::endl;
 			break;
 		}
 	}
@@ -60,19 +61,26 @@ void readBridges(std::vector<Bridge>& bridges) {
 	Bridge bridge;
 	while (true) {
 		try {
-			if (!(inBridge >> bridge)) break;
+			inBridge >> bridge;
 			bridges.push_back(bridge);
 		}
 		catch (const std::invalid_argument& e) {
+			std::cerr << e.what() << std::endl;
 			break;
 		}
 	}
 }
 
 void displayPillars(const std::vector<Pillar>& pillars) {
-	for (const auto& pillar : pillars) std::cout << pillar << "\n";
+	for (const auto& pillar : pillars)
+	{
+		std::cout << pillar << "\n";
+	}
 }
 
 void displayBridges(const std::vector<Bridge>& bridges) {
-	for (const auto& bridge : bridges) std::cout << bridge << "\n";
+	for (const auto& bridge : bridges)
+	{
+		std::cout << bridge << "\n";
+	}
 }

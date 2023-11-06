@@ -93,7 +93,7 @@ void GameBoard::ResetGame()
 	}
 }
 
-std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
+/*std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
 {
 	for (uint16_t i = 0; i < gb.s_size; i++)
 	{
@@ -101,5 +101,5 @@ std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
 			out << gb.s_matrix[i][j];
 	}
 	return out;
-}
+}*/
 

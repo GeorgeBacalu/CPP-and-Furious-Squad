@@ -6,9 +6,6 @@ class Bridge
 {
 	Pillar m_startPillar;
 	Pillar m_endPillar;
-	Color m_color : 1;
-
-	static Color GetRandomColor();
 
 	bool CheckSameColor(const Bridge& bridge);
 	bool CheckDistinctPositions(const Bridge& bridge);
@@ -16,7 +13,7 @@ class Bridge
 	bool CheckNoIntersections(const Bridge& bridge);
 public:
 	Bridge();
-	Bridge(const Pillar& startPillar, const Pillar& endPillar, Color color);
+	Bridge(const Pillar& startPillar, const Pillar& endPillar);
 	Bridge(const Bridge& other);
 	Bridge(Bridge&& other) noexcept;
 	Bridge& operator=(const Bridge& other);
@@ -27,7 +24,6 @@ public:
 
 	const Pillar& GetStartPillar() const;
 	const Pillar& GetEndPillar() const;
-	Color GetColor() const;
 
 	bool IsValid(const Bridge& bridge);
 };
