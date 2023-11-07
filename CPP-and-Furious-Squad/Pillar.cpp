@@ -67,6 +67,11 @@ std::ostream& operator<<(std::ostream& out, const Pillar& pillar)
 	return out << "Position: (" << x << ", " << y << "), Color: " << (static_cast<int>(pillar.m_color) == 0 ? "RED" : "BLACK") << "\n";
 }
 
+bool Pillar::operator==(const Pillar& other) const
+{
+	return m_position == other.m_position && m_color == other.m_color;
+}
+
 const Point& Pillar::GetPosition() const
 {
 	return m_position;

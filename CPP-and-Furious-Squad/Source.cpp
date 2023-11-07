@@ -13,6 +13,7 @@ int main()
 {
 
 	std::vector<Pillar> pillars;
+
 	std::vector<Bridge> bridges;
 	pillars.reserve(pow(BOARD_SIZE / 2, 2));
 	bridges.reserve((BOARD_SIZE / 2) * (BOARD_SIZE / 2 - 1));
@@ -29,7 +30,7 @@ int main()
 	p1 = { 12, 9 };
 	pillars.emplace_back(p1, Color::BLACK);
 	g.print(pillars);
-
+	system("pause");
 	readPillars(pillars);
 	readBridges(bridges);
 	std::cout << "PILLARS:\n";

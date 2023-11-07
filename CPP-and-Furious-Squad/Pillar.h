@@ -26,6 +26,7 @@ public:
 	~Pillar() = default;
 	friend std::istream& operator>>(std::istream& in, Pillar& pillar);
 	friend std::ostream& operator<<(std::ostream& out, const Pillar& pillar);
+	bool operator==(const Pillar& other) const;
 
 	const Point& GetPosition() const;
 	void SetPosition(const Point& position);
