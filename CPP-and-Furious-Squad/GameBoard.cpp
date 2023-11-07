@@ -1,6 +1,7 @@
 #include "GameBoard.h"
 uint16_t GameBoard::s_size = 0;
 std::vector<std::vector<std::optional<Pillar>>>GameBoard::s_matrix;
+std::vector<Bridge>GameBoard::s_bridges;
 GameBoard* GameBoard::instance = NULL;
 GameBoard::GameBoard()
 {
@@ -35,6 +36,11 @@ std::vector<std::vector<std::optional<Pillar>>> GameBoard::getMatrix()
 	return s_matrix;
 }
 
+std::vector<Bridge> GameBoard::getBridges()
+{
+	return s_bridges;
+}
+
 void GameBoard::setSize(uint16_t size)
 {
 	s_size = size;
@@ -53,6 +59,10 @@ void GameBoard::setMatrix(std::vector<std::vector<std::optional<Pillar>>> matrix
 		}
 		s_matrix.push_back(row);
 	}
+}
+void GameBoard::setBridges(std::vector<Bridge> bridges)
+{
+	s_bridges = bridges;
 }
 
 void GameBoard::PlacePillar(uint16_t row, uint16_t column)
@@ -93,13 +103,11 @@ void GameBoard::ResetGame()
 	}
 }
 
-/*std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
+void GameBoard::SaveGame()
 {
-	for (uint16_t i = 0; i < gb.s_size; i++)
-	{
-		for (uint16_t j = 0; j < gb.s_size; j++)
-			out << gb.s_matrix[i][j];
-	}
-	return out;
-}*/
 
+}
+void GameBoard::LoadGame()
+{
+
+}
