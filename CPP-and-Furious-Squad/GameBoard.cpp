@@ -1,8 +1,11 @@
 #include "GameBoard.h"
+#include<fstream>
+
 uint16_t GameBoard::s_size = 0;
 std::vector<std::vector<std::optional<Pillar>>>GameBoard::s_matrix;
 std::vector<Bridge>GameBoard::s_bridges;
 GameBoard* GameBoard::instance = NULL;
+
 GameBoard::GameBoard()
 {
 	GameBoard::s_size = 24;
@@ -15,6 +18,7 @@ GameBoard::GameBoard()
 		}
 		GameBoard::s_matrix.push_back(row);
 	}
+	GameBoard::s_bridges = std::vector<Bridge>();
 }
 GameBoard* GameBoard::getInstance()
 {
@@ -105,7 +109,21 @@ void GameBoard::ResetGame()
 
 void GameBoard::SaveGame()
 {
-
+	std::ofstream f("pillar.out");
+	for (auto row : s_matrix)
+	{
+		for (auto column : row)
+		{
+			if (column.has_value())
+				f << column.value();
+		}
+				
+	}
+	f.close();
+	std::ofstream f("bridges.out");
+	for (auto it : s_bridges)
+		f << it;
+	f.close();
 }
 void GameBoard::LoadGame()
 {
