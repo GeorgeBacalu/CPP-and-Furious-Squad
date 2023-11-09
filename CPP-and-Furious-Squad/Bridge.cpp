@@ -69,6 +69,11 @@ const Pillar& Bridge::GetEndPillar() const
 	return m_endPillar;
 }
 
+bool Bridge::operator==(const Bridge& other) const
+{
+	return false;
+}
+
 
 bool Bridge::IsValid()
 {

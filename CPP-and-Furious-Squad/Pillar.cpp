@@ -1,5 +1,6 @@
 #include "Pillar.h"
 #include "Bridge.h"
+#include <optional>
 
 Color Pillar::GetRandomColor()
 {
@@ -71,6 +72,8 @@ bool Pillar::operator==(const Pillar& other) const
 {
 	return m_position == other.m_position && m_color == other.m_color;
 }
+
+
 
 const Point& Pillar::GetPosition() const
 {

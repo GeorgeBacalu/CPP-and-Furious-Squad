@@ -1,4 +1,5 @@
 #include "PrintGameBoard.h"
+#include "GameBoard.h"
 #include "Bridge.h"
 #include <fstream>
 #include <thread>
@@ -18,7 +19,7 @@ int main()
 	pillars.reserve(pow(BOARD_SIZE / 2, 2));
 	bridges.reserve((BOARD_SIZE / 2) * (BOARD_SIZE / 2 - 1));
 
-	Point p1{ 3, 2 };
+	/*Point p1{ 3, 2 };
 	pillars.emplace_back(p1, Color::RED);
 	PrintGameBoard g{ 24 };
 	g.print(pillars);
@@ -30,13 +31,37 @@ int main()
 	p1 = { 12, 9 };
 	pillars.emplace_back(p1, Color::BLACK);
 	g.print(pillars);
-	system("pause");
+	system("pause");*/
 	readPillars(pillars);
 	readBridges(bridges);
 	std::cout << "PILLARS:\n";
 	displayPillars(pillars);
 	std::cout << "BRIDGES:\n";
 	displayBridges(bridges);
+	system("pause");
+	
+	GameBoard* gb = GameBoard::getInstance();
+	gb->setBridges(bridges);
+	std::vector<std::vector<std::optional<Pillar>>> matrix(BOARD_SIZE);
+	for (int i = 0; i < BOARD_SIZE; ++i)
+		matrix[i].resize(BOARD_SIZE);
+		
+	for (auto pi : pillars)
+		matrix[pi.GetPosition().first][pi.GetPosition().second] = pi;
+	gb->setMatrix(matrix);
+	gb->ListaAdiacentaInit();
+	for (auto it : gb->getListaAdiacenta())
+	{
+		for (auto it2 : it)
+			std::cout << it2 << ' ';
+		std::cout<<"\n";
+	}
+	gb->EndingPillarsInit();
+	for (auto it : gb->getEndingPillars())
+	{
+		gb->bfs(it);
+		
+	}
 	return 0;
 }
 

@@ -24,6 +24,7 @@ public:
 
 	const Pillar& GetStartPillar() const;
 	const Pillar& GetEndPillar() const;
+	bool operator==(const Bridge& other) const;
 
 	bool IsValid();
 };

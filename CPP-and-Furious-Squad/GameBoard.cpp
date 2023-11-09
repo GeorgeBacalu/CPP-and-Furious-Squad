@@ -5,6 +5,9 @@
 uint16_t GameBoard::s_size = 0;
 std::vector<std::vector<std::optional<Pillar>>>GameBoard::s_matrix;
 std::vector<Bridge>GameBoard::s_bridges;
+std::vector<std::vector<Pillar>>GameBoard::ListaAdiacenta;
+std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>GameBoard::s_paths;
+std::vector<Pillar>GameBoard::endingPillars;
 GameBoard* GameBoard::instance = NULL;
 
 GameBoard::GameBoard()
@@ -20,16 +23,19 @@ GameBoard::GameBoard()
 		GameBoard::s_matrix.push_back(row);
 	}
 	GameBoard::s_bridges = std::vector<Bridge>();
+	GameBoard::ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
+	GameBoard::s_paths = std::make_pair(std::vector<std::vector<Pillar>>(), std::vector<std::vector<Pillar>>());
+	GameBoard::endingPillars = std::vector<Pillar>();
 }
 
 void GameBoard::ListaAdiacentaInit()
 {
 	//generate ListaAdiacenta from Bridges
-	ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
+	this->ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
 	for (auto it : s_bridges)
 	{
-		ListaAdiacenta[it.GetStartPillar().GetPosition().first * s_size + it.GetStartPillar().GetPosition().second].push_back(it.GetEndPillar());
-		ListaAdiacenta[it.GetEndPillar().GetPosition().first * s_size + it.GetEndPillar().GetPosition().second].push_back(it.GetStartPillar());
+		this->ListaAdiacenta[it.GetStartPillar().GetPosition().first * s_size + it.GetStartPillar().GetPosition().second].push_back(it.GetEndPillar());
+		this->ListaAdiacenta[it.GetEndPillar().GetPosition().first * s_size + it.GetEndPillar().GetPosition().second].push_back(it.GetStartPillar());
 	}
 }
 
@@ -88,14 +94,15 @@ void GameBoard::bfs(const Pillar& start)
 	}
 	s_paths = std::make_pair(red_paths, black_paths);
 }
-
+//
 bool GameBoard::redWin()
 {
 	//check if red won
 	for (auto it : s_paths.first)
 	{
-		if (std::find(endingPillars.begin(), endingPillars.end(), it) != endingPillars.end())
-			return true;
+		for(auto it2:it)
+			if (std::find(endingPillars.begin(), endingPillars.end(), it2) != endingPillars.end())
+				return true;
 	}
 	return false;
 }
@@ -105,8 +112,9 @@ bool GameBoard::blackWin()
 	//check if black won
 	for (auto it : s_paths.second)
 	{
-		if (std::find(endingPillars.begin(), endingPillars.end(), it) != endingPillars.end())
-			return true;
+		for(auto it2:it)
+			if (std::find(endingPillars.begin(), endingPillars.end(), it2) != endingPillars.end())
+				return true;
 	}
 	return false;
 }
@@ -177,6 +185,21 @@ void GameBoard::setBridges(std::vector<Bridge> bridges)
 	s_bridges = bridges;
 }
 
+std::vector<std::vector<Pillar>> GameBoard::getListaAdiacenta()
+{
+	return ListaAdiacenta;
+}
+
+std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>> GameBoard::getPaths()
+{
+	return s_paths;
+}
+
+std::vector<Pillar> GameBoard::getEndingPillars()
+{
+	return endingPillars;
+}
+
 void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 {
 	if (IsFreeFoundation(row, column))
@@ -228,10 +251,10 @@ void GameBoard::SaveGame()
 				
 	}
 	f.close();
-	std::ofstream f("bridges.out");
+	std::ofstream f1("bridges.out");
 	for (auto it : s_bridges)
-		f << it;
-	f.close();
+		f1 << it;
+	f1.close();
 }
 void GameBoard::LoadGame()
 {

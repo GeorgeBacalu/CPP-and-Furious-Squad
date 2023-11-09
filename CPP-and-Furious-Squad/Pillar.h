@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <string>
 #include <unordered_map>
+#include <optional>
 #include "Utils.h"
 
 using Point = std::pair<uint16_t, uint16_t>;

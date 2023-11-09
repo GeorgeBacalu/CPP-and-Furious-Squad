@@ -16,12 +16,6 @@ class GameBoard
 	static GameBoard* instance;
 	GameBoard();
 
-	void ListaAdiacentaInit();
-	void ListaAdiacentaUpdate();
-	void bfs(const Pillar& start);
-	bool redWin();
-	bool blackWin();
-	void EndingPillarsInit();
 
 public:
 	GameBoard(const GameBoard& obj) = delete;
@@ -35,6 +29,9 @@ public:
 	void setSize(uint16_t size);
 	void setMatrix(std::vector<std::vector<std::optional<Pillar>>>matrix);
 	void setBridges(std::vector<Bridge> bridges);
+	std::vector<std::vector<Pillar>> getListaAdiacenta();
+	std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>getPaths();
+	std::vector<Pillar>getEndingPillars();
 
 	//logic methods
 	void PlacePillar(uint16_t row, uint16_t column);
@@ -43,6 +40,12 @@ public:
 	void ResetGame();
 	void SaveGame();
 	void LoadGame();
+	void ListaAdiacentaInit();
+	void ListaAdiacentaUpdate();
+	void bfs(const Pillar& start);
+	bool redWin();
+	bool blackWin();
+	void EndingPillarsInit();
 	friend std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
 	{
 		for (uint16_t i = 0; i < gb.s_size; i++)
