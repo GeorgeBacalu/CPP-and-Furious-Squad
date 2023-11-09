@@ -1,5 +1,6 @@
 #include "GameBoard.h"
 #include<fstream>
+#include<queue>
 
 uint16_t GameBoard::s_size = 0;
 std::vector<std::vector<std::optional<Pillar>>>GameBoard::s_matrix;
@@ -20,6 +21,49 @@ GameBoard::GameBoard()
 	}
 	GameBoard::s_bridges = std::vector<Bridge>();
 }
+
+void GameBoard::ListaAdiacentaInit()
+{
+	//generate ListaAdiacenta from Bridges
+	ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
+	for (auto it : s_bridges)
+	{
+		ListaAdiacenta[it.GetStartPillar().GetPosition().first * s_size + it.GetStartPillar().GetPosition().second].push_back(it.GetEndPillar());
+		ListaAdiacenta[it.GetEndPillar().GetPosition().first * s_size + it.GetEndPillar().GetPosition().second].push_back(it.GetStartPillar());
+	}
+}
+
+void GameBoard::ListaAdiacentaUpdate()
+{
+
+}
+
+std::vector<std::vector<Pillar>> GameBoard::bfs(const Pillar& start, const std::vector<std::vector<Pillar>>& ListaAdiacenta)
+{
+	std::vector<std::vector<Pillar>> paths;
+	std::vector<Pillar> path;
+	std::vector<bool> visited(s_size * s_size, false);
+	std::queue<Pillar> q;
+	q.push(start);
+	visited[start.GetPosition().first * s_size + start.GetPosition().second] = true;
+	while (!q.empty())
+	{
+		Pillar node = q.front();
+		q.pop();
+		path.push_back(node);
+		for (auto it : ListaAdiacenta[node.GetPosition().first * s_size + node.GetPosition().second])
+		{
+			if (!visited[it.GetPosition().first * s_size + it.GetPosition().second])
+			{
+				visited[it.GetPosition().first * s_size + it.GetPosition().second] = true;
+				q.push(it);
+			}
+		}
+	}
+	paths.push_back(path);
+	return paths;
+}
+
 GameBoard* GameBoard::getInstance()
 {
 	if (instance == NULL)
