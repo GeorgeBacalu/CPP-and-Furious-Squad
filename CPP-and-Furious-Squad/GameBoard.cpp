@@ -38,7 +38,7 @@ void GameBoard::ListaAdiacentaUpdate()
 
 }
 
-std::vector<std::vector<Pillar>> GameBoard::bfs(const Pillar& start, const std::vector<std::vector<Pillar>>& ListaAdiacenta)
+std::vector<std::vector<Pillar>> GameBoard::bfs(const Pillar& start, const std::vector<std::vector<Pillar>>& ListaAdiacenta, const Pillar& end)
 {
 	std::vector<std::vector<Pillar>> paths;
 	std::vector<Pillar> path;
@@ -46,11 +46,17 @@ std::vector<std::vector<Pillar>> GameBoard::bfs(const Pillar& start, const std::
 	std::queue<Pillar> q;
 	q.push(start);
 	visited[start.GetPosition().first * s_size + start.GetPosition().second] = true;
+	//the paths must have same color
 	while (!q.empty())
 	{
 		Pillar node = q.front();
 		q.pop();
 		path.push_back(node);
+		if (node == end)
+		{
+			paths.push_back(path);
+			path.pop_back();
+		}
 		for (auto it : ListaAdiacenta[node.GetPosition().first * s_size + node.GetPosition().second])
 		{
 			if (!visited[it.GetPosition().first * s_size + it.GetPosition().second])
@@ -60,9 +66,26 @@ std::vector<std::vector<Pillar>> GameBoard::bfs(const Pillar& start, const std::
 			}
 		}
 	}
-	paths.push_back(path);
+
 	return paths;
 }
+
+void GameBoard::EndingPillarsInit()
+{
+	//generate endingPillars from s_matrix
+	for (uint16_t i = 0; i < s_size; ++i)
+	{
+		for (uint16_t j = 0; j < s_size; ++j)
+		{
+			if (s_matrix[i][j].has_value())
+			{
+				if (i == 0 || i == s_size - 1 || j == 0 || j == s_size - 1)
+					endingPillars.push_back(s_matrix[i][j].value());
+			}
+		}
+	}
+}
+
 
 GameBoard* GameBoard::getInstance()
 {
