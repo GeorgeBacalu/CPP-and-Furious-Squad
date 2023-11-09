@@ -38,36 +38,77 @@ void GameBoard::ListaAdiacentaUpdate()
 
 }
 
-std::vector<std::vector<Pillar>> GameBoard::bfs(const Pillar& start, const std::vector<std::vector<Pillar>>& ListaAdiacenta, const Pillar& end)
+void GameBoard::bfs(const Pillar& start)
 {
-	std::vector<std::vector<Pillar>> paths;
-	std::vector<Pillar> path;
+	//make paths from start to endingPillars. All the paths must have same color of pillars
+	std::vector<std::vector<Pillar>> red_paths;
+	std::vector<std::vector<Pillar>> black_paths;
+	std::vector<Pillar> red_path;
+	std::vector<Pillar> black_path;
 	std::vector<bool> visited(s_size * s_size, false);
-	std::queue<Pillar> q;
-	q.push(start);
-	visited[start.GetPosition().first * s_size + start.GetPosition().second] = true;
-	//the paths must have same color
-	while (!q.empty())
+	std::queue<Pillar> red_q;
+	std::queue<Pillar> black_q;
+	if(start.GetColor()==Color::RED)
+		red_q.push(start);
+	else
+		black_q.push(start);
+	while (!red_q.empty())
 	{
-		Pillar node = q.front();
-		q.pop();
-		path.push_back(node);
-		if (node == end)
+		Pillar current = red_q.front();
+		red_q.pop();
+		red_path.push_back(current);
+		visited[current.GetPosition().first * s_size + current.GetPosition().second] = true;
+		if (std::find(endingPillars.begin(), endingPillars.end(), current) != endingPillars.end())
 		{
-			paths.push_back(path);
-			path.pop_back();
+			red_paths.push_back(red_path);
+			red_path.clear();
 		}
-		for (auto it : ListaAdiacenta[node.GetPosition().first * s_size + node.GetPosition().second])
+		for (auto it : ListaAdiacenta[current.GetPosition().first * s_size + current.GetPosition().second])
 		{
-			if (!visited[it.GetPosition().first * s_size + it.GetPosition().second])
-			{
-				visited[it.GetPosition().first * s_size + it.GetPosition().second] = true;
-				q.push(it);
-			}
+			if (!visited[it.GetPosition().first * s_size + it.GetPosition().second] && it.GetColor() == Color::RED)
+				red_q.push(it);
 		}
 	}
+	while (!black_q.empty())
+	{
+		Pillar current = black_q.front();
+		black_q.pop();
+		black_path.push_back(current);
+		visited[current.GetPosition().first * s_size + current.GetPosition().second] = true;
+		if (std::find(endingPillars.begin(), endingPillars.end(), current) != endingPillars.end())
+		{
+			black_paths.push_back(black_path);
+			black_path.clear();
+		}
+		for (auto it : ListaAdiacenta[current.GetPosition().first * s_size + current.GetPosition().second])
+		{
+			if (!visited[it.GetPosition().first * s_size + it.GetPosition().second] && it.GetColor() == Color::BLACK)
+				black_q.push(it);
+		}
+	}
+	s_paths = std::make_pair(red_paths, black_paths);
+}
 
-	return paths;
+bool GameBoard::redWin()
+{
+	//check if red won
+	for (auto it : s_paths.first)
+	{
+		if (std::find(endingPillars.begin(), endingPillars.end(), it) != endingPillars.end())
+			return true;
+	}
+	return false;
+}
+
+bool GameBoard::blackWin()
+{
+	//check if black won
+	for (auto it : s_paths.second)
+	{
+		if (std::find(endingPillars.begin(), endingPillars.end(), it) != endingPillars.end())
+			return true;
+	}
+	return false;
 }
 
 void GameBoard::EndingPillarsInit()

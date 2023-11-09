@@ -11,14 +11,16 @@ class GameBoard
 	static std::vector<std::vector<std::optional<Pillar>>> s_matrix;
 	static std::vector <Bridge>s_bridges;
 	static std::vector<std::vector<Pillar>>ListaAdiacenta;
-	static std::vector<std::vector<Pillar>>s_paths;
+	static std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>s_paths;
 	static std::vector<Pillar>endingPillars;
 	static GameBoard* instance;
 	GameBoard();
 
 	void ListaAdiacentaInit();
 	void ListaAdiacentaUpdate();
-	std::vector<std::vector<Pillar>> bfs(const Pillar& start, const std::vector<std::vector<Pillar>>& ListaAdiacenta, const Pillar& end);
+	void bfs(const Pillar& start);
+	bool redWin();
+	bool blackWin();
 	void EndingPillarsInit();
 
 public:
