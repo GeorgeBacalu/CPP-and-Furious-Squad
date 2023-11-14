@@ -272,8 +272,24 @@ void GameBoard::SaveGame()
 	for (auto it : s_bridges)
 		f1 << it;
 	f1.close();
+	
 }
 void GameBoard::LoadGame()
 {
-	
+	std::ifstream f("pillars.prodb");
+	while (!f.eof())
+	{
+		Pillar p;
+		f >> p;
+		PlacePillar(p);
+	}
+	f.close();
+	std::ifstream f("bridges.prodb");
+	while (!f.eof())
+	{
+		Bridge b;
+		if(f >> b);
+			s_bridges.push_back(b);
+	}
+	f.close();
 }
