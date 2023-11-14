@@ -209,8 +209,17 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 		s_matrix[row][column] = std::optional<Pillar>{ P };
 		//the changes to color and rules for bridges are to be implemented later 
 	}
+	else
+		throw std::invalid_argument("Position is not valid");
 }
-
+void GameBoard::PlacePillar(const Pillar& pillar)
+{
+	Point position{ pillar.GetPosition() };
+	if (IsFreeFoundation(position.first, position.second))
+		s_matrix[position.first][position.second] = std::optional<Pillar>{ pillar };
+	else
+		throw std::invalid_argument("Position is not valid");
+}
 void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 {
 	if (!IsFreeFoundation(row, column))
@@ -219,6 +228,14 @@ void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 
 bool GameBoard::IsFreeFoundation(uint16_t row, uint16_t column)
 {
+	if (row == 0 && column == 0)
+		return false;
+	if (row == 0 && column == 23)
+		return false;
+	if (row == 23 && column == 0)
+		return false;
+	if (row == 23 && column == 23)
+		return false;
 	return !s_matrix[row][column].has_value();
 }
 
@@ -240,7 +257,7 @@ void GameBoard::ResetGame()
 
 void GameBoard::SaveGame()
 {
-	std::ofstream f("pillar.out");
+	std::ofstream f("pillars.prodb");
 	for (auto row : s_matrix)
 	{
 		for (auto column : row)
@@ -251,12 +268,12 @@ void GameBoard::SaveGame()
 				
 	}
 	f.close();
-	std::ofstream f1("bridges.out");
+	std::ofstream f1("bridges.prodb");
 	for (auto it : s_bridges)
 		f1 << it;
 	f1.close();
 }
 void GameBoard::LoadGame()
 {
-
+	
 }

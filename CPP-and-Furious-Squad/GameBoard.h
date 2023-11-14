@@ -35,6 +35,8 @@ public:
 
 	//logic methods
 	void PlacePillar(uint16_t row, uint16_t column);
+	void PlacePillar(const Pillar& pillar);
+
 	void RemovePillar(uint16_t row, uint16_t column);
 	bool IsFreeFoundation(uint16_t row, uint16_t column);
 	void ResetGame();
