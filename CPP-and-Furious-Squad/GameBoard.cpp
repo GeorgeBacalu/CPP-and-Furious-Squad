@@ -224,7 +224,22 @@ void GameBoard::PlacePillar(const Pillar& pillar)
 void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 {
 	if (!IsFreeFoundation(row, column))
+	{
 		s_matrix[row][column] = std::optional<Pillar>{};
+		for (std::vector<Bridge>::iterator it = s_bridges.begin(); it != s_bridges.end();)
+		{
+			if (it->GetEndPillar().GetPosition() == Point{ row,column })
+				s_bridges.erase(it);
+			else
+				if (it->GetStartPillar().GetPosition() == Point{ row,column })
+				{
+					s_bridges.erase(it);
+				}
+				else ++it;
+		}
+	}
+	else
+		throw std::invalid_argument("There is no pillar to erase");
 }
 
 bool GameBoard::IsFreeFoundation(uint16_t row, uint16_t column)
