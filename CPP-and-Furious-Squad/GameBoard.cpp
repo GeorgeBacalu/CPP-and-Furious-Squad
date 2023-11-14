@@ -8,6 +8,7 @@ std::vector<Bridge>GameBoard::s_bridges;
 std::vector<std::vector<Pillar>>GameBoard::ListaAdiacenta;
 std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>GameBoard::s_paths;
 std::vector<Pillar>GameBoard::endingPillars;
+bool GameBoard::playerTurn = false;
 GameBoard* GameBoard::instance = NULL;
 
 GameBoard::GameBoard()
@@ -253,6 +254,10 @@ void GameBoard::ResetGame()
 				s_matrix[i][j] = std::optional<Pillar>{};
 		}
 	}
+	GameBoard::s_bridges = std::vector<Bridge>();
+	GameBoard::ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
+	GameBoard::s_paths = std::make_pair(std::vector<std::vector<Pillar>>(), std::vector<std::vector<Pillar>>());
+	GameBoard::endingPillars = std::vector<Pillar>();
 }
 
 void GameBoard::SaveGame()
@@ -276,6 +281,7 @@ void GameBoard::SaveGame()
 }
 void GameBoard::LoadGame()
 {
+	ResetGame();
 	std::ifstream f("pillars.prodb");
 	while (!f.eof())
 	{
@@ -285,11 +291,22 @@ void GameBoard::LoadGame()
 	}
 	f.close();
 	std::ifstream f("bridges.prodb");
+	uint16_t redCount{ 0 }, blackCount{ 0 };
 	while (!f.eof())
 	{
 		Bridge b;
 		if(f >> b);
+		{
 			s_bridges.push_back(b);
+			if (b.GetEndPillar().GetColor() == Color::RED)
+				++redCount;
+			else
+				++blackCount;
+		}
 	}
+	if (redCount > blackCount)
+		playerTurn = true;
+	else
+		playerTurn = false;
 	f.close();
 }

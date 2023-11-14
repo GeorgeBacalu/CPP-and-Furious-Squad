@@ -8,6 +8,7 @@
 class GameBoard
 {
 	static uint16_t s_size;
+	static bool playerTurn;
 	static std::vector<std::vector<std::optional<Pillar>>> s_matrix;
 	static std::vector <Bridge>s_bridges;
 	static std::vector<std::vector<Pillar>>ListaAdiacenta;
