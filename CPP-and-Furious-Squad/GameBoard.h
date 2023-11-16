@@ -13,6 +13,7 @@ class GameBoard
 	static std::vector <Bridge>s_bridges;
 	static std::vector<std::vector<Pillar>>ListaAdiacenta;
 	static std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>s_paths;
+	static std::vector<Pillar> s_pillars;
 	static std::vector<Pillar>endingPillars;
 	static GameBoard* instance;
 	GameBoard();
@@ -33,10 +34,13 @@ public:
 	std::vector<std::vector<Pillar>> getListaAdiacenta();
 	std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>getPaths();
 	std::vector<Pillar>getEndingPillars();
+	std::vector<Pillar> getPillars();
 
 	//logic methods
 	void PlacePillar(uint16_t row, uint16_t column);
 	void PlacePillar(const Pillar& pillar);
+	void ProcessNextMove(const Position& newPillarPosition); // new proposed alternative for PlacePillar
+	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets);
 
 	void RemovePillar(uint16_t row, uint16_t column);
 	bool IsFreeFoundation(uint16_t row, uint16_t column);
@@ -56,16 +60,16 @@ public:
 			for (uint16_t j = 0; j < gb.s_size; j++)
 			{
 				if (!gb.s_matrix[i][j].has_value())
-					out << 0 << " ";
+					out << 0 << "  ";
 				else
 				{
 					if (static_cast<int>(gb.s_matrix[i][j].value().GetColor()) == 0)
-						out << 1 << " ";
+						out << 1 << "  ";
 					else
-						out << 2 << " ";
+						out << 2 << "  ";
 				}
 			}
-			out << "\n";
+			out << "\n\n";
 
 		}
 		return out;

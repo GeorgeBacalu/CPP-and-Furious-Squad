@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bridges.prodb" />
+    <None Include="game-board.prodb" />
     <None Include="pillars.prodb" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -99,26 +99,3 @@ void Pillar::SetColor(Color color)
 {
 	m_color = color;
 }
-
-const Bridge& Pillar::BuildBridgeTo(const Pillar& targetPillar)
-{
-	if (this->m_color != targetPillar.m_color)
-		throw std::invalid_argument("Pillars must be of the same color to build a bridge!");
-	bool isTargetPillarPositionValid = false;
-	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets{ {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
-	const auto& [currentRow, currentColumn] = this->m_position;
-	const auto& [targetRow, targetColumn] = targetPillar.m_position;
-	for (const auto& [offsetX, offsetY] : bridgeAllowedOffsets)
-	{
-		if (currentRow + offsetX >= BOARD_SIZE || currentColumn + offsetY >= BOARD_SIZE)
-			break;
-		if (currentRow == targetRow + offsetX && currentColumn == targetColumn + offsetY)
-		{
-			isTargetPillarPositionValid = true;
-			break;
-		}
-	}
-	if (!isTargetPillarPositionValid)
-		throw std::invalid_argument("Target pillar is in an invalid position relative to the first one!");
-	return Bridge(*this, targetPillar);
-}

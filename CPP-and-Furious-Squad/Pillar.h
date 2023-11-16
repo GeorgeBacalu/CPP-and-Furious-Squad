@@ -35,6 +35,4 @@ public:
 	void SetPosition(uint16_t x, uint16_t y);
 	Color GetColor() const;
 	void SetColor(Color color);
-
-	const Bridge& BuildBridgeTo(const Pillar& targetPillar);
 };

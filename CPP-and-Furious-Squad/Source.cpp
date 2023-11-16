@@ -12,9 +12,8 @@ void displayBridges(const std::vector<Bridge>& bridges);
 
 int main()
 {
-
+	std::ofstream fout{ "game-board.prodb" };
 	std::vector<Pillar> pillars;
-
 	std::vector<Bridge> bridges;
 	pillars.reserve(pow(BOARD_SIZE / 2, 2));
 	bridges.reserve((BOARD_SIZE / 2) * (BOARD_SIZE / 2 - 1));
@@ -32,6 +31,7 @@ int main()
 	pillars.emplace_back(p1, Color::BLACK);
 	g.print(pillars);
 	system("pause");*/
+
 	readPillars(pillars);
 	readBridges(bridges);
 	std::cout << "PILLARS:\n";
@@ -41,7 +41,7 @@ int main()
 	system("pause");
 	
 	GameBoard* gb = GameBoard::getInstance();
-	gb->setBridges(bridges);
+	//gb->setBridges(bridges);
 	std::vector<std::vector<std::optional<Pillar>>> matrix(BOARD_SIZE);
 	for (int i = 0; i < BOARD_SIZE; ++i)
 		matrix[i].resize(BOARD_SIZE);
@@ -60,8 +60,17 @@ int main()
 	for (auto it : gb->getEndingPillars())
 	{
 		gb->bfs(it);
-		
 	}
+
+	//gb->ProcessNextMove({ 2, 2 }); // red
+	//gb->ProcessNextMove({ 21, 2 }); // black
+	//gb->ProcessNextMove({ 6, 2 }); // red
+	//gb->ProcessNextMove({ 17, 2 }); // black
+	//gb->ProcessNextMove({ 4, 3 }); // red
+	//gb->ProcessNextMove({ 19, 3 }); // black
+	//displayBridges(gb->getBridges());
+	//displayPillars(gb->getPillars());
+	fout << *gb;
 	return 0;
 }
 
