@@ -215,7 +215,7 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 }
 void GameBoard::PlacePillar(const Pillar& pillar)
 {
-	Point position{ pillar.GetPosition() };
+	Position position{ pillar.GetPosition() };
 	if (IsFreeFoundation(position.first, position.second))
 		s_matrix[position.first][position.second] = std::optional<Pillar>{ pillar };
 	else
@@ -228,10 +228,10 @@ void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 		s_matrix[row][column] = std::optional<Pillar>{};
 		for (std::vector<Bridge>::iterator it = s_bridges.begin(); it != s_bridges.end();)
 		{
-			if (it->GetEndPillar().GetPosition() == Point{ row,column })
+			if (it->GetEndPillar().GetPosition() == Position{ row,column })
 				s_bridges.erase(it);
 			else
-				if (it->GetStartPillar().GetPosition() == Point{ row,column })
+				if (it->GetStartPillar().GetPosition() == Position{ row,column })
 				{
 					s_bridges.erase(it);
 				}

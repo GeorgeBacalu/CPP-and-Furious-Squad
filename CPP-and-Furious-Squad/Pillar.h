@@ -3,23 +3,24 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <vector>
 #include <unordered_map>
 #include <optional>
 #include "Utils.h"
 
-using Point = std::pair<uint16_t, uint16_t>;
+using Position = std::pair<uint16_t, uint16_t>;
 
 class Bridge;
 
 class Pillar
 {
-	Point m_position;
+	Position m_position;
 	Color m_color : 1;
 
 	static Color GetRandomColor();
 public:
 	Pillar();
-	Pillar(const Point& position, Color color);
+	Pillar(const Position& position, Color color);
 	Pillar(const Pillar& other);
 	Pillar& operator=(const Pillar& other);
 	Pillar(Pillar&& other) noexcept;
@@ -29,11 +30,11 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const Pillar& pillar);
 	bool operator==(const Pillar& other) const;
 
-	const Point& GetPosition() const;
-	void SetPosition(const Point& position);
+	const Position& GetPosition() const;
+	void SetPosition(const Position& position);
 	void SetPosition(uint16_t x, uint16_t y);
 	Color GetColor() const;
 	void SetColor(Color color);
 
-	Bridge BuildBridgeTo(const Pillar& targetPillar);
+	const Bridge& BuildBridgeTo(const Pillar& targetPillar);
 };
