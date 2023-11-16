@@ -41,6 +41,7 @@ public:
 	void PlacePillar(const Pillar& pillar);
 	void ProcessNextMove(const Position& newPillarPosition); // new proposed alternative for PlacePillar
 	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets);
+	bool CheckNoIntersections();
 
 	void RemovePillar(uint16_t row, uint16_t column);
 	bool IsFreeFoundation(uint16_t row, uint16_t column);

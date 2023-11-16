@@ -275,12 +275,20 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 		{
 			if (currentRow + offsetX == newRow && currentColumn + offsetY == newColumn)
 			{
-				Bridge newBridge = Bridge(playerPillar, newPillar);
-				s_bridges.push_back(newBridge);
-				break;
+				if (CheckNoIntersections())
+				{
+					Bridge newBridge = Bridge(playerPillar, newPillar);
+					s_bridges.push_back(newBridge);
+					break;
+				}
 			}
 		}
 	}
+}
+
+bool GameBoard::CheckNoIntersections()
+{
+	return true;
 }
 
 void GameBoard::RemovePillar(uint16_t row, uint16_t column)

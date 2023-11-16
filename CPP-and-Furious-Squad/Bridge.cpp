@@ -9,7 +9,7 @@ Bridge::Bridge(const Pillar& startPillar, const Pillar& endPillar) : m_startPill
 {
 }
 
-Bridge::Bridge(const Bridge& other) : m_startPillar{ other.m_startPillar }, m_endPillar{ other.m_endPillar }
+Bridge::Bridge(const Bridge& other) : Bridge{other.m_startPillar, other.m_endPillar}
 {
 }
 
