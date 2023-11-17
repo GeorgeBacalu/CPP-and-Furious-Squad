@@ -17,6 +17,7 @@ class GameBoard
 	static std::vector<Pillar>endingPillars;
 	static GameBoard* instance;
 	GameBoard();
+	void PlacePillar(const Pillar& pillar);
 
 
 public:
@@ -38,7 +39,6 @@ public:
 
 	//logic methods
 	void PlacePillar(uint16_t row, uint16_t column);
-	void PlacePillar(const Pillar& pillar);
 	void ProcessNextMove(const Position& newPillarPosition); // new proposed alternative for PlacePillar
 	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets);
 	bool CheckNoIntersections();

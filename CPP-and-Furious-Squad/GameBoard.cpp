@@ -213,8 +213,12 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 	{
 		Pillar P;
 		P.SetPosition(std::make_pair(row, column));
+		if (playerTurn)
+			P.SetColor(Color::RED);
+		else
+			P.SetColor(Color::BLACK);
+		ProcessNextMove(P.GetPosition());
 		s_matrix[row][column] = std::optional<Pillar>{ P };
-		//the changes to color and rules for bridges are to be implemented later 
 	}
 	else
 		throw std::invalid_argument("Position is not valid");
@@ -238,11 +242,11 @@ void GameBoard::ProcessNextMove(const Position& newPillarPosition) {
 		(newRow == BOARD_SIZE - 1 && newColumn == 0) ||
 		(newRow == BOARD_SIZE - 1 && newColumn == BOARD_SIZE - 1))
 		throw std::invalid_argument("Can't place pillar on any board corner!");
-	playerTurn = !playerTurn;
 	if (playerTurn) // playerTurn = true <=> red's turn
 		ProcessPlayerMove(newPillarPosition, Color::RED, "Red player can't place pillar on first or last column!", bridgeAllowedOffsets);
 	else
 		ProcessPlayerMove(newPillarPosition, Color::BLACK, "Black player can't place pillar on first or last row!", bridgeAllowedOffsets);
+	playerTurn = !playerTurn;
 }
 
 void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets) {
@@ -393,8 +397,8 @@ void GameBoard::LoadGame()
 		}
 	}
 	if (redCount > blackCount)
-		playerTurn = true;
+		playerTurn = false;//black turn
 	else
-		playerTurn = false;
+		playerTurn = true;//red turn
 	fb.close();
 }
