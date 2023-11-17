@@ -39,8 +39,8 @@ public:
 
 	//logic methods
 	void PlacePillar(uint16_t row, uint16_t column);
-	void ProcessNextMove(const Position& newPillarPosition); // new proposed alternative for PlacePillar
-	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets);
+	void ProcessNextMove(const Pillar& newPillar);
+	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets, const Pillar& newPillar);
 	bool CheckNoIntersections();
 
 	void RemovePillar(uint16_t row, uint16_t column);

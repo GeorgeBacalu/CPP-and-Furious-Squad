@@ -217,7 +217,7 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 			P.SetColor(Color::RED);
 		else
 			P.SetColor(Color::BLACK);
-		ProcessNextMove(P.GetPosition());
+		ProcessNextMove(P);
 		s_matrix[row][column] = std::optional<Pillar>{ P };
 	}
 	else
@@ -232,7 +232,8 @@ void GameBoard::PlacePillar(const Pillar& pillar)
 		throw std::invalid_argument("Position is not valid");
 }
 
-void GameBoard::ProcessNextMove(const Position& newPillarPosition) {
+void GameBoard::ProcessNextMove(const Pillar& newPillar) {
+	const Position& newPillarPosition = newPillar.GetPosition();
 	const auto& [newRow, newColumn] = newPillarPosition;
 	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets{ {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
 
@@ -243,13 +244,13 @@ void GameBoard::ProcessNextMove(const Position& newPillarPosition) {
 		(newRow == BOARD_SIZE - 1 && newColumn == BOARD_SIZE - 1))
 		throw std::invalid_argument("Can't place pillar on any board corner!");
 	if (playerTurn) // playerTurn = true <=> red's turn
-		ProcessPlayerMove(newPillarPosition, Color::RED, "Red player can't place pillar on first or last column!", bridgeAllowedOffsets);
+		ProcessPlayerMove(newPillarPosition, Color::RED, "Red player can't place pillar on first or last column!", bridgeAllowedOffsets, newPillar);
 	else
-		ProcessPlayerMove(newPillarPosition, Color::BLACK, "Black player can't place pillar on first or last row!", bridgeAllowedOffsets);
+		ProcessPlayerMove(newPillarPosition, Color::BLACK, "Black player can't place pillar on first or last row!", bridgeAllowedOffsets, newPillar);
 	playerTurn = !playerTurn;
 }
 
-void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets) {
+void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets, const Pillar& newPillar) {
 	const auto& [newRow, newColumn] = newPillarPosition;
 
 	// exclude first and last columns or rows
@@ -267,9 +268,9 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 			playerPillars.push_back(pillar);
 	}
 
-	Pillar newPillar = Pillar(newPillarPosition, playerColor);
+	/*Pillar newPillar = Pillar(newPillarPosition, playerColor);
 	s_pillars.push_back(newPillar);
-	s_matrix[newRow][newColumn] = newPillar;
+	s_matrix[newRow][newColumn] = newPillar;*/
 
 	for (const auto& playerPillar : playerPillars)
 	{
