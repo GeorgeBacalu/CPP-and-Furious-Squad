@@ -76,6 +76,7 @@ int main()
 	catch (const std::invalid_argument& e)
 	{
 		std::cerr << e.what() << std::endl;
+		gb->setInvalid(true);
 	}
 
 	fout << *gb;

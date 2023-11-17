@@ -10,6 +10,7 @@ std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>Gam
 std::vector<Pillar> GameBoard::s_pillars;
 std::vector<Pillar>GameBoard::endingPillars;
 bool GameBoard::playerTurn = false;
+bool GameBoard::invalid = false;
 GameBoard* GameBoard::instance = NULL;
 
 GameBoard::GameBoard()
@@ -192,6 +193,11 @@ void GameBoard::setBridges(std::vector<Bridge> bridges)
 	s_bridges = bridges;
 }
 
+void GameBoard::setInvalid(bool invalid)
+{
+	this->invalid = invalid;
+}
+
 std::vector<std::vector<Pillar>> GameBoard::getListaAdiacenta()
 {
 	return ListaAdiacenta;
@@ -218,10 +224,19 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 		else
 			P.SetColor(Color::BLACK);
 		ProcessNextMove(P);
-		s_matrix[row][column] = std::optional<Pillar>{ P };
+
+		if (invalid == false)
+		{
+			s_matrix[row][column] = std::optional<Pillar>{ P };
+		}
 	}
+
 	else
+	{
 		throw std::invalid_argument("Position is not valid");
+	}
+	
+	invalid = false;
 }
 void GameBoard::PlacePillar(const Pillar& pillar)
 {

@@ -9,6 +9,7 @@ class GameBoard
 {
 	static uint16_t s_size;
 	static bool playerTurn;
+	static bool invalid;
 	static std::vector<std::vector<std::optional<Pillar>>> s_matrix;
 	static std::vector <Bridge>s_bridges;
 	static std::vector<std::vector<Pillar>>ListaAdiacenta;
@@ -32,6 +33,7 @@ public:
 	void setSize(uint16_t size);
 	void setMatrix(std::vector<std::vector<std::optional<Pillar>>>matrix);
 	void setBridges(std::vector<Bridge> bridges);
+	void setInvalid(bool invalid);
 	std::vector<std::vector<Pillar>> getListaAdiacenta();
 	std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>getPaths();
 	std::vector<Pillar>getEndingPillars();
