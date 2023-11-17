@@ -32,13 +32,13 @@ int main()
 	g.print(pillars);
 	system("pause");*/
 
-	readPillars(pillars);
+	/*readPillars(pillars);
 	readBridges(bridges);
 	std::cout << "PILLARS:\n";
 	displayPillars(pillars);
 	std::cout << "BRIDGES:\n";
 	displayBridges(bridges);
-	system("pause");
+	system("pause");*/
 	
 	GameBoard* gb = GameBoard::getInstance();
 	//gb->setBridges(bridges);
@@ -62,14 +62,14 @@ int main()
 		gb->bfs(it);
 	}
 
-	//gb->ProcessNextMove({ 2, 2 }); // red
-	//gb->ProcessNextMove({ 21, 2 }); // black
-	//gb->ProcessNextMove({ 6, 2 }); // red
-	//gb->ProcessNextMove({ 17, 2 }); // black
-	//gb->ProcessNextMove({ 4, 3 }); // red
-	//gb->ProcessNextMove({ 19, 3 }); // black
-	//displayBridges(gb->getBridges());
-	//displayPillars(gb->getPillars());
+	gb->ProcessNextMove({ 2, 2 }); // red
+	gb->ProcessNextMove({ 21, 2 }); // black
+	gb->ProcessNextMove({ 6, 2 }); // red
+	gb->ProcessNextMove({ 17, 2 }); // black
+	gb->ProcessNextMove({ 4, 3 }); // red
+	gb->ProcessNextMove({ 19, 3 }); // black
+	displayBridges(gb->getBridges());
+	displayPillars(gb->getPillars());
 	fout << *gb;
 	return 0;
 }

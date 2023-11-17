@@ -23,7 +23,7 @@ class GameBoard
 public:
 	GameBoard(const GameBoard& obj) = delete;
 	static GameBoard* getInstance();
-	~GameBoard()=default;
+	~GameBoard() = default;
 
 	//getR/setR
 	uint16_t getSize();
@@ -60,18 +60,24 @@ public:
 		{
 			for (uint16_t j = 0; j < gb.s_size; j++)
 			{
-				if (!gb.s_matrix[i][j].has_value())
-					out << 0 << "  ";
+				if (i == 0 && j == 0 || i == 0 && j == BOARD_SIZE - 1 || i == BOARD_SIZE - 1 && j == 0 || i == BOARD_SIZE - 1 && j == BOARD_SIZE - 1)
+				{
+					out << "   ";
+				}
 				else
 				{
-					if (static_cast<int>(gb.s_matrix[i][j].value().GetColor()) == 0)
-						out << 1 << "  ";
+					if (!gb.s_matrix[i][j].has_value())
+						out << 0 << "  ";
 					else
-						out << 2 << "  ";
+					{
+						if (static_cast<int>(gb.s_matrix[i][j].value().GetColor()) == 0)
+							out << 1 << "  ";
+						else
+							out << 2 << "  ";
+					}
 				}
 			}
 			out << "\n\n";
-
 		}
 		return out;
 	}
