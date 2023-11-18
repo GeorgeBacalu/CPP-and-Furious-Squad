@@ -40,6 +40,8 @@ int main()
 	displayBridges(bridges);
 	system("pause");
 
+	
+
 	GameBoard* gb = GameBoard::getInstance();
 	//gb->setBridges(bridges);
 	std::vector<std::vector<std::optional<Pillar>>> matrix(BOARD_SIZE);
@@ -49,7 +51,10 @@ int main()
 	for (auto pi : pillars)
 		matrix[pi.GetPosition().first][pi.GetPosition().second] = pi;
 	gb->setMatrix(matrix);
-	gb->ListaAdiacentaInit();
+
+	ConsoleRenderer::Render(pillars);
+
+	/*gb->ListaAdiacentaInit();
 	for (auto it : gb->getListaAdiacenta())
 	{
 		for (auto it2 : it)
@@ -60,7 +65,7 @@ int main()
 	for (auto it : gb->getEndingPillars())
 	{
 		gb->bfs(it);
-	}
+	}*/
 
 	try
 	{
@@ -104,6 +109,7 @@ void readPillars(std::vector<Pillar>& pillars)
 			break;
 		}
 	}
+
 }
 
 void readBridges(std::vector<Bridge>& bridges) 

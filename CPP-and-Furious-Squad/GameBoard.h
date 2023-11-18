@@ -1,9 +1,10 @@
 #pragma once
 #include"Pillar.h"
 #include"Bridge.h"
+#include "ConsoleRenderer.h"
 #include<iostream>
 #include<vector>
-#include<memory>
+#include<memory>	
 #include<optional>
 class GameBoard
 {
@@ -56,6 +57,7 @@ public:
 	bool redWin();
 	bool blackWin();
 	void EndingPillarsInit();
+
 	friend std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
 	{
 		for (uint16_t i = 0; i < gb.s_size; i++)

@@ -33,3 +33,8 @@ void PrintGameBoard::print(const std::vector<Pillar>& pillars)
 	std::cout << "  " << std::setfill('.') << std::setw(m_dimension + 1) << "\n";
 	std::cout<<"Dimension: "<<m_dimension<<"\n";
 }
+
+void PrintGameBoard::setDimension(uint16_t dimension)
+{
+		m_dimension = dimension;
+}
