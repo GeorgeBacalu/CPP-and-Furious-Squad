@@ -1,7 +1,9 @@
 #pragma once
+#include <QMainWindow>
+#include <QGridLayout>
+#include <QLabel>
 
-#include <QtWidgets/QMainWindow>
-#include "ui_Window.h"
+class GameBoard; 
 
 class Window : public QMainWindow
 {
@@ -11,6 +13,8 @@ public:
     Window(QWidget* parent = nullptr);
     ~Window();
 
+    void setupUi();
+
 private:
-    Ui::WindowClass ui;
+    QGridLayout* layout;
 };
