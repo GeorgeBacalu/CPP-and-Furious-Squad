@@ -351,11 +351,11 @@ bool GameBoard::IsFreeFoundation(uint16_t row, uint16_t column)
 
 void GameBoard::ResetGame()
 {
-	std::cout << "Are you sure you want to reset the game?\n";
+	/*std::cout << "Are you sure you want to reset the game?\n";
 	std::cout << "1 for yes , 0 for no";
 	bool ok;
-	std::cin >> ok;
-	if (ok == 1)
+	std::cin >> ok;*/
+	if (true)
 	{
 		for (uint16_t i = 0; i < s_size; ++i)
 		{

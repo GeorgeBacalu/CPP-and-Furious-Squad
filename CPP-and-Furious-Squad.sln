@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CPP-and-Furious-Squad", "CPP-and-Furious-Squad\CPP-and-Furious-Squad.vcxproj", "{340BACA7-BFEE-4ABC-A6E0-E958AB3FA59F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Window", "Window\Window.vcxproj", "{094284DB-ADA4-4628-B0E9-F7A19CA2374A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{340BACA7-BFEE-4ABC-A6E0-E958AB3FA59F}.Release|x64.Build.0 = Release|x64
 		{340BACA7-BFEE-4ABC-A6E0-E958AB3FA59F}.Release|x86.ActiveCfg = Release|Win32
 		{340BACA7-BFEE-4ABC-A6E0-E958AB3FA59F}.Release|x86.Build.0 = Release|Win32
+		{094284DB-ADA4-4628-B0E9-F7A19CA2374A}.Debug|x64.ActiveCfg = Debug|x64
+		{094284DB-ADA4-4628-B0E9-F7A19CA2374A}.Debug|x64.Build.0 = Debug|x64
+		{094284DB-ADA4-4628-B0E9-F7A19CA2374A}.Debug|x86.ActiveCfg = Debug|x64
+		{094284DB-ADA4-4628-B0E9-F7A19CA2374A}.Debug|x86.Build.0 = Debug|x64
+		{094284DB-ADA4-4628-B0E9-F7A19CA2374A}.Release|x64.ActiveCfg = Release|x64
+		{094284DB-ADA4-4628-B0E9-F7A19CA2374A}.Release|x64.Build.0 = Release|x64
+		{094284DB-ADA4-4628-B0E9-F7A19CA2374A}.Release|x86.ActiveCfg = Release|x64
+		{094284DB-ADA4-4628-B0E9-F7A19CA2374A}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
