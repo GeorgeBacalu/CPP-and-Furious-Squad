@@ -32,7 +32,7 @@ public:
 
 	const Position& GetPosition() const;
 	void SetPosition(const Position& position);
-	void SetPosition(uint16_t x, uint16_t y);
+	void SetPosition(uint16_t row, uint16_t column);
 	Color GetColor() const;
 	void SetColor(Color color);
 };

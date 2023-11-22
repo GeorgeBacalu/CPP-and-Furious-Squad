@@ -85,9 +85,9 @@ void Pillar::SetPosition(const Position& position)
 	m_position = position;
 }
 
-void Pillar::SetPosition(uint16_t x, uint16_t y)
+void Pillar::SetPosition(uint16_t row, uint16_t column)
 {
-	SetPosition({ x, y });
+	SetPosition({ row, column });
 }
 
 Color Pillar::GetColor() const

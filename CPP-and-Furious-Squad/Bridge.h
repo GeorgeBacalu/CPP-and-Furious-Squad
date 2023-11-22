@@ -10,7 +10,6 @@ class Bridge
 	bool CheckSameColor();
 	bool CheckDistinctPositions();
 	bool CheckBridgeValid();
-	bool CheckNoIntersections();
 public:
 	Bridge();
 	Bridge(const Pillar& startPillar, const Pillar& endPillar);

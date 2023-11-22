@@ -9,7 +9,7 @@ Bridge::Bridge(const Pillar& startPillar, const Pillar& endPillar) : m_startPill
 {
 }
 
-Bridge::Bridge(const Bridge& other) : Bridge{other.m_startPillar, other.m_endPillar}
+Bridge::Bridge(const Bridge& other) : Bridge{ other.m_startPillar, other.m_endPillar }
 {
 }
 
@@ -74,62 +74,32 @@ bool Bridge::operator==(const Bridge& other) const
 	return false;
 }
 
-
 bool Bridge::IsValid()
 {
-	return CheckSameColor() && CheckDistinctPositions() && CheckBridgeValid() && CheckNoIntersections();
+	return CheckSameColor() && CheckDistinctPositions() && CheckBridgeValid();
 }
 
 bool Bridge::CheckSameColor()
 {
-	if (this->m_startPillar.GetColor() == this->m_endPillar.GetColor())
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return m_startPillar.GetColor() == m_endPillar.GetColor();
 }
 
 bool Bridge::CheckDistinctPositions()
 {
-	if (this->m_startPillar.GetPosition().first != this->m_endPillar.GetPosition().first && this->m_startPillar.GetPosition().second != this->m_endPillar.GetPosition().second)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	const auto& [startRow, startColumn] = m_startPillar.GetPosition();
+	const auto& [endRow, endColumn] = m_endPillar.GetPosition();
+	return startRow != endRow && startColumn != endColumn;
 }
 
 bool Bridge::CheckBridgeValid()
 {
-	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets = {
-		{2, 1}, {2, -1}, {-2, 1}, {-2, -1},
-		{1, 2}, {1, -2}, {-1, 2}, {-1, -2}
-	};
-
-	for (int index = 0; index < bridgeAllowedOffsets.size(); index++)
+	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets{ {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
+	for (const auto& [offsetX, offsetY] : bridgeAllowedOffsets)
 	{
-		uint16_t startPillarX = this->m_startPillar.GetPosition().first;
-		uint16_t startPillarY = this->m_startPillar.GetPosition().second;
-		uint16_t endPillarX = this->m_endPillar.GetPosition().first;
-		uint16_t endPillarY = this->m_endPillar.GetPosition().second;
-		uint16_t offsetX = bridgeAllowedOffsets[index].first;
-		uint16_t offsetY = bridgeAllowedOffsets[index].second;
-		
-		if (startPillarX == endPillarX + offsetX && startPillarY == endPillarY + offsetY)
-		{
+		const auto& [startPillarRow, startPillarColumn] = m_startPillar.GetPosition();
+		const auto& [endPillarRow, endPillarColumn] = m_endPillar.GetPosition();
+		if (startPillarRow == endPillarRow + offsetX && startPillarColumn == endPillarColumn + offsetY)
 			return true;
-		}
 	}
-
 	return false;
-}
-
-bool Bridge::CheckNoIntersections()
-{
-	return true;
 }

@@ -1,38 +1,58 @@
 #include "ScoreBoard.h"
 
-ScoreBoard::ScoreBoard() : m_score{ 0, 0 }
+ScoreBoard::ScoreBoard() : m_score{ 0,0 }
 {
 }
 
-ScoreBoard::~ScoreBoard()
+ScoreBoard& ScoreBoard::GetInstance() 
 {
+	static ScoreBoard instance;
+	return instance;
 }
 
-ScoreBoard::ScoreBoard(const ScoreBoard& other) : m_score{ other.m_score }
+std::istream& operator>>(std::istream& in, ScoreBoard& scoreBoard)
 {
+	if (!(in >> scoreBoard.m_score.first >> scoreBoard.m_score.second))
+		throw std::invalid_argument("Error reading scoreBoard input!");
+	const auto& [redScore, blackScore] = scoreBoard.m_score;
+	if (redScore >= MAX_SCORE || blackScore >= MAX_SCORE)
+		throw std::invalid_argument("Invalid player(s) score!");
+	return in;
 }
 
-ScoreBoard& ScoreBoard::operator=(const ScoreBoard& other)
+std::ostream& operator<<(std::ostream& out, const ScoreBoard& scoreBoard)
 {
-	if (this != &other)
-	{
-		m_score = other.m_score;
-	}
-	return *this;
+	const auto& [redScore, blackScore] = scoreBoard.m_score;
+	return out << "Red   " << redScore << " : " << blackScore << "   Black\n";
 }
 
-std::pair<uint16_t, uint16_t> ScoreBoard::GetScore() const
+const Score& ScoreBoard::GetScore() const
 {
 	return m_score;
 }
 
-void ScoreBoard::SetScore(std::pair<uint16_t, uint16_t> score)
+void ScoreBoard::SetScore(const Score& score) 
 {
+	const auto& [redScore, blackScore] = score;
+	if (redScore >= MAX_SCORE || blackScore >= MAX_SCORE)
+		throw std::out_of_range("Invalid player(s) score!");
 	m_score = score;
 }
 
-void ScoreBoard::SetScore(uint16_t scoreRed, uint16_t scoreBlack)
+void ScoreBoard::SetScore(uint16_t redScore, uint16_t blackScore)
 {
-	m_score.first = scoreRed;
-	m_score.second = scoreBlack;
+	SetScore({ redScore, blackScore });
+}
+
+void ScoreBoard::UpdateScore(Color color)
+{
+	auto& [redScore, blackScore] = m_score;
+	color == Color::RED ? ++redScore : ++blackScore;
+}
+
+void ScoreBoard::ResetScore()
+{
+	auto& [redScore, blackScore] = m_score;
+	redScore = 0;
+	blackScore = 0;
 }
