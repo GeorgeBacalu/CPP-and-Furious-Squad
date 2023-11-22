@@ -228,6 +228,7 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 		if (invalid == false)
 		{
 			s_matrix[row][column] = std::optional<Pillar>{ P };
+			s_pillars.push_back(P);
 		}
 	}
 
@@ -242,7 +243,10 @@ void GameBoard::PlacePillar(const Pillar& pillar)
 {
 	Position position{ pillar.GetPosition() };
 	if (IsFreeFoundation(position.first, position.second))
+	{
 		s_matrix[position.first][position.second] = std::optional<Pillar>{ pillar };
+		s_pillars.push_back(pillar);
+	}
 	else
 		throw std::invalid_argument("Position is not valid");
 }
@@ -394,8 +398,16 @@ void GameBoard::LoadGame()
 	while (!fp.eof())
 	{
 		Pillar p;
-		fp >> p;
-		PlacePillar(p);
+		try
+		{
+			fp >> p;
+			PlacePillar(p);
+		}
+		catch (const std::invalid_argument& e)
+		{
+			std::cerr << e.what() << std::endl;
+			break;
+		}
 	}
 	fp.close();
 	std::ifstream fb("bridges.prodb");
@@ -403,13 +415,19 @@ void GameBoard::LoadGame()
 	while (!fb.eof())
 	{
 		Bridge b;
-		if (fb >> b)
+		try
 		{
+			fb >> b;
 			s_bridges.push_back(b);
 			if (b.GetEndPillar().GetColor() == Color::RED)
 				++redCount;
 			else
 				++blackCount;
+		}
+		catch (const std::invalid_argument& e)
+		{
+			std::cerr << e.what() << std::endl;
+			break;
 		}
 	}
 	if (redCount > blackCount)
