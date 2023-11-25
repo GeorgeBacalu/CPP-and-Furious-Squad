@@ -76,6 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,6 +135,7 @@
     <ClInclude Include="Pillar.h" />
     <ClInclude Include="PrintGameBoard.h" />
     <ClInclude Include="ScoreBoard.h" />
+    <ClInclude Include="TwixtGame.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +146,7 @@
     <ClCompile Include="PrintGameBoard.cpp" />
     <ClCompile Include="ScoreBoard.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="TwixtGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bridges.prodb" />
