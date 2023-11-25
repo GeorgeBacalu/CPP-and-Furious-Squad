@@ -132,6 +132,7 @@
     <ClInclude Include="Bridge.h" />
     <ClInclude Include="ConsoleRenderer.h" />
     <ClInclude Include="GameBoard.h" />
+    <ClInclude Include="IPiece.h" />
     <ClInclude Include="Pillar.h" />
     <ClInclude Include="PrintGameBoard.h" />
     <ClInclude Include="ScoreBoard.h" />

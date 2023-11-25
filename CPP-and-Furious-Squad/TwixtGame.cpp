@@ -9,7 +9,7 @@ void TwixtGame::Run()
 	std::ofstream fout{ "game-board.prodb" };
 	std::vector<Pillar> pillars;
 	std::vector<Bridge> bridges;
-	pillars.reserve(pow(BOARD_SIZE / 2, 2));
+	pillars.reserve((int)pow(BOARD_SIZE / 2, 2));
 	bridges.reserve((BOARD_SIZE / 2) * (BOARD_SIZE / 2 - 1));
 
 	/*Point p1{ 3, 2 };

@@ -65,6 +65,9 @@
     <ClInclude Include="TwixtGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IPiece.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="pillars.prodb">

@@ -69,6 +69,11 @@ const Pillar& Bridge::GetEndPillar() const
 	return m_endPillar;
 }
 
+Color Bridge::GetColor() const
+{
+	return m_startPillar.GetColor();
+}
+
 bool Bridge::operator==(const Bridge& other) const
 {
 	return false;

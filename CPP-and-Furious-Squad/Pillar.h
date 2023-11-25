@@ -6,13 +6,13 @@
 #include <vector>
 #include <unordered_map>
 #include <optional>
-#include "Utils.h"
+#include "IPiece.h"
 
 using Position = std::pair<uint16_t, uint16_t>;
 
 class Bridge;
 
-class Pillar
+class Pillar : public IPiece
 {
 	Position m_position;
 	Color m_color : 1;
@@ -33,6 +33,6 @@ public:
 	const Position& GetPosition() const;
 	void SetPosition(const Position& position);
 	void SetPosition(uint16_t row, uint16_t column);
-	Color GetColor() const;
+	Color GetColor() const override;
 	void SetColor(Color color);
 };

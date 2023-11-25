@@ -2,7 +2,7 @@
 
 #include "Pillar.h"
 
-class Bridge
+class Bridge : public IPiece
 {
 	Pillar m_startPillar;
 	Pillar m_endPillar;
@@ -23,6 +23,7 @@ public:
 
 	const Pillar& GetStartPillar() const;
 	const Pillar& GetEndPillar() const;
+	Color GetColor() const override;
 	bool operator==(const Bridge& other) const;
 
 	bool IsValid();
