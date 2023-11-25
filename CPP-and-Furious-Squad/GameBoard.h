@@ -57,6 +57,13 @@ public:
 	bool blackWin();
 	void EndingPillarsInit();
 
+	// related to AI player
+	int64_t GetHashWithPosition(const Position& position) const;
+
+	// overloaded operator
+	std::optional<Pillar>& operator[](const Position& position);
+	const std::optional<Pillar>& operator[](const Position& position) const;
+
 	friend std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
 	{
 		for (uint16_t i = 0; i < gb.s_size; i++)

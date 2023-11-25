@@ -436,3 +436,28 @@ void GameBoard::LoadGame()
 		playerTurn = true;//red turn
 	fb.close();
 }
+
+int64_t GameBoard::GetHashWithPosition(const Position& position) const {
+	// TODO: implement hashing functionality
+	return 0;
+}
+
+std::optional<Pillar>& GameBoard::operator[](const Position& position)
+{
+	const auto& [row, column] = position;
+	if (row < 0 || row > BOARD_SIZE || column < 0 || column > BOARD_SIZE)
+	{
+		throw std::out_of_range("Position out of bounds");
+	}
+	return s_matrix[row][column];
+}
+
+const std::optional<Pillar>& GameBoard::operator[](const Position& position) const
+{
+	const auto& [row, column] = position;
+	if (row < 0 || row > BOARD_SIZE || column < 0 || column > BOARD_SIZE)
+	{
+		throw std::out_of_range("Position out of bounds");
+	}
+	return s_matrix[row][column];
+}
