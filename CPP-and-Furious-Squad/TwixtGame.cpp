@@ -46,37 +46,37 @@ void TwixtGame::Run()
 
 	ConsoleRenderer::Render(gb);
 
-	gb->ListaAdiacentaInit();
-	for (auto it : gb->getListaAdiacenta())
-	{
-		for (auto it2 : it)
-			std::cout << it2 << ' ';
-		std::cout << "\n";
-	}
-	gb->EndingPillarsInit();
-	for (auto it : gb->getEndingPillars())
-	{
-		gb->bfs(it);
-	}
+	//gb->ListaAdiacentaInit();
+	//for (auto it : gb->getListaAdiacenta())
+	//{
+	//	for (auto it2 : it)
+	//		std::cout << it2 << ' ';
+	//	std::cout << "\n";
+	//}
+	//gb->EndingPillarsInit();
+	//for (auto it : gb->getEndingPillars())
+	//{
+	//	gb->bfs(it);
+	//}
 
-	try
-	{
-		gb->PlacePillar(2, 2); // red
-		gb->PlacePillar(21, 2); // black
-		gb->PlacePillar(6, 2); // red
-		gb->PlacePillar(17, 2); // black
-		gb->PlacePillar(4, 3); // red
-		gb->PlacePillar(19, 3); // black
-		displayBridges(gb->getBridges());
-		displayPillars(gb->getPillars());
-	}
-	catch (const std::invalid_argument& e)
-	{
-		std::cerr << e.what() << std::endl;
-		gb->setInvalid(true);
-	}
+	//try
+	//{
+	//	gb->PlacePillar(2, 2); // red
+	//	gb->PlacePillar(21, 2); // black
+	//	gb->PlacePillar(6, 2); // red
+	//	gb->PlacePillar(17, 2); // black
+	//	gb->PlacePillar(4, 3); // red
+	//	gb->PlacePillar(19, 3); // black
+	//	displayBridges(gb->getBridges());
+	//	displayPillars(gb->getPillars());
+	//}
+	//catch (const std::invalid_argument& e)
+	//{
+	//	std::cerr << e.what() << std::endl;
+	//	gb->setInvalid(true);
+	//}
 
-	fout << *gb;
+	//fout << *gb;
 }
 
 void TwixtGame::readPillars(std::vector<Pillar>& pillars)

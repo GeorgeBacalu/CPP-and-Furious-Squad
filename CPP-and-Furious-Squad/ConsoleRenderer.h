@@ -9,7 +9,6 @@
 
 class ConsoleRenderer
 {
-	static PrintGameBoard g;
 public:
 	ConsoleRenderer();
 	~ConsoleRenderer()=default;

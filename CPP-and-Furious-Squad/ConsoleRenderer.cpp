@@ -1,22 +1,30 @@
 #include "ConsoleRenderer.h"
 
-PrintGameBoard ConsoleRenderer::g{ 24 };
-
 ConsoleRenderer::ConsoleRenderer()
 {
 }
 
 void ConsoleRenderer::Render(GameBoard* gb)
 {
-	std::vector<Pillar> pillars;
-	std::vector<Bridge> bridges;
-	pillars.reserve((int)pow(BOARD_SIZE / 2, 2));
-	bridges.reserve((BOARD_SIZE / 2) * (BOARD_SIZE / 2 - 1));
-
-	for (auto linie : gb->getMatrix())
-		for (auto coloana : linie)
-			if (coloana.has_value())
-				pillars.push_back(coloana.value());
-
-	g.print(pillars);
+	system("CLS");
+	std::cout << "  " << std::setfill('.') << std::setw(BOARD_SIZE + 1) << "\n";
+	std::cout << "  " << std::setfill('-') << std::setw(BOARD_SIZE + 1) << "\n";
+	for (int i = 0; i < BOARD_SIZE; ++i)
+	{
+		std::cout << ".|";
+		for (int j = 0; j < BOARD_SIZE; ++j)
+		{
+			if(gb->getMatrix()[i][j].has_value())
+				if(static_cast<int>(gb->getMatrix()[i][j].value().GetColor())==0)
+					std::cout << "R";
+				else
+					std::cout << "B";
+			else
+				std::cout << ".";
+		}
+		std::cout << "|.\n";
+	}
+	std::cout << "  " << std::setfill('-') << std::setw(BOARD_SIZE + 1) << "\n";
+	std::cout << "  " << std::setfill('.') << std::setw(BOARD_SIZE + 1) << "\n";
+	std::cout << "Dimension: " << BOARD_SIZE << "\n";
 }
