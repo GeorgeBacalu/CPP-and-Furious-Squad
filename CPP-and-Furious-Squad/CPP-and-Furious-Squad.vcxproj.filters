@@ -74,6 +74,9 @@
     <ClInclude Include="AvailablePieces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="pillars.prodb">
