@@ -1,4 +1,5 @@
 #include "TwixtGame.h"
+#include "ConsoleRenderer.h"
 #include <fstream>
 #include <thread>
 #include <chrono>
@@ -43,7 +44,7 @@ void TwixtGame::Run()
 		matrix[pi.GetPosition().first][pi.GetPosition().second] = pi;
 	gb->setMatrix(matrix);
 
-	ConsoleRenderer::Render(pillars);
+	ConsoleRenderer::Render(gb);
 
 	gb->ListaAdiacentaInit();
 	for (auto it : gb->getListaAdiacenta())

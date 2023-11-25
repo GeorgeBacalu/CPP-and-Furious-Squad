@@ -13,6 +13,6 @@ class ConsoleRenderer
 public:
 	ConsoleRenderer();
 	~ConsoleRenderer()=default;
-	static void Render(std::vector<Pillar>pillars);
+	static void Render(GameBoard* gb);
 };
 

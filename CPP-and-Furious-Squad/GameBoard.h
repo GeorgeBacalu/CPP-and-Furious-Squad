@@ -1,7 +1,6 @@
 #pragma once
 #include"Pillar.h"
 #include"Bridge.h"
-#include "ConsoleRenderer.h"
 #include<iostream>
 #include<vector>
 #include<memory>	
