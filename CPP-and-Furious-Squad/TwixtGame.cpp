@@ -42,9 +42,14 @@ void TwixtGame::Run()
 
 	for (auto pi : pillars)
 		matrix[pi.GetPosition().first][pi.GetPosition().second] = pi;
-	gb->setMatrix(matrix);
+	//gb->setMatrix(matrix);
 
-	ConsoleRenderer::Render(gb);
+	while (true)
+	{
+		//add key listener
+		ConsoleRenderer::Render(gb);
+		ConsoleRenderer::TakeInput(gb);
+	}
 
 	//gb->ListaAdiacentaInit();
 	//for (auto it : gb->getListaAdiacenta())

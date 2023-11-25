@@ -13,5 +13,6 @@ public:
 	ConsoleRenderer();
 	~ConsoleRenderer()=default;
 	static void Render(GameBoard* gb);
+	static void TakeInput(GameBoard* gb);
 };
 

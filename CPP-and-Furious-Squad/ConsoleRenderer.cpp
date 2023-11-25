@@ -28,3 +28,12 @@ void ConsoleRenderer::Render(GameBoard* gb)
 	std::cout << "  " << std::setfill('.') << std::setw(BOARD_SIZE + 1) << "\n";
 	std::cout << "Dimension: " << BOARD_SIZE << "\n";
 }
+
+void ConsoleRenderer::TakeInput(GameBoard* gb)
+{
+	std::cout<<"Enter the coordinates of the pillar you want to place: ";
+	int x,y;
+	std::cin>>x>>y;
+	//place pillar and switch player
+	gb->PlacePillar(x,y);
+}
