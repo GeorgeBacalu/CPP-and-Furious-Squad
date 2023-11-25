@@ -129,10 +129,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AiPlayer.h" />
     <ClInclude Include="AvailablePieces.h" />
     <ClInclude Include="Bridge.h" />
     <ClInclude Include="ConsoleRenderer.h" />
     <ClInclude Include="GameBoard.h" />
+    <ClInclude Include="HumanPlayer.h" />
     <ClInclude Include="IPiece.h" />
     <ClInclude Include="IPlayer.h" />
     <ClInclude Include="Pillar.h" />
@@ -142,10 +144,12 @@
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AiPlayer.cpp" />
     <ClCompile Include="AvailablePieces.cpp" />
     <ClCompile Include="Bridge.cpp" />
     <ClCompile Include="ConsoleRenderer.cpp" />
     <ClCompile Include="GameBoard.cpp" />
+    <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="Pillar.cpp" />
     <ClCompile Include="PrintGameBoard.cpp" />
     <ClCompile Include="ScoreBoard.cpp" />
