@@ -10,6 +10,10 @@ Pillar::Pillar() : m_position{ 0, 0 }, m_color{ GetRandomColor() }
 {
 }
 
+Pillar::Pillar(Color color) : m_color{ color }
+{
+}
+
 Pillar::Pillar(const Position& position, Color color) : m_position{ position }, m_color{ color }
 {
 }

@@ -20,6 +20,7 @@ class Pillar : public IPiece
 	static Color GetRandomColor();
 public:
 	Pillar();
+	Pillar(Color color);
 	Pillar(const Position& position, Color color);
 	Pillar(const Pillar& other);
 	Pillar& operator=(const Pillar& other);

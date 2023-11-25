@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AvailablePieces.h" />
     <ClInclude Include="Bridge.h" />
     <ClInclude Include="ConsoleRenderer.h" />
     <ClInclude Include="GameBoard.h" />
@@ -140,6 +141,7 @@
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AvailablePieces.cpp" />
     <ClCompile Include="Bridge.cpp" />
     <ClCompile Include="ConsoleRenderer.cpp" />
     <ClCompile Include="GameBoard.cpp" />
