@@ -2,19 +2,16 @@
 #include<fstream>
 #include<queue>
 
-uint16_t GameBoard::s_size = 0;
+uint16_t GameBoard::s_size = 24;
 bool GameBoard::playerTurn = false;
 bool GameBoard::invalid = false;
 GameBoard* GameBoard::instance = nullptr;
 
 GameBoard::GameBoard()
+	:s_matrix{ std::vector<std::vector<std::optional<Pillar>>>(s_size, std::vector<std::optional<Pillar>>(s_size,std::nullopt)) }
+	, s_bridges{ std::vector<Bridge>() }, ListaAdiacenta{ std::vector<std::vector<Pillar>>(s_size * s_size) }, 
+	s_paths{ std::make_pair(std::vector<std::vector<Pillar>>(), std::vector<std::vector<Pillar>>()) }, endingPillars{ std::vector<Pillar>() }
 {
-	GameBoard::s_size = 24;
-	s_matrix.resize(s_size, std::vector<std::optional<Pillar>>(s_size));
-	s_bridges = std::vector<Bridge>();
-	ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
-	s_paths = std::make_pair(std::vector<std::vector<Pillar>>(), std::vector<std::vector<Pillar>>());
-	endingPillars = std::vector<Pillar>();
 }
 
 void GameBoard::ListaAdiacentaInit()
