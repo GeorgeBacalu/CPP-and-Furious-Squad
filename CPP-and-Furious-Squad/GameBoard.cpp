@@ -3,32 +3,18 @@
 #include<queue>
 
 uint16_t GameBoard::s_size = 0;
-std::vector<std::vector<std::optional<Pillar>>>GameBoard::s_matrix;
-std::vector<Bridge>GameBoard::s_bridges;
-std::vector<std::vector<Pillar>>GameBoard::ListaAdiacenta;
-std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>GameBoard::s_paths;
-std::vector<Pillar> GameBoard::s_pillars;
-std::vector<Pillar>GameBoard::endingPillars;
 bool GameBoard::playerTurn = false;
 bool GameBoard::invalid = false;
-GameBoard* GameBoard::instance = NULL;
+GameBoard* GameBoard::instance = nullptr;
 
 GameBoard::GameBoard()
 {
 	GameBoard::s_size = 24;
-	for (uint16_t i = 0; i < s_size; ++i)
-	{
-		std::vector<std::optional<Pillar>> row;
-		for (uint16_t j = 0; j < s_size; ++j)
-		{
-			row.push_back(std::optional<Pillar>{});
-		}
-		GameBoard::s_matrix.push_back(row);
-	}
-	GameBoard::s_bridges = std::vector<Bridge>();
-	GameBoard::ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
-	GameBoard::s_paths = std::make_pair(std::vector<std::vector<Pillar>>(), std::vector<std::vector<Pillar>>());
-	GameBoard::endingPillars = std::vector<Pillar>();
+	s_matrix.resize(s_size, std::vector<std::optional<Pillar>>(s_size));
+	s_bridges = std::vector<Bridge>();
+	ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
+	s_paths = std::make_pair(std::vector<std::vector<Pillar>>(), std::vector<std::vector<Pillar>>());
+	endingPillars = std::vector<Pillar>();
 }
 
 void GameBoard::ListaAdiacentaInit()
@@ -273,8 +259,8 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 	const auto& [newRow, newColumn] = newPillarPosition;
 
 	// exclude first and last columns or rows
-	if ((playerColor == Color::RED && (newColumn == 0 || newColumn == BOARD_SIZE - 2)) ||
-		(playerColor == Color::BLACK && (newRow == 0 || newRow == BOARD_SIZE - 2)))
+	if ((playerColor == Color::RED && (newColumn == 0 || newColumn == BOARD_SIZE - 1)) ||
+		(playerColor == Color::BLACK && (newRow == 0 || newRow == BOARD_SIZE - 1)))
 	{
 		throw std::invalid_argument(errorMessage);
 	}

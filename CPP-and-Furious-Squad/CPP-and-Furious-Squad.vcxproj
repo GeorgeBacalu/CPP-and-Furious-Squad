@@ -148,7 +148,6 @@
     <ClInclude Include="IPiece.h" />
     <ClInclude Include="IPlayer.h" />
     <ClInclude Include="Pillar.h" />
-    <ClInclude Include="PrintGameBoard.h" />
     <ClInclude Include="ScoreBoard.h" />
     <ClInclude Include="TwixtGame.h" />
     <ClInclude Include="Utils.h" />
@@ -161,7 +160,6 @@
     <ClCompile Include="GameBoard.cpp" />
     <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="Pillar.cpp" />
-    <ClCompile Include="PrintGameBoard.cpp" />
     <ClCompile Include="RandareConsola.cpp" />
     <ClCompile Include="RandareConsola.ixx" />
     <ClCompile Include="ScoreBoard.cpp" />

@@ -10,12 +10,12 @@ class GameBoard
 	static uint16_t s_size;
 	static bool playerTurn;
 	static bool invalid;
-	static std::vector<std::vector<std::optional<Pillar>>> s_matrix;
-	static std::vector <Bridge>s_bridges;
-	static std::vector<std::vector<Pillar>>ListaAdiacenta;
-	static std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>s_paths;
-	static std::vector<Pillar> s_pillars;
-	static std::vector<Pillar>endingPillars;
+	std::vector<std::vector<std::optional<Pillar>>> s_matrix;
+	std::vector <Bridge>s_bridges;
+	std::vector<std::vector<Pillar>>ListaAdiacenta;
+	std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>s_paths;
+	std::vector<Pillar> s_pillars;
+	std::vector<Pillar>endingPillars;
 	static GameBoard* instance;
 	GameBoard();
 	void PlacePillar(const Pillar& pillar);
