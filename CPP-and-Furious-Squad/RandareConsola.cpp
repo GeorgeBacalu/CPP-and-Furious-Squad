@@ -1,5 +1,9 @@
-#include "ConsoleRenderer.h"
-#include <iomanip>
+#include "GameBoard.h"
+
+module RandareConsola;
+
+import <iostream>;
+import <iomanip>;
 
 ConsoleRenderer::ConsoleRenderer()
 {

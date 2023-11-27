@@ -1,9 +1,10 @@
 #include "TwixtGame.h"
-#include "ConsoleRenderer.h"
+//#include "ConsoleRenderer.h"
 #include <fstream>
 #include <thread>
 #include <chrono>
 #include <iostream>
+import RandareConsola;
 
 void TwixtGame::Run() 
 {

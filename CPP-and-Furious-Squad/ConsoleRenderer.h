@@ -5,7 +5,6 @@
 #include "Pillar.h"
 #include "Bridge.h"
 #include "GameBoard.h"
-#include "PrintGameBoard.h"
 
 class ConsoleRenderer
 {
