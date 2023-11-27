@@ -17,7 +17,7 @@ void ConsoleRenderer::Render(GameBoard* gb)
 				std::cout << "B";
 		else
 			std::cout << ".";
-	std::cout << "\n  " << std::setfill('-') << std::setw(BOARD_SIZE + 1) << "\n";
+	std::cout << "\n  " << std::setfill('-') << std::setw(BOARD_SIZE) << "\n";
 	for (int i = 1; i < BOARD_SIZE; ++i)
 	{
 		if(gb->getMatrix()[i][0].has_value())
@@ -59,9 +59,16 @@ void ConsoleRenderer::Render(GameBoard* gb)
 
 void ConsoleRenderer::TakeInput(GameBoard* gb)
 {
+	if(gb->PlayerTurn())
+		std::cout<<"Red player's turn\n";
+	else
+		std::cout<<"Black player's turn\n";
 	std::cout<<"Enter the coordinates of the pillar you want to place: ";
 	int x,y;
 	std::cin>>x>>y;
 	//place pillar and switch player
 	gb->PlacePillar(x,y);
+	gb->EndingPillarsInit();
+	for (auto it : gb->getEndingPillars())
+		gb->bfs(it);
 }

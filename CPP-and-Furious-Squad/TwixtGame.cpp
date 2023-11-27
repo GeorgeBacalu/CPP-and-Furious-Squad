@@ -50,6 +50,16 @@ void TwixtGame::Run()
 		//add key listener
 		ConsoleRenderer::Render(gb);
 		ConsoleRenderer::TakeInput(gb);
+		if (gb->blackWin())
+		{
+			std::cout << "Black wins!\n";
+			break;
+		}
+		if (gb->redWin())
+		{
+			std::cout << "Red wins!\n";
+			break;
+		}
 	}
 
 	//gb->ListaAdiacentaInit();
