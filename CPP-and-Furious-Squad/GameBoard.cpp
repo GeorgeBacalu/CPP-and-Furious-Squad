@@ -65,7 +65,24 @@ void GameBoard::bfs(const Pillar& start)
 	else
 		black_q.push(start);
 
-	//the red paths should have the star
+	//the red_paths must have it's first element the start pillar
+	while (!red_q.empty())
+	{
+		Pillar current = red_q.front();
+		red_q.pop();
+		red_path.push_back(current);
+		visited[current.GetPosition().first * s_size + current.GetPosition().second] = true;
+		if (current != start and std::find(endingPillars.begin(), endingPillars.end(), current) != endingPillars.end())
+		{
+			red_paths.push_back(red_path);
+			red_path.clear();
+		}
+		for (auto it : ListaAdiacenta[current.GetPosition().first * s_size + current.GetPosition().second])
+		{
+			if (!visited[it.GetPosition().first * s_size + it.GetPosition().second] && it.GetColor() == Color::RED)
+				red_q.push(it);
+		}
+	}
 
 	while (!black_q.empty())
 	{
@@ -73,7 +90,7 @@ void GameBoard::bfs(const Pillar& start)
 		black_q.pop();
 		black_path.push_back(current);
 		visited[current.GetPosition().first * s_size + current.GetPosition().second] = true;
-		if (std::find(endingPillars.begin(), endingPillars.end(), current) != endingPillars.end())
+		if (current!=start and std::find(endingPillars.begin(), endingPillars.end(), current) != endingPillars.end())
 		{
 			black_paths.push_back(black_path);
 			black_path.clear();
@@ -100,8 +117,8 @@ void GameBoard::bfs(const Pillar& start)
 		for (auto it2 : it)
 			std::cout << it2 << ' ';
 		std::cout << "\n";
-	}
-	system("pause");*/
+	}*/
+	//system("pause");
 }
 //
 bool GameBoard::redWin()
