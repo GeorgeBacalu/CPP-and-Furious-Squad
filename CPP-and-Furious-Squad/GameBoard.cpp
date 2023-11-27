@@ -3,15 +3,12 @@
 #include<queue>
 
 int bridgeCount = 0;
-
-uint16_t GameBoard::s_size = BOARD_SIZE;
 bool GameBoard::playerTurn = false;
 bool GameBoard::invalid = false;
 GameBoard* GameBoard::instance = nullptr;
 
 GameBoard::GameBoard()
-	:s_matrix{ std::vector<std::vector<std::optional<Pillar>>>(s_size, std::vector<std::optional<Pillar>>(s_size,std::nullopt)) }
-	, s_bridges{ std::vector<Bridge>() }, ListaAdiacenta{ std::vector<std::vector<Pillar>>(s_size * s_size) }, 
+	:s_bridges{ std::vector<Bridge>() }, ListaAdiacenta{ std::vector<std::vector<Pillar>>(s_size * s_size) }, 
 	s_paths{ std::make_pair(std::vector<std::vector<Pillar>>(), std::vector<std::vector<Pillar>>()) }, endingPillars{ std::vector<Pillar>() }
 {
 }
@@ -179,7 +176,7 @@ uint16_t GameBoard::getSize()
 	return s_size;
 }
 
-std::vector<std::vector<std::optional<Pillar>>> GameBoard::getMatrix()
+std::array<std::array<std::optional<Pillar>, BOARD_SIZE>, BOARD_SIZE>GameBoard::getMatrix()
 {
 	return s_matrix;
 }
@@ -194,23 +191,17 @@ std::vector<Pillar> GameBoard::getPillars()
 	return s_pillars;
 }
 
-void GameBoard::setSize(uint16_t size)
-{
-	s_size = size;
-}
-
 void GameBoard::setMatrix(std::vector<std::vector<std::optional<Pillar>>> matrix)
 {
-	s_matrix = std::vector<std::vector<std::optional<Pillar>>>();
-	for (uint16_t i = 0; i < s_size; ++i)
-	{
-		std::vector<std::optional<Pillar>> row;
-		for (uint16_t j = 0; j < s_size; ++j)
-		{
-			std::optional<Pillar> aux{ matrix[i][j] };
-			row.push_back(aux);
+	for (size_t i = 0; i < s_size; ++i) {
+		for (size_t j = 0; j < s_size; ++j) {
+			if (i < matrix.size() && j < matrix[i].size()) {
+				s_matrix[i][j] = matrix[i][j];
+			}
+			else {
+				s_matrix[i][j] = std::nullopt;
+			}
 		}
-		s_matrix.push_back(row);
 	}
 }
 void GameBoard::setBridges(std::vector<Bridge> bridges)

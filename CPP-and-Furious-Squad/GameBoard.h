@@ -1,16 +1,18 @@
 #pragma once
 #include"Pillar.h"
 #include"Bridge.h"
+#include"Utils.h"
 #include<iostream>
 #include<vector>
 #include<memory>	
 #include<optional>
+#include<array>
 class GameBoard
 {
-	static uint16_t s_size;
+	const static uint16_t s_size=BOARD_SIZE;
 	static bool playerTurn;
 	static bool invalid;
-	std::vector<std::vector<std::optional<Pillar>>> s_matrix;
+	std::array<std::array<std::optional<Pillar>, s_size>, s_size> s_matrix;
 	std::vector <Bridge>s_bridges;
 	std::vector<std::vector<Pillar>>ListaAdiacenta;
 	std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>s_paths;
@@ -28,7 +30,7 @@ public:
 
 	//getR/setR
 	uint16_t getSize();
-	std::vector<std::vector<std::optional<Pillar>>> getMatrix();
+	std::array<std::array<std::optional<Pillar>, s_size>, s_size>getMatrix();
 	std::vector<Bridge>getBridges();
 	void setSize(uint16_t size);
 	void setMatrix(std::vector<std::vector<std::optional<Pillar>>>matrix);
