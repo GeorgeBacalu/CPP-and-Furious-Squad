@@ -52,11 +52,13 @@ void TwixtGame::Run()
 		ConsoleRenderer::TakeInput(gb);
 		if (gb->blackWin())
 		{
+			ConsoleRenderer::Render(gb);
 			std::cout << "Black wins!\n";
 			break;
 		}
 		if (gb->redWin())
 		{
+			ConsoleRenderer::Render(gb);
 			std::cout << "Red wins!\n";
 			break;
 		}

@@ -3,7 +3,7 @@
 #include<queue>
 
 int bridgeCount = 0;
-bool GameBoard::playerTurn = false;
+bool GameBoard::playerTurn = true;
 bool GameBoard::invalid = false;
 GameBoard* GameBoard::instance = nullptr;
 
@@ -125,7 +125,7 @@ bool GameBoard::redWin()
 	{
 		auto begin = *it.begin();
 		auto end = *(it.end() - 1);
-		if (begin != end and std::find(endingPillars.begin(), endingPillars.end(), begin) != endingPillars.end() && std::find(endingPillars.begin(), endingPillars.end(), end) != endingPillars.end())
+		if (begin != end and begin.GetPosition().first == 0 && end.GetPosition().first == s_size - 1)
 			return true;
 	}
 	return false;
@@ -138,7 +138,7 @@ bool GameBoard::blackWin()
 	{
 		auto begin = *it.begin();
 		auto end = *(it.end() - 1);
-		if (begin != end and std::find(endingPillars.begin(), endingPillars.end(), begin) != endingPillars.end() && std::find(endingPillars.begin(), endingPillars.end(), end) != endingPillars.end())
+		if (begin != end and begin.GetPosition().second == 0 && end.GetPosition().second == s_size - 1)
 			return true;
 	}
 	return false;
