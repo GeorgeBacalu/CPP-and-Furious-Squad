@@ -140,7 +140,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AiPlayer.h" />
-    <ClInclude Include="AvailablePieces.h" />
     <ClInclude Include="Bridge.h" />
     <ClInclude Include="ConsoleRenderer.h" />
     <ClInclude Include="GameBoard.h" />
@@ -154,7 +153,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AiPlayer.cpp" />
-    <ClCompile Include="AvailablePieces.cpp" />
     <ClCompile Include="Bridge.cpp" />
     <ClCompile Include="ConsoleRenderer.cpp" />
     <ClCompile Include="GameBoard.cpp" />

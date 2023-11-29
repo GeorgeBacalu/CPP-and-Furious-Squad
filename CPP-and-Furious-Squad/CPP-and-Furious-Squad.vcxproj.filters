@@ -36,9 +36,6 @@
     <ClCompile Include="TwixtGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AvailablePieces.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="HumanPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -75,9 +72,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IPiece.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AvailablePieces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IPlayer.h">

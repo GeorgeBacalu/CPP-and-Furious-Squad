@@ -48,6 +48,7 @@ public:
 	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets, Pillar& newPillar);
 	bool CheckNoIntersections();
 	bool PlayerTurn();
+	uint16_t GetAvailablePieces(IPiece* pieceType, Color color);
 
 	void RemovePillar(uint16_t row, uint16_t column);
 	bool IsFreeFoundation(uint16_t row, uint16_t column);

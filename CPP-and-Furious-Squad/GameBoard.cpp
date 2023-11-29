@@ -6,6 +6,10 @@ int bridgeCount = 0;
 bool GameBoard::playerTurn = true;
 bool GameBoard::invalid = false;
 GameBoard* GameBoard::instance = nullptr;
+static uint16_t kAvailableRedPillars = 50;
+static uint16_t kAvailableBlackPillars = 50;
+static uint16_t kAvailableRedBridges = 50;
+static uint16_t kAvailableBlackBridges = 50;
 
 GameBoard::GameBoard()
 	:s_bridges{ std::vector<Bridge>() }, ListaAdiacenta{ std::vector<std::vector<Pillar>>(kWidth * kHeight) }, 
@@ -277,9 +281,15 @@ void GameBoard::ProcessNextMove(Pillar& newPillar) {
 		(newRow == kHeight - 1 && newColumn == kWidth - 1))
 		throw std::invalid_argument("Can't place pillar on any board corner!");
 	if (playerTurn) // playerTurn = true <=> red's turn
+	{
 		ProcessPlayerMove(newPillarPosition, Color::RED, "Red player can't place pillar on first or last column!", bridgeAllowedOffsets, newPillar);
+		--kAvailableRedPillars;
+	}
 	else
+	{
 		ProcessPlayerMove(newPillarPosition, Color::BLACK, "Black player can't place pillar on first or last row!", bridgeAllowedOffsets, newPillar);
+		--kAvailableBlackPillars;
+	}
 	playerTurn = !playerTurn;
 }
 
@@ -317,6 +327,7 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 				{
 					Bridge newBridge = Bridge(playerPillar, newPillar);
 					s_bridges.push_back(newBridge);
+					playerColor == Color::RED ? --kAvailableRedBridges : --kAvailableBlackBridges;
 					break;
 				}
 			}
@@ -332,6 +343,17 @@ bool GameBoard::CheckNoIntersections()
 bool GameBoard::PlayerTurn()
 {
 	return playerTurn;
+}
+
+uint16_t GameBoard::GetAvailablePieces(IPiece* pieceType, Color color)
+{
+	if (dynamic_cast<Pillar*>(pieceType))
+	{
+		return color == Color::RED ? kAvailableRedPillars : kAvailableBlackPillars;
+	}
+	else {
+		return color == Color::RED ? kAvailableRedBridges : kAvailableBlackBridges;
+	}
 }
 
 void GameBoard::RemovePillar(uint16_t row, uint16_t column)
