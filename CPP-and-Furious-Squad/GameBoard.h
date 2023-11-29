@@ -10,8 +10,8 @@
 class GameBoard
 {
 public:
-	static const size_t kWidth{ 4 };
-	static const size_t kHeight{ 4 };
+	static const size_t kWidth{ 5 };
+	static const size_t kHeight{ 5 };
 private:
 	static bool playerTurn;
 	static bool invalid;
@@ -58,8 +58,7 @@ public:
 	void ListaAdiacentaInit();
 	void ListaAdiacentaUpdate();
 	void bfs(const Pillar& start);
-	bool redWin();
-	bool blackWin();
+	bool checkWin(Color playerColor);
 	void EndingPillarsInit();
 
 	// related to AI player

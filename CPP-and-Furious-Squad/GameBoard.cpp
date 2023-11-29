@@ -12,7 +12,7 @@ static uint16_t kAvailableRedBridges = 50;
 static uint16_t kAvailableBlackBridges = 50;
 
 GameBoard::GameBoard()
-	:s_bridges{ std::vector<Bridge>() }, ListaAdiacenta{ std::vector<std::vector<Pillar>>(kWidth * kHeight) }, 
+	:s_bridges{ std::vector<Bridge>() }, ListaAdiacenta{ std::vector<std::vector<Pillar>>(kWidth * kHeight) },
 	s_paths{ std::make_pair(std::vector<std::vector<Pillar>>(), std::vector<std::vector<Pillar>>()) }, endingPillars{ std::vector<Pillar>() }
 {
 }
@@ -119,28 +119,16 @@ void GameBoard::bfs(const Pillar& start)
 	}*/
 	//system("pause");
 }
-//
-bool GameBoard::redWin()
-{
-	//check if red won. To win, red must have a path from top to bottom
-	for (auto it : s_paths.first)
-	{
-		auto begin = *it.begin();
-		auto end = *(it.end() - 1);
-		if (begin != end and ((begin.GetPosition().first == 0 and end.GetPosition().first == kWidth - 1) or (begin.GetPosition().first == kWidth - 1 and end.GetPosition().first == 0)))
-			return true;
-	}
-	return false;
-}
 
-bool GameBoard::blackWin()
+bool GameBoard::checkWin(Color playerColor)
 {
-	//check if black won
-	for (auto it : s_paths.second)
+	const auto& paths = playerColor == Color::RED ? s_paths.first : s_paths.second;
+	for (const auto& path : paths)
 	{
-		auto begin = *it.begin();
-		auto end = *(it.end() - 1);
-		if (begin != end and ((begin.GetPosition().second == 0 && end.GetPosition().second == kWidth - 1) or (begin.GetPosition().second == kWidth - 1 && end.GetPosition().second == 0)))
+		auto [beginRow, beginColumn] = path.front().GetPosition();
+		auto [endRow, endColumn] = path.back().GetPosition();
+		if (playerColor == Color::RED && ((beginRow == 0 && endRow == kWidth - 1) || (beginRow == kWidth - 1 && endRow == 0)) ||
+		   (playerColor == Color::BLACK && ((beginColumn == 0 && endColumn == kWidth - 1) || (beginColumn == kWidth - 1 && endColumn == 0))))
 			return true;
 	}
 	return false;
@@ -254,7 +242,7 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 	{
 		throw std::invalid_argument("Position is not valid");
 	}
-	
+
 	invalid = false;
 }
 void GameBoard::PlacePillar(const Pillar& pillar)

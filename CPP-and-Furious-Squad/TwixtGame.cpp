@@ -50,13 +50,13 @@ void TwixtGame::Run()
 		//add key listener
 		ConsoleRenderer::Render(gb);
 		ConsoleRenderer::TakeInput(gb);
-		if (gb->blackWin())
+		if (gb->checkWin(Color::BLACK))
 		{
 			ConsoleRenderer::Render(gb);
 			std::cout << "Black wins!\n";
 			break;
 		}
-		if (gb->redWin())
+		if (gb->checkWin(Color::RED))
 		{
 			ConsoleRenderer::Render(gb);
 			std::cout << "Red wins!\n";
