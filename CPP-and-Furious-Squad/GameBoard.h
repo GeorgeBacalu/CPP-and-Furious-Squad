@@ -20,6 +20,8 @@ private:
 	std::vector<std::vector<Pillar>>ListaAdiacenta;
 	std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>s_paths;
 	std::vector<Pillar> s_pillars;
+	std::vector<Pillar> s_redPillars;
+	std::vector<Pillar> s_blackPillars;
 	std::vector<Pillar>endingPillars;
 	static GameBoard* instance;
 	GameBoard();
@@ -41,6 +43,8 @@ public:
 	std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>getPaths();
 	std::vector<Pillar>getEndingPillars();
 	std::vector<Pillar> getPillars();
+	std::vector<Pillar> getRedPillars();
+	std::vector<Pillar> getBlackPillars();
 
 	//logic methods
 	void PlacePillar(uint16_t row, uint16_t column);

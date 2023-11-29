@@ -181,6 +181,28 @@ std::vector<Pillar> GameBoard::getPillars()
 	return s_pillars;
 }
 
+std::vector<Pillar> GameBoard::getRedPillars()
+{
+	s_redPillars.clear();
+	for (const auto& pillar : s_pillars)
+	{
+		if (pillar.GetColor() == Color::RED)
+			s_redPillars.push_back(pillar);
+	}
+	return s_redPillars;
+}
+
+std::vector<Pillar> GameBoard::getBlackPillars()
+{
+	s_blackPillars.clear();
+	for (const auto& pillar : s_pillars)
+	{
+		if (pillar.GetColor() == Color::BLACK)
+			s_blackPillars.push_back(pillar);
+	}
+	return s_blackPillars;
+}
+
 void GameBoard::setMatrix(std::vector<std::vector<std::optional<Pillar>>> matrix)
 {
 	for (size_t i = 0; i < kWidth; ++i) {
@@ -292,13 +314,7 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 		throw std::invalid_argument(errorMessage);
 	}
 
-	// filter pillars
-	std::vector<Pillar> playerPillars;
-	for (const auto& pillar : s_pillars)
-	{
-		if (pillar.GetColor() == playerColor)
-			playerPillars.push_back(pillar);
-	}
+	std::vector<Pillar> playerPillars = playerColor == Color::RED ? getRedPillars() : getBlackPillars(); // filter player pillars
 
 	/*Pillar newPillar = Pillar(newPillarPosition, playerColor);
 	s_pillars.push_back(newPillar);
