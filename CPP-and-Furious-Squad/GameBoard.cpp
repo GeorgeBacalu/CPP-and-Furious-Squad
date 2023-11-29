@@ -1,6 +1,7 @@
 #include "GameBoard.h"
-#include<fstream>
-#include<queue>
+#include <fstream>
+#include <queue>
+#include <random>
 
 int bridgeCount = 0;
 bool GameBoard::playerTurn = true;
@@ -303,6 +304,7 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 	s_pillars.push_back(newPillar);
 	s_matrix[newRow][newColumn] = newPillar;*/
 
+	std::vector<Bridge> newBridges;
 	for (auto& playerPillar : playerPillars)
 	{
 		// evaluate if current pillar can form a bridge with the one that is being added
@@ -314,10 +316,38 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 				if (CheckNoIntersections())
 				{
 					Bridge newBridge = Bridge(playerPillar, newPillar);
-					s_bridges.push_back(newBridge);
-					playerColor == Color::RED ? --kAvailableRedBridges : --kAvailableBlackBridges;
+					newBridges.push_back(newBridge);
 					break;
 				}
+			}
+		}
+	}
+	playerColor == Color::RED ? kAvailableRedBridges -= newBridges.size() : --kAvailableBlackBridges -= newBridges.size();
+	if (playerColor == Color::RED && kAvailableRedBridges < 0)
+	{
+		for (int i = 0; i < abs(kAvailableRedBridges); ++i)
+		{
+			uint16_t optionIndex;
+			std::cout << "Choose a bridge to place from the following options by index: \n";
+			for (int j = 0; j < newBridges.size(); ++j)
+			{
+				std::cout << j << ". " << newBridges[j] << '\n';
+			}
+			std::cin >> optionIndex;
+			s_bridges.push_back(newBridges[optionIndex]);
+		}
+	}
+	else if (playerColor == Color::BLACK && kAvailableBlackBridges < 0)
+	{
+		std::random_device randomDevice;
+		std::mt19937 randomEngine(randomDevice());
+
+		for (int i = 0; i < abs(kAvailableBlackBridges); ++i)
+		{
+			if (!newBridges.empty()) {
+				std::uniform_int_distribution<> distribution(0, newBridges.size() - 1);
+				uint16_t optionIndex = distribution(randomEngine);
+				s_bridges.push_back(newBridges[optionIndex]);
 			}
 		}
 	}
