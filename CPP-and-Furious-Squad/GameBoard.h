@@ -9,10 +9,13 @@
 #include<array>
 class GameBoard
 {
-	const static uint16_t s_size=BOARD_SIZE;
+public:
+	static const size_t kWidth{ 4 };
+	static const size_t kHeight{ 4 };
+private:
 	static bool playerTurn;
 	static bool invalid;
-	std::array<std::array<std::optional<Pillar>, s_size>, s_size> s_matrix;
+	std::array<std::array<std::optional<Pillar>, kWidth>, kHeight> s_matrix;
 	std::vector <Bridge>s_bridges;
 	std::vector<std::vector<Pillar>>ListaAdiacenta;
 	std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>s_paths;
@@ -21,8 +24,6 @@ class GameBoard
 	static GameBoard* instance;
 	GameBoard();
 	void PlacePillar(const Pillar& pillar);
-
-
 public:
 	GameBoard(const GameBoard& obj) = delete;
 	static GameBoard* getInstance();
@@ -30,7 +31,7 @@ public:
 
 	//getR/setR
 	uint16_t getSize();
-	std::array<std::array<std::optional<Pillar>, s_size>, s_size>getMatrix();
+	std::array<std::array<std::optional<Pillar>, kWidth>, kHeight>getMatrix();
 	std::vector<Bridge>getBridges();
 	void setSize(uint16_t size);
 	void setMatrix(std::vector<std::vector<std::optional<Pillar>>>matrix);
@@ -43,8 +44,8 @@ public:
 
 	//logic methods
 	void PlacePillar(uint16_t row, uint16_t column);
-	void ProcessNextMove(const Pillar& newPillar);
-	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets, const Pillar& newPillar);
+	void ProcessNextMove(Pillar& newPillar);
+	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets, Pillar& newPillar);
 	bool CheckNoIntersections();
 	bool PlayerTurn();
 
@@ -69,11 +70,11 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
 	{
-		for (uint16_t i = 0; i < gb.s_size; i++)
+		for (uint16_t i = 0; i < gb.kWidth; i++)
 		{
-			for (uint16_t j = 0; j < gb.s_size; j++)
+			for (uint16_t j = 0; j < gb.kHeight; j++)
 			{
-				if (i == 0 && j == 0 || i == 0 && j == BOARD_SIZE - 1 || i == BOARD_SIZE - 1 && j == 0 || i == BOARD_SIZE - 1 && j == BOARD_SIZE - 1)
+				if (i == 0 && j == 0 || i == 0 && j == kHeight - 1 || i == kWidth - 1 && j == 0 || i == kWidth - 1 && j == kHeight - 1)
 				{
 					out << "   ";
 				}

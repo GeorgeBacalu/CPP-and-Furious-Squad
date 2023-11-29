@@ -74,8 +74,8 @@ void AiPlayer::FreeReward(float target)
 
 std::vector<Position> AiPlayer::GenerateActions(const GameBoard& gameBoard) {
     std::vector<Position> possibleActions;
-    for (uint32_t i = 0; i < BOARD_SIZE; ++i)
-        for (uint32_t j = 0; j < BOARD_SIZE; ++j) {
+    for (uint32_t i = 0; i < GameBoard::kWidth; ++i)
+        for (uint32_t j = 0; j < GameBoard::kHeight; ++j) {
             Position position = { i, j };
             if (!gameBoard[position])
                 possibleActions.emplace_back(position);

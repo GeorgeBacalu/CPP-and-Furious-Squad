@@ -11,8 +11,8 @@ void TwixtGame::Run()
 	std::ofstream fout{ "game-board.prodb" };
 	std::vector<Pillar> pillars;
 	std::vector<Bridge> bridges;
-	pillars.reserve((int)pow(BOARD_SIZE / 2, 2));
-	bridges.reserve((BOARD_SIZE / 2) * (BOARD_SIZE / 2 - 1));
+	pillars.reserve(GameBoard::kWidth / 2 * GameBoard::kHeight / 2 + 1);
+	bridges.reserve(GameBoard::kWidth / 2 * (GameBoard::kHeight / 2 - 1) + 1);
 
 	/*Point p1{ 3, 2 };
 	pillars.emplace_back(p1, Color::RED);
@@ -37,9 +37,9 @@ void TwixtGame::Run()
 	system("pause");
 
 	GameBoard* gb = GameBoard::getInstance();
-	std::vector<std::vector<std::optional<Pillar>>> matrix(BOARD_SIZE);
-	for (int i = 0; i < BOARD_SIZE; ++i)
-		matrix[i].resize(BOARD_SIZE);
+	std::vector<std::vector<std::optional<Pillar>>> matrix(GameBoard::kWidth);
+	for (int i = 0; i < GameBoard::kWidth; ++i)
+		matrix[i].resize(GameBoard::kWidth);
 
 	for (auto pi : pillars)
 		matrix[pi.GetPosition().first][pi.GetPosition().second] = pi;

@@ -8,16 +8,18 @@
 #include <optional>
 #include "IPiece.h"
 
-using Position = std::pair<uint16_t, uint16_t>;
+using Position = std::pair<size_t, size_t>;
 
 class Bridge;
 
 class Pillar : public IPiece
 {
+public:
+	static const size_t kWidth{ 4 };
+	static const size_t kHeight{ 4 };
+private:
 	Position m_position;
-	Color m_color : 1;
-
-	static Color GetRandomColor();
+	Color m_color : 2;
 public:
 	Pillar();
 	Pillar(Color color);
@@ -33,7 +35,7 @@ public:
 
 	const Position& GetPosition() const;
 	void SetPosition(const Position& position);
-	void SetPosition(uint16_t row, uint16_t column);
+	void SetPosition(size_t row, size_t column);
 	Color GetColor() const override;
 	void SetColor(Color color);
 };

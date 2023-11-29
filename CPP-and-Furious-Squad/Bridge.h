@@ -4,19 +4,19 @@
 
 class Bridge : public IPiece
 {
-	Pillar m_startPillar;
-	Pillar m_endPillar;
+	Pillar& m_startPillar;
+	Pillar& m_endPillar;
 
 	bool CheckSameColor();
 	bool CheckDistinctPositions();
 	bool CheckBridgeValid();
 public:
 	Bridge();
-	Bridge(const Pillar& startPillar, const Pillar& endPillar);
+	Bridge(Pillar& startPillar, Pillar& endPillar);
 	Bridge(const Bridge& other);
-	Bridge(Bridge&& other) noexcept;
 	Bridge& operator=(const Bridge& other);
-	Bridge& operator=(Bridge&& other) noexcept;
+	Bridge(Bridge&& other) noexcept = default;
+	Bridge& operator=(Bridge&& other) noexcept = default;
 	~Bridge() = default;
 	friend std::istream& operator>>(std::istream& in, Bridge& bridge);
 	friend std::ostream& operator<<(std::ostream& out, const Bridge& bridge);

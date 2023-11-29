@@ -1,11 +1,12 @@
 #include "Bridge.h"
 
+static Pillar pillar;
 
-Bridge::Bridge() : m_startPillar{ Pillar() }, m_endPillar{ Pillar() }
+Bridge::Bridge() : m_startPillar{ pillar }, m_endPillar{ pillar }
 {
 }
 
-Bridge::Bridge(const Pillar& startPillar, const Pillar& endPillar) : m_startPillar{ startPillar }, m_endPillar{ endPillar }
+Bridge::Bridge(Pillar& startPillar, Pillar& endPillar) : m_startPillar{ startPillar }, m_endPillar{ endPillar }
 {
 }
 
@@ -19,24 +20,6 @@ Bridge& Bridge::operator=(const Bridge& other)
 	{
 		this->m_startPillar = other.m_startPillar;
 		this->m_endPillar = other.m_endPillar;
-	}
-	return *this;
-}
-
-Bridge::Bridge(Bridge&& other) noexcept : m_startPillar{ std::move(other.m_startPillar) }, m_endPillar{ std::move(other.m_endPillar) }
-{
-	other.m_startPillar = Pillar();
-	other.m_endPillar = Pillar();
-}
-
-Bridge& Bridge::operator=(Bridge&& other) noexcept
-{
-	if (this != &other)
-	{
-		m_startPillar = std::move(other.m_startPillar);
-		m_endPillar = std::move(other.m_endPillar);
-		other.m_startPillar = Pillar();
-		other.m_endPillar = Pillar();
 	}
 	return *this;
 }

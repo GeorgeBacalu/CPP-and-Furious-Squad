@@ -8,7 +8,7 @@ bool GameBoard::invalid = false;
 GameBoard* GameBoard::instance = nullptr;
 
 GameBoard::GameBoard()
-	:s_bridges{ std::vector<Bridge>() }, ListaAdiacenta{ std::vector<std::vector<Pillar>>(s_size * s_size) }, 
+	:s_bridges{ std::vector<Bridge>() }, ListaAdiacenta{ std::vector<std::vector<Pillar>>(kWidth * kHeight) }, 
 	s_paths{ std::make_pair(std::vector<std::vector<Pillar>>(), std::vector<std::vector<Pillar>>()) }, endingPillars{ std::vector<Pillar>() }
 {
 }
@@ -16,25 +16,25 @@ GameBoard::GameBoard()
 void GameBoard::ListaAdiacentaInit()
 {
 	//generate ListaAdiacenta from Bridges
-	//this->ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
+	//this->ListaAdiacenta = std::vector<std::vector<Pillar>>(kWidth * kWidth);
 	for (auto it : s_bridges)
 	{
 		++bridgeCount;
-		this->ListaAdiacenta[it.GetStartPillar().GetPosition().first * s_size + it.GetStartPillar().GetPosition().second].push_back(it.GetEndPillar());
-		this->ListaAdiacenta[it.GetEndPillar().GetPosition().first * s_size + it.GetEndPillar().GetPosition().second].push_back(it.GetStartPillar());
+		this->ListaAdiacenta[it.GetStartPillar().GetPosition().first * kWidth + it.GetStartPillar().GetPosition().second].push_back(it.GetEndPillar());
+		this->ListaAdiacenta[it.GetEndPillar().GetPosition().first * kHeight + it.GetEndPillar().GetPosition().second].push_back(it.GetStartPillar());
 	}
 }
 
 void GameBoard::ListaAdiacentaUpdate()
 {
 	//update ListaAdiacenta for the last added bridge
-	//this->ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
+	//this->ListaAdiacenta = std::vector<std::vector<Pillar>>(kWidth * kWidth);
 	if (bridgeCount < s_bridges.size())
 	{
 		auto it = s_bridges.back();
 		++bridgeCount;
-		this->ListaAdiacenta[it.GetStartPillar().GetPosition().first * s_size + it.GetStartPillar().GetPosition().second].push_back(it.GetEndPillar());
-		this->ListaAdiacenta[it.GetEndPillar().GetPosition().first * s_size + it.GetEndPillar().GetPosition().second].push_back(it.GetStartPillar());
+		this->ListaAdiacenta[it.GetStartPillar().GetPosition().first * kWidth + it.GetStartPillar().GetPosition().second].push_back(it.GetEndPillar());
+		this->ListaAdiacenta[it.GetEndPillar().GetPosition().first * kHeight + it.GetEndPillar().GetPosition().second].push_back(it.GetStartPillar());
 	}
 	else
 	{
@@ -47,7 +47,7 @@ void GameBoard::bfs(const Pillar& start)
 	//make paths from start to endingPillars. All the paths must have same color of pillars
 	std::vector<std::vector<Pillar>> paths;
 	std::vector<Pillar> path;
-	std::vector<bool> visited(s_size * s_size, false);
+	std::vector<bool> visited(kWidth * kHeight, false);
 	std::queue<Pillar> q;
 
 	ListaAdiacentaUpdate();
@@ -62,15 +62,15 @@ void GameBoard::bfs(const Pillar& start)
 		Pillar current = q.front();
 		q.pop();
 		path.push_back(current);
-		visited[current.GetPosition().first * s_size + current.GetPosition().second] = true;
-		if (current != start and (current.GetPosition().first == 0 or current.GetPosition().first == s_size - 1))
+		visited[current.GetPosition().first * kWidth + current.GetPosition().second] = true;
+		if (current != start and (current.GetPosition().first == 0 or current.GetPosition().first == kWidth - 1))
 		{
 			paths.push_back(path);
 			path.clear();
 		}
-		for (auto it : ListaAdiacenta[current.GetPosition().first * s_size + current.GetPosition().second])
+		for (auto it : ListaAdiacenta[current.GetPosition().first * kWidth + current.GetPosition().second])
 		{
-			if (!visited[it.GetPosition().first * s_size + it.GetPosition().second] && it.GetColor() == start.GetColor())
+			if (!visited[it.GetPosition().first * kWidth + it.GetPosition().second] && it.GetColor() == start.GetColor())
 				q.push(it);
 		}
 	}
@@ -80,15 +80,15 @@ void GameBoard::bfs(const Pillar& start)
 		Pillar current = black_q.front();
 		black_q.pop();
 		black_path.push_back(current);
-		visited[current.GetPosition().first * s_size + current.GetPosition().second] = true;
+		visited[current.GetPosition().first * kWidth + current.GetPosition().second] = true;
 		if (current!=start and std::find(endingPillars.begin(), endingPillars.end(), current) != endingPillars.end())
 		{
 			black_paths.push_back(black_path);
 			black_path.clear();
 		}
-		for (auto it : ListaAdiacenta[current.GetPosition().first * s_size + current.GetPosition().second])
+		for (auto it : ListaAdiacenta[current.GetPosition().first * kWidth + current.GetPosition().second])
 		{
-			if (!visited[it.GetPosition().first * s_size + it.GetPosition().second] && it.GetColor() == Color::BLACK)
+			if (!visited[it.GetPosition().first * kWidth + it.GetPosition().second] && it.GetColor() == Color::BLACK)
 				black_q.push(it);
 		}
 	}*/
@@ -123,7 +123,7 @@ bool GameBoard::redWin()
 	{
 		auto begin = *it.begin();
 		auto end = *(it.end() - 1);
-		if (begin != end and ((begin.GetPosition().first == 0 and end.GetPosition().first == s_size - 1) or (begin.GetPosition().first == s_size - 1 and end.GetPosition().first == 0)))
+		if (begin != end and ((begin.GetPosition().first == 0 and end.GetPosition().first == kWidth - 1) or (begin.GetPosition().first == kWidth - 1 and end.GetPosition().first == 0)))
 			return true;
 	}
 	return false;
@@ -136,7 +136,7 @@ bool GameBoard::blackWin()
 	{
 		auto begin = *it.begin();
 		auto end = *(it.end() - 1);
-		if (begin != end and ((begin.GetPosition().second == 0 && end.GetPosition().second == s_size - 1) or (begin.GetPosition().second == s_size - 1 && end.GetPosition().second == 0)))
+		if (begin != end and ((begin.GetPosition().second == 0 && end.GetPosition().second == kWidth - 1) or (begin.GetPosition().second == kWidth - 1 && end.GetPosition().second == 0)))
 			return true;
 	}
 	return false;
@@ -145,19 +145,18 @@ bool GameBoard::blackWin()
 void GameBoard::EndingPillarsInit()
 {
 	//generate endingPillars from s_matrix
-	for (uint16_t i = 0; i < s_size; ++i)
+	for (uint16_t i = 0; i < kWidth; ++i)
 	{
-		for (uint16_t j = 0; j < s_size; ++j)
+		for (uint16_t j = 0; j < kHeight; ++j)
 		{
 			if (s_matrix[i][j].has_value())
 			{
-				if (i == 0 || i == s_size - 1 || j == 0 || j == s_size - 1)
+				if (i == 0 || i == kWidth - 1 || j == 0 || j == kWidth - 1)
 					endingPillars.push_back(s_matrix[i][j].value());
 			}
 		}
 	}
 }
-
 
 GameBoard* GameBoard::getInstance()
 {
@@ -171,10 +170,10 @@ GameBoard* GameBoard::getInstance()
 }
 uint16_t GameBoard::getSize()
 {
-	return s_size;
+	return kWidth;
 }
 
-std::array<std::array<std::optional<Pillar>, BOARD_SIZE>, BOARD_SIZE>GameBoard::getMatrix()
+std::array<std::array<std::optional<Pillar>, GameBoard::kWidth>, GameBoard::kHeight> GameBoard::getMatrix()
 {
 	return s_matrix;
 }
@@ -191,8 +190,8 @@ std::vector<Pillar> GameBoard::getPillars()
 
 void GameBoard::setMatrix(std::vector<std::vector<std::optional<Pillar>>> matrix)
 {
-	for (size_t i = 0; i < s_size; ++i) {
-		for (size_t j = 0; j < s_size; ++j) {
+	for (size_t i = 0; i < kWidth; ++i) {
+		for (size_t j = 0; j < kHeight; ++j) {
 			if (i < matrix.size() && j < matrix[i].size()) {
 				s_matrix[i][j] = matrix[i][j];
 			}
@@ -202,6 +201,7 @@ void GameBoard::setMatrix(std::vector<std::vector<std::optional<Pillar>>> matrix
 		}
 	}
 }
+
 void GameBoard::setBridges(std::vector<Bridge> bridges)
 {
 	s_bridges = bridges;
@@ -265,16 +265,16 @@ void GameBoard::PlacePillar(const Pillar& pillar)
 		throw std::invalid_argument("Position is not valid");
 }
 
-void GameBoard::ProcessNextMove(const Pillar& newPillar) {
+void GameBoard::ProcessNextMove(Pillar& newPillar) {
 	const Position& newPillarPosition = newPillar.GetPosition();
 	const auto& [newRow, newColumn] = newPillarPosition;
 	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets{ {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
 
 	// exclude corners
 	if ((newRow == 0 && newColumn == 0) ||
-		(newRow == 0 && newColumn == BOARD_SIZE - 1) ||
-		(newRow == BOARD_SIZE - 1 && newColumn == 0) ||
-		(newRow == BOARD_SIZE - 1 && newColumn == BOARD_SIZE - 1))
+		(newRow == 0 && newColumn == kWidth - 1) ||
+		(newRow == kHeight - 1 && newColumn == 0) ||
+		(newRow == kHeight - 1 && newColumn == kWidth - 1))
 		throw std::invalid_argument("Can't place pillar on any board corner!");
 	if (playerTurn) // playerTurn = true <=> red's turn
 		ProcessPlayerMove(newPillarPosition, Color::RED, "Red player can't place pillar on first or last column!", bridgeAllowedOffsets, newPillar);
@@ -283,12 +283,12 @@ void GameBoard::ProcessNextMove(const Pillar& newPillar) {
 	playerTurn = !playerTurn;
 }
 
-void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets, const Pillar& newPillar) {
+void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets, Pillar& newPillar) {
 	const auto& [newRow, newColumn] = newPillarPosition;
 
 	// exclude first and last columns or rows
-	if ((playerColor == Color::RED && (newColumn == 0 || newColumn == BOARD_SIZE - 1)) ||
-		(playerColor == Color::BLACK && (newRow == 0 || newRow == BOARD_SIZE - 1)))
+	if ((playerColor == Color::RED && (newColumn == 0 || newColumn == kWidth - 1)) ||
+		(playerColor == Color::BLACK && (newRow == 0 || newRow == kHeight - 1)))
 	{
 		throw std::invalid_argument(errorMessage);
 	}
@@ -305,7 +305,7 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 	s_pillars.push_back(newPillar);
 	s_matrix[newRow][newColumn] = newPillar;*/
 
-	for (const auto& playerPillar : playerPillars)
+	for (auto& playerPillar : playerPillars)
 	{
 		// evaluate if current pillar can form a bridge with the one that is being added
 		const auto& [currentRow, currentColumn] = playerPillar.GetPosition();
@@ -376,14 +376,14 @@ void GameBoard::ResetGame()
 	std::cin >> ok;*/
 	if (true)
 	{
-		for (uint16_t i = 0; i < s_size; ++i)
+		for (uint16_t i = 0; i < kWidth; ++i)
 		{
-			for (uint16_t j = 0; j < s_size; ++j)
+			for (uint16_t j = 0; j < kHeight; ++j)
 				s_matrix[i][j] = std::optional<Pillar>{};
 		}
 	}
 	GameBoard::s_bridges = std::vector<Bridge>();
-	GameBoard::ListaAdiacenta = std::vector<std::vector<Pillar>>(s_size * s_size);
+	GameBoard::ListaAdiacenta = std::vector<std::vector<Pillar>>(kWidth * kHeight);
 	GameBoard::s_paths = std::make_pair(std::vector<std::vector<Pillar>>(), std::vector<std::vector<Pillar>>());
 	GameBoard::endingPillars = std::vector<Pillar>();
 	GameBoard::s_pillars = std::vector<Pillar>();
@@ -464,7 +464,7 @@ int64_t GameBoard::GetHashWithPosition(const Position& position) const {
 std::optional<Pillar>& GameBoard::operator[](const Position& position)
 {
 	const auto& [row, column] = position;
-	if (row < 0 || row > BOARD_SIZE || column < 0 || column > BOARD_SIZE)
+	if (row < 0 || row > kHeight || column < 0 || column > kWidth)
 	{
 		throw std::out_of_range("Position out of bounds");
 	}
@@ -474,7 +474,7 @@ std::optional<Pillar>& GameBoard::operator[](const Position& position)
 const std::optional<Pillar>& GameBoard::operator[](const Position& position) const
 {
 	const auto& [row, column] = position;
-	if (row < 0 || row > BOARD_SIZE || column < 0 || column > BOARD_SIZE)
+	if (row < 0 || row > kHeight || column < 0 || column > kWidth)
 	{
 		throw std::out_of_range("Position out of bounds");
 	}

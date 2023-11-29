@@ -1,12 +1,7 @@
 #include "Pillar.h"
 #include "Bridge.h"
 
-Color Pillar::GetRandomColor()
-{
-	return rand() % 2 ? Color::RED : Color::BLACK;
-}
-
-Pillar::Pillar() : m_position{ 0, 0 }, m_color{ GetRandomColor() }
+Pillar::Pillar() : m_color{ Color::NO_COLOR }
 {
 }
 
@@ -35,7 +30,7 @@ Pillar& Pillar::operator=(const Pillar& other)
 Pillar::Pillar(Pillar&& other) noexcept : Pillar{ std::move(other.m_position), other.m_color }
 {
 	other.m_position = { 0, 0 };
-	other.m_color = GetRandomColor();
+	other.m_color = Color::NO_COLOR;
 }
 
 Pillar& Pillar::operator=(Pillar&& other) noexcept
@@ -45,7 +40,7 @@ Pillar& Pillar::operator=(Pillar&& other) noexcept
 		m_position = std::move(other.m_position);
 		m_color = other.m_color;
 		other.m_position = { 0, 0 };
-		other.m_color = GetRandomColor();
+		other.m_color = Color::NO_COLOR;
 	}
 	return *this;
 }
@@ -59,7 +54,7 @@ std::istream& operator>>(std::istream& in, Pillar& pillar)
 		throw std::invalid_argument("Error reading pillar input!");
 	}
 	const auto& [row, column] = pillar.m_position;
-	if (row >= BOARD_SIZE || column >= BOARD_SIZE || colorMap.find(colorString) == colorMap.end())
+	if (row >= Pillar::kHeight || column >= Pillar::kWidth || colorMap.find(colorString) == colorMap.end())
 		throw std::invalid_argument("Invalid pillar input!");
 	pillar.m_color = colorMap.at(colorString);
 	return in;
@@ -84,12 +79,12 @@ const Position& Pillar::GetPosition() const
 void Pillar::SetPosition(const Position& position)
 {
 	const auto& [row, column] = position;
-	if (row >= BOARD_SIZE && column >= BOARD_SIZE)
+	if (row >= Pillar::kHeight || column >= Pillar::kWidth)
 		throw std::out_of_range("Invalid position values!");
 	m_position = position;
 }
 
-void Pillar::SetPosition(uint16_t row, uint16_t column)
+void Pillar::SetPosition(size_t row, size_t column)
 {
 	SetPosition({ row, column });
 }

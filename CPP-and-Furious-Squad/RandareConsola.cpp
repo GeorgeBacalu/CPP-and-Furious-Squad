@@ -13,7 +13,7 @@ void ConsoleRenderer::Render(GameBoard* gb)
 {
 	system("CLS");
 	std::cout << "  ";
-	for(int i=1;i<BOARD_SIZE - 1;++i)
+	for(int i=1;i<GameBoard::kWidth - 1;++i)
 		if(gb->getMatrix()[0][i].has_value())
 			if(static_cast<int>(gb->getMatrix()[0][i].value().GetColor())==0)
 				std::cout << "R";
@@ -21,8 +21,8 @@ void ConsoleRenderer::Render(GameBoard* gb)
 				std::cout << "B";
 		else
 			std::cout << ".";
-	std::cout << "\n  " << std::setfill('-') << std::setw(BOARD_SIZE - 1) << "\n";
-	for (int i = 1; i < BOARD_SIZE - 1; ++i)
+	std::cout << "\n  " << std::setfill('-') << std::setw(GameBoard::kWidth - 1) << "\n";
+	for (int i = 1; i < GameBoard::kWidth - 1; ++i)
 	{
 		if(gb->getMatrix()[i][0].has_value())
 			if(static_cast<int>(gb->getMatrix()[i][0].value().GetColor())==0)
@@ -31,7 +31,7 @@ void ConsoleRenderer::Render(GameBoard* gb)
 				std::cout << "B|";
 		else
 			std::cout << ".|";
-		for (int j = 1; j < BOARD_SIZE - 1; ++j)
+		for (int j = 1; j < GameBoard::kHeight - 1; ++j)
 		{
 			if(gb->getMatrix()[i][j].has_value())
 				if(static_cast<int>(gb->getMatrix()[i][j].value().GetColor())==0)
@@ -41,25 +41,25 @@ void ConsoleRenderer::Render(GameBoard* gb)
 			else
 				std::cout << ".";
 		}
-		if (gb->getMatrix()[i][BOARD_SIZE - 1].has_value())
-			if (static_cast<int>(gb->getMatrix()[i][BOARD_SIZE - 1].value().GetColor()) == 0)
+		if (gb->getMatrix()[i][GameBoard::kHeight - 1].has_value())
+			if (static_cast<int>(gb->getMatrix()[i][GameBoard::kHeight - 1].value().GetColor()) == 0)
 				std::cout << "|R\n";
 			else
 				std::cout << "|B\n";
 		else
 			std::cout << "|.\n";
 	}
-	std::cout << "  " << std::setfill('-') << std::setw(BOARD_SIZE - 1) << "\n";
+	std::cout << "  " << std::setfill('-') << std::setw(GameBoard::kWidth - 1) << "\n";
 	std::cout << "  ";
-	for (int i = 1; i < BOARD_SIZE - 1; ++i)
-		if (gb->getMatrix()[BOARD_SIZE - 1][i].has_value())
-			if (static_cast<int>(gb->getMatrix()[BOARD_SIZE - 1][i].value().GetColor()) == 0)
+	for (int i = 1; i < GameBoard::kWidth - 1; ++i)
+		if (gb->getMatrix()[GameBoard::kWidth - 1][i].has_value())
+			if (static_cast<int>(gb->getMatrix()[GameBoard::kWidth - 1][i].value().GetColor()) == 0)
 				std::cout << "R";
 			else
 				std::cout << "B";
 		else
 			std::cout << ".";
-	std::cout << "\nDimension: " << BOARD_SIZE << "\n";
+	std::cout << "\nDimension: " << GameBoard::kWidth << "\n";
 }
 
 void ConsoleRenderer::TakeInput(GameBoard* gb)
