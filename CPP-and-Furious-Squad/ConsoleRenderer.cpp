@@ -67,8 +67,15 @@ void ConsoleRenderer::TakeInput(GameBoard* gb)
 	int x,y;
 	std::cin>>x>>y;
 	//place pillar and switch player
-	gb->PlacePillar(x,y);
-	gb->EndingPillarsInit();
-	for (auto it : gb->getEndingPillars())
-		gb->bfs(it);
+	try 
+	{
+		gb->PlacePillar(x, y);
+		gb->EndingPillarsInit();
+		for (auto it : gb->getEndingPillars())
+			gb->bfs(it);
+	}
+	catch (std::invalid_argument& exception)
+	{
+		std::cerr << exception.what() << "\n";
+	}
 }
