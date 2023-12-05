@@ -41,4 +41,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="bridges.prodb">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="game-board.prodb">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="pillars.prodb">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

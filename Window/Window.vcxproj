@@ -97,6 +97,7 @@
     <QtRcc Include="Window.qrc" />
     <QtUic Include="Window.ui" />
     <QtMoc Include="Window.h" />
+    <ClCompile Include="CircleWidget.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -104,6 +105,14 @@
     <ProjectReference Include="..\CPP-and-Furious-Squad\CPP-and-Furious-Squad.vcxproj">
       <Project>{340baca7-bfee-4abc-a6e0-e958ab3fa59f}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bridges.prodb" />
+    <None Include="game-board.prodb" />
+    <None Include="pillars.prodb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CircleWidget.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
