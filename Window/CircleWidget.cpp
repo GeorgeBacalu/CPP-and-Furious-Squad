@@ -16,3 +16,9 @@ void CircleWidget::paintEvent(QPaintEvent* event)
     QRect ellipseRect(rect().center().x() - 10, rect().center().y() - 10, 20, 20);
     painter.drawEllipse(ellipseRect);
 }
+
+void CircleWidget::mousePressEvent(QMouseEvent* event)
+{
+    Q_UNUSED(event);
+    emit clicked();
+}
