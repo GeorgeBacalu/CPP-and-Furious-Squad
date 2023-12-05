@@ -2,8 +2,7 @@
 #include <QMainWindow>
 #include <QGridLayout>
 #include <QLabel>
-
-class GameBoard; 
+#include<GameBoard.h>
 
 class Window : public QMainWindow
 {
@@ -12,9 +11,8 @@ class Window : public QMainWindow
 public:
     Window(QWidget* parent = nullptr);
     ~Window();
-
     void setupUi();
-
 private:
     QGridLayout* layout;
+    GameBoard* g;
 };

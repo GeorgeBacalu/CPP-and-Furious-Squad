@@ -1,11 +1,16 @@
 #include "Window.h"
 #include "GameBoard.h"
 #include "Bridge.h"
+#include "CircleWidget.h"
 #include <QApplication>
 #include <QWidget>
 #include <QGridLayout>
 #include <QLabel>
 #include <QPalette>
+#include <QPainter>
+#include <qpen.h>
+#include <QPushButton>
+
 Window::Window(QWidget* parent)
     : QMainWindow(parent)
 {
@@ -18,41 +23,24 @@ Window::Window(QWidget* parent)
 }
 void Window::setupUi()
 {
-    GameBoard* g = GameBoard::getInstance();
-    g->LoadGame();
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    g = GameBoard::getInstance();
     auto game{ g->getMatrix() };
     for (int i = 0; i < g->getSize(); i++)
     {
         for (int j = 0; j < g->getSize(); j++)
         {
-            QLabel* label = new QLabel();
-            label->setAlignment(Qt::AlignCenter);
-            label->setFrameStyle(QFrame::Box);
-            label->setFixedSize(60, 60);
-            if (game[i][j].has_value())
-            {
-                if (game[i][j].value().GetColor() == Color::RED)
-                {
-                    label->setStyleSheet("background-color: red");
-                }
-                else
-                {
-                    label->setStyleSheet("background-color: black");
-                }
-            }
-            else
-            {
-                label->setStyleSheet("background-color: white");
-            }
-            layout->addWidget(label, i, j);
-            label->repaint();
+            CircleWidget* circleWidget = new CircleWidget();
+            circleWidget->setFixedSize(30, 30);
+            circleWidget->setColor(Qt::white);
+            layout->addWidget(circleWidget, i, j);
         }
     }
-
-    setLayout(layout);
-    setWindowTitle("Testedinnou");
 }
+
 
 
 Window::~Window()
 {}
+
