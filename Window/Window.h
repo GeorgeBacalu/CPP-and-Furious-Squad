@@ -12,6 +12,7 @@ public:
     Window(QWidget* parent = nullptr);
     ~Window();
     void setupUi();
+    void paintEvent(QPaintEvent* event);
 private:
     QGridLayout* layout;
     GameBoard* g;

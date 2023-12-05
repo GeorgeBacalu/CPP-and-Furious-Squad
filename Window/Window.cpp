@@ -39,6 +39,61 @@ void Window::setupUi()
     }
 }
 
+//void Window::loadGame()
+//{
+//    QPainter painter(this);
+//    painter.setRenderHint(QPainter::Antialiasing, true);
+//    GameBoard* g = GameBoard::getInstance();
+//    g->LoadGame();
+//    auto game{ g->getMatrix() };
+//    for (int i = 0; i < g->getSize(); i++)
+//    {
+//        for (int j = 0; j < g->getSize(); j++)
+//        {   
+//            CircleWidget circleWidget=
+//            if (game[i][j].has_value())
+//            {
+//                if (game[i][j].value().GetColor() == Color::RED)
+//                {
+//                    circleWidget->setColor(Qt::red);
+//                }
+//                else
+//                {
+//                    circleWidget->setColor(Qt::black);
+//                }
+//            }
+//            else
+//            {
+//                circleWidget->setColor(Qt::white);
+//            }
+//            layout->addWidget(circleWidget, i, j);
+//        }
+//    }
+//}
+void Window::paintEvent(QPaintEvent* event)
+{
+    Q_UNUSED(event);
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+
+    GameBoard* g = GameBoard::getInstance();
+    g->LoadGame();
+
+    for (Bridge b : g->getBridges())
+    {
+        Pillar pStart = b.GetStartPillar();
+        Pillar pEnd = b.GetEndPillar();
+
+        if (pStart.GetColor() == Color::RED)
+            painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
+        else
+            painter.setPen(QPen(Qt::black, 2, Qt::SolidLine));
+
+        painter.drawLine(pStart.GetPosition().second * 30+30, pStart.GetPosition().first * 30+30 ,
+            pEnd.GetPosition().second * 30 +30, pEnd.GetPosition().first * 30+30 );
+    }
+}
 
 
 Window::~Window()
