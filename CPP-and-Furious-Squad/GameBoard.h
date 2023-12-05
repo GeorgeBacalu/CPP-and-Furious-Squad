@@ -45,6 +45,8 @@ public:
 	std::vector<Pillar> getPillars();
 	std::vector<Pillar> getRedPillars();
 	std::vector<Pillar> getBlackPillars();
+	bool getPlayerTurn();
+	void switchPlayerTurn();
 
 	//logic methods
 	void PlacePillar(uint16_t row, uint16_t column);

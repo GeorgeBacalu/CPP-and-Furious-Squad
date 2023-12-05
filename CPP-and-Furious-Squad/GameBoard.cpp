@@ -203,6 +203,16 @@ std::vector<Pillar> GameBoard::getBlackPillars()
 	return s_blackPillars;
 }
 
+bool GameBoard::getPlayerTurn()
+{
+	return playerTurn;
+}
+
+void GameBoard::switchPlayerTurn()
+{
+	playerTurn = !playerTurn;
+}
+
 void GameBoard::setMatrix(std::vector<std::vector<std::optional<Pillar>>> matrix)
 {
 	for (size_t i = 0; i < kWidth; ++i) {
