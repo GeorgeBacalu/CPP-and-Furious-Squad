@@ -13,6 +13,7 @@ public:
     ~Window();
     void setupUi();
     void paintEvent(QPaintEvent* event);
+    void onCircleClick();
 private:
     QGridLayout* layout;
     GameBoard* g;
