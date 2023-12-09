@@ -7,7 +7,7 @@ class HumanPlayer : public IPlayer {
 public:
 	HumanPlayer(std::string_view name);
 
-	const Position& GetNextAction() override;
+	Position GetNextAction() override;
 
 	std::string_view GetName() const override;
 };

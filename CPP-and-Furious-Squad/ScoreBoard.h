@@ -7,6 +7,9 @@ using Score = std::pair<uint16_t, uint16_t>;
 
 class ScoreBoard
 {
+public:
+	static const size_t kMaxScore{ 25 };
+private:
 	Score m_score;
 
 	ScoreBoard();

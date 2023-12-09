@@ -18,7 +18,7 @@ public:
 	AiPlayer(GameBoard& gameBoard, std::string_view policyName);
 	~AiPlayer() override;
 
-	const Position& GetNextAction() override;
+	Position GetNextAction() override;
 
 	std::string_view GetName() const override;
 

@@ -20,7 +20,7 @@ AiPlayer::~AiPlayer()
 	SavePolicy();
 }
 
-const Position& AiPlayer::GetNextAction()
+Position AiPlayer::GetNextAction()
 {
     std::vector<Position> possibleActions = GenerateActions(m_gameBoard);
     std::reference_wrapper<Position> bestAction{ possibleActions[0] };
