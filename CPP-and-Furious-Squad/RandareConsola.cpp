@@ -12,25 +12,30 @@ ConsoleRenderer::ConsoleRenderer()
 void ConsoleRenderer::Render(GameBoard* gb)
 {
 	system("CLS");
-	std::cout << "  ";
+	std::cout << "   ";
+	for(int i=1;i<GameBoard::kWidth-1;++i)
+		std::cout<<i;
+	std::cout<<"\n   ";
 	for(int i=1;i<GameBoard::kWidth - 1;++i)
-		if(gb->getMatrix()[0][i].has_value())
-			if(static_cast<int>(gb->getMatrix()[0][i].value().GetColor())==0)
+	{
+		if (gb->getMatrix()[0][i].has_value())
+			if (static_cast<int>(gb->getMatrix()[0][i].value().GetColor()) == 0)
 				std::cout << "R";
 			else
 				std::cout << "B";
 		else
 			std::cout << ".";
-	std::cout << "\n  " << std::setfill('-') << std::setw(GameBoard::kWidth - 1) << "\n";
+	}
+	std::cout << "\n   " << std::setfill('-') << std::setw(GameBoard::kWidth - 1) << "\n";
 	for (int i = 1; i < GameBoard::kWidth - 1; ++i)
 	{
 		if(gb->getMatrix()[i][0].has_value())
 			if(static_cast<int>(gb->getMatrix()[i][0].value().GetColor())==0)
-				std::cout << "R|";
+				std::cout << i << " R|";
 			else
-				std::cout << "B|";
+				std::cout << i << " B|";
 		else
-			std::cout << ".|";
+			std::cout << i<< ".|";
 		for (int j = 1; j < GameBoard::kHeight - 1; ++j)
 		{
 			if(gb->getMatrix()[i][j].has_value())
@@ -49,8 +54,8 @@ void ConsoleRenderer::Render(GameBoard* gb)
 		else
 			std::cout << "|.\n";
 	}
-	std::cout << "  " << std::setfill('-') << std::setw(GameBoard::kWidth - 1) << "\n";
-	std::cout << "  ";
+	std::cout << "   " << std::setfill('-') << std::setw(GameBoard::kWidth - 1) << "\n";
+	std::cout << "   ";
 	for (int i = 1; i < GameBoard::kWidth - 1; ++i)
 		if (gb->getMatrix()[GameBoard::kWidth - 1][i].has_value())
 			if (static_cast<int>(gb->getMatrix()[GameBoard::kWidth - 1][i].value().GetColor()) == 0)
