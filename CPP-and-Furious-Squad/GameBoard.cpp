@@ -381,6 +381,132 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 
 bool GameBoard::CheckNoIntersections()
 {
+	//Check if the new bridge intersects with any other bridge
+	//If it does, return false
+	//If it doesn't, return true
+	//std::cout << "CheckNoIntersections\n";
+	//std::cout << "s_bridges.size() = " << s_bridges.size() << '\n';
+	//if (s_bridges.size() == 0)
+	//	return true;
+	//Bridge newBridge = s_bridges.back();
+	////std::cout << "newBridge = " << newBridge << '\n';
+	//for (auto it : s_bridges)
+	//{
+	//	//std::cout << "it = " << it << '\n';
+	//	if (it.GetStartPillar().GetPosition() == newBridge.GetStartPillar().GetPosition() ||
+	//					it.GetStartPillar().GetPosition() == newBridge.GetEndPillar().GetPosition() ||
+	//					it.GetEndPillar().GetPosition() == newBridge.GetStartPillar().GetPosition() ||
+	//					it.GetEndPillar().GetPosition() == newBridge.GetEndPillar().GetPosition())
+	//		continue;
+	//	if (it.GetStartPillar().GetPosition().first == it.GetEndPillar().GetPosition().first)
+	//	{
+	//		if (newBridge.GetStartPillar().GetPosition().first == newBridge.GetEndPillar().GetPosition().first)
+	//		{
+	//			if (it.GetStartPillar().GetPosition().first == newBridge.GetStartPillar().GetPosition().first)
+	//			{
+	//				if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//				{
+	//					if (it.GetStartPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
+	//													newBridge.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//				else
+	//				{
+	//					if (it.GetEndPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
+	//													newBridge.GetStartPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//			}
+	//		}
+	//		else
+	//		{
+	//			if (it.GetStartPillar().GetPosition().first == newBridge.GetStartPillar().GetPosition().first)
+	//			{
+	//				if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//				{
+	//					if (it.GetStartPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
+	//													newBridge.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//				else
+	//				{
+	//					if (it.GetEndPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
+	//													newBridge.GetStartPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//			}
+	//			else
+	//			{
+	//				if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//				{
+	//					if (it.GetStartPillar().GetPosition().second < newBridge.GetEndPillar().GetPosition().second &&
+	//																				newBridge.GetEndPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//				else
+	//				{
+	//					if (it.GetEndPillar().GetPosition().second < newBridge.GetEndPillar().GetPosition().second &&
+	//																				newBridge.GetEndPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//			}
+	//		}
+	//	}
+	//	else
+	//	{
+	//		if (newBridge.GetStartPillar().GetPosition().first == newBridge.GetEndPillar().GetPosition().first)
+	//		{
+	//			if (it.GetStartPillar().GetPosition().first == newBridge.GetStartPillar().GetPosition().first)
+	//			{
+	//				if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//				{
+	//					if (it.GetStartPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
+	//						newBridge.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//				else
+	//				{
+	//					if (it.GetEndPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
+	//						newBridge.GetStartPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//			}
+	//			else
+	//			{
+	//				if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//				{
+	//					if (it.GetStartPillar().GetPosition().second < newBridge.GetEndPillar().GetPosition().second &&
+	//						newBridge.GetEndPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//				else
+	//				{
+	//					if (it.GetEndPillar().GetPosition().second < newBridge.GetEndPillar().GetPosition().second &&
+	//						newBridge.GetEndPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//			}
+	//		}
+	//		else
+	//		{
+	//			if (it.GetStartPillar().GetPosition().first == newBridge.GetStartPillar().GetPosition().first)
+	//			{
+	//				if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//				{
+	//					if (it.GetStartPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
+	//						newBridge.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//				else
+	//				{
+	//					if (it.GetEndPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
+	//						newBridge.GetStartPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
+	//						return false;
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 	return true;
 }
 

@@ -31,9 +31,9 @@ void ConsoleRenderer::Render(GameBoard* gb)
 	{
 		if(gb->getMatrix()[i][0].has_value())
 			if(static_cast<int>(gb->getMatrix()[i][0].value().GetColor())==0)
-				std::cout << i << " R|";
+				std::cout << i << "R|";
 			else
-				std::cout << i << " B|";
+				std::cout << i << "B|";
 		else
 			std::cout << i<< ".|";
 		for (int j = 1; j < GameBoard::kHeight - 1; ++j)

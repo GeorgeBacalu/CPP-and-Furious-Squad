@@ -81,7 +81,7 @@ const Position& Pillar::GetPosition() const
 void Pillar::SetPosition(const Position& position)
 {
 	const auto& [row, column] = position;
-	if (row >= Pillar::kHeight || column >= Pillar::kWidth)
+	if (row > Pillar::kHeight || column > Pillar::kWidth)
 		throw std::out_of_range("Invalid position values!");
 	m_position = position;
 }
