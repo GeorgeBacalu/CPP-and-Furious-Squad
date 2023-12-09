@@ -49,7 +49,8 @@ std::istream& operator>>(std::istream& in, Pillar& pillar)
 {
 	static const std::unordered_map<std::string, Color> colorMap{ {"RED", Color::RED}, {"BLACK", Color::BLACK} };
 	std::string colorString;
-	if (!(in >> pillar.m_position.first >> pillar.m_position.second >> colorString)) {
+	if (!(in >> pillar.m_position.first >> pillar.m_position.second >> colorString))
+	{
 		pillar.m_position = { 0, 0 };
 		throw std::invalid_argument("Error reading pillar input!");
 	}
@@ -62,8 +63,9 @@ std::istream& operator>>(std::istream& in, Pillar& pillar)
 
 std::ostream& operator<<(std::ostream& out, const Pillar& pillar)
 {
+	std::unordered_map<Color, std::string> colorMap{ {Color::RED, "RED"}, {Color::BLACK, "BLACK"} };
 	const auto& [row, column] = pillar.m_position;
-	return out << "Position: (" << row << ", " << column << "), Color: " << (static_cast<int>(pillar.m_color) == 0 ? "RED" : "BLACK") << "\n";
+	return out << "Position: (" << row << ", " << column << "), Color: " << colorMap[pillar.m_color] << "\n";
 }
 
 bool Pillar::operator==(const Pillar& other) const

@@ -8,6 +8,8 @@ Bridge::Bridge() : m_startPillar{ pillar }, m_endPillar{ pillar }
 
 Bridge::Bridge(Pillar& startPillar, Pillar& endPillar) : m_startPillar{ startPillar }, m_endPillar{ endPillar }
 {
+	if (!IsValid())
+		throw std::invalid_argument("Can't build bridge between this pillars.");
 }
 
 Bridge::Bridge(const Bridge& other) : Bridge{ other.m_startPillar, other.m_endPillar }
@@ -54,32 +56,32 @@ const Pillar& Bridge::GetEndPillar() const
 
 Color Bridge::GetColor() const
 {
-	return m_startPillar.GetColor();
+	return CheckSameColor() ? m_startPillar.GetColor() : Color::NO_COLOR;
 }
 
 bool Bridge::operator==(const Bridge& other) const
 {
-	return false;
+	return m_startPillar == other.m_startPillar && m_endPillar == other.m_endPillar;
 }
 
-bool Bridge::IsValid()
+bool Bridge::IsValid() const
 {
 	return CheckSameColor() && CheckDistinctPositions() && CheckBridgeValid();
 }
 
-bool Bridge::CheckSameColor()
+bool Bridge::CheckSameColor() const
 {
 	return m_startPillar.GetColor() == m_endPillar.GetColor();
 }
 
-bool Bridge::CheckDistinctPositions()
+bool Bridge::CheckDistinctPositions() const
 {
 	const auto& [startRow, startColumn] = m_startPillar.GetPosition();
 	const auto& [endRow, endColumn] = m_endPillar.GetPosition();
 	return startRow != endRow && startColumn != endColumn;
 }
 
-bool Bridge::CheckBridgeValid()
+bool Bridge::CheckBridgeValid() const
 {
 	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets{ {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
 	for (const auto& [offsetX, offsetY] : bridgeAllowedOffsets)

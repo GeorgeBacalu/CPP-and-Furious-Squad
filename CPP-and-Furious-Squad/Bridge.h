@@ -7,9 +7,9 @@ class Bridge : public IPiece
 	Pillar& m_startPillar;
 	Pillar& m_endPillar;
 
-	bool CheckSameColor();
-	bool CheckDistinctPositions();
-	bool CheckBridgeValid();
+	bool CheckSameColor() const;
+	bool CheckDistinctPositions() const;
+	bool CheckBridgeValid() const;
 public:
 	Bridge();
 	Bridge(Pillar& startPillar, Pillar& endPillar);
@@ -26,5 +26,5 @@ public:
 	Color GetColor() const override;
 	bool operator==(const Bridge& other) const;
 
-	bool IsValid();
+	bool IsValid() const;
 };
