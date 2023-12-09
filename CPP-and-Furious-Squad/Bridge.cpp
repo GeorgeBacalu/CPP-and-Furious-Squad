@@ -6,7 +6,7 @@ Bridge::Bridge() : m_startPillar{ pillar }, m_endPillar{ pillar }
 {
 }
 
-Bridge::Bridge(Pillar& startPillar, Pillar& endPillar) : m_startPillar{ startPillar }, m_endPillar{ endPillar }
+Bridge::Bridge(const Pillar& startPillar, const Pillar& endPillar) : m_startPillar{ startPillar }, m_endPillar{ endPillar }
 {
 	if (!IsValid())
 		throw std::invalid_argument("Can't build bridge between this pillars.");

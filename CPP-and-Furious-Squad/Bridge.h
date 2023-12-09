@@ -4,15 +4,15 @@
 
 class Bridge : public IPiece
 {
-	Pillar& m_startPillar;
-	Pillar& m_endPillar;
+	Pillar m_startPillar;
+	Pillar m_endPillar;
 
 	bool CheckSameColor() const;
 	bool CheckDistinctPositions() const;
 	bool CheckBridgeValid() const;
 public:
 	Bridge();
-	Bridge(Pillar& startPillar, Pillar& endPillar);
+	Bridge(const Pillar& startPillar, const Pillar& endPillar);
 	Bridge(const Bridge& other);
 	Bridge& operator=(const Bridge& other);
 	Bridge(Bridge&& other) noexcept = default;
