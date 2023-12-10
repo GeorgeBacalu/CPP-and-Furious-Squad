@@ -10,8 +10,8 @@ class ConsoleRenderer
 {
 public:
 	ConsoleRenderer();
-	~ConsoleRenderer()=default;
+	~ConsoleRenderer() = default;
 	static void Render(GameBoard* gb);
+	static void PrintCell(const std::optional<Pillar>& cell, bool withBorder = false, bool endOfLine = false);
 	static void TakeInput(GameBoard* gb);
 };
-
