@@ -10,11 +10,11 @@
 class GameBoard
 {
 public:
-	static const size_t kWidth{ 5 };
-	static const size_t kHeight{ 5 };
+	static constexpr size_t kWidth{ 5 };
+	static constexpr size_t kHeight{ 5 };
 private:
-	static bool playerTurn;
-	static bool invalid;
+	bool playerTurn = true;
+	bool invalid = false;
 	std::array<std::array<std::optional<Pillar>, kWidth>, kHeight> s_matrix;
 	std::vector <Bridge>s_bridges;
 	std::vector<std::vector<Pillar>>ListaAdiacenta;
@@ -53,8 +53,12 @@ public:
 	void ProcessNextMove(Pillar& newPillar);
 	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets, Pillar& newPillar);
 	bool CheckNoIntersections();
+	bool Intersects(const Bridge& bridge1, const Bridge& bridge2);
+	bool IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2);
+	bool IntersectsOnAxis(int start1, int end1, int start2, int end2);
 	bool PlayerTurn();
 	uint16_t GetAvailablePieces(IPiece* pieceType, Color color);
+
 
 	void RemovePillar(uint16_t row, uint16_t column);
 	bool IsFreeFoundation(uint16_t row, uint16_t column);
@@ -90,7 +94,7 @@ public:
 						out << 0 << "  ";
 					else
 					{
-						if (static_cast<int>(gb.s_matrix[i][j].value().GetColor()) == 0)
+						if (gb.s_matrix[i][j].value().GetColor() == Color::RED)
 							out << 1 << "  ";
 						else
 							out << 2 << "  ";

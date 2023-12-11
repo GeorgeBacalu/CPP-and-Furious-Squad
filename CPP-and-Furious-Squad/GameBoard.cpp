@@ -4,8 +4,6 @@
 #include <random>
 
 int bridgeCount = 0;
-bool GameBoard::playerTurn = true;
-bool GameBoard::invalid = false;
 GameBoard* GameBoard::instance = nullptr;
 static uint16_t kAvailableRedPillars = 50;
 static uint16_t kAvailableBlackPillars = 50;
@@ -296,10 +294,7 @@ void GameBoard::ProcessNextMove(Pillar& newPillar) {
 	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets{ {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
 
 	// exclude corners
-	if ((newRow == 0 && newColumn == 0) ||
-		(newRow == 0 && newColumn == kWidth - 1) ||
-		(newRow == kHeight - 1 && newColumn == 0) ||
-		(newRow == kHeight - 1 && newColumn == kWidth - 1))
+	if ((newRow == 0 || newRow == kHeight - 1) && (newColumn == 0 || newColumn == kWidth - 1))
 		throw std::invalid_argument("Can't place pillar on any board corner!");
 	if (playerTurn) // playerTurn = true <=> red's turn
 	{
@@ -384,133 +379,57 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 
 bool GameBoard::CheckNoIntersections()
 {
-	//Check if the new bridge intersects with any other bridge
-	//If it does, return false
-	//If it doesn't, return true
-	//std::cout << "CheckNoIntersections\n";
-	//std::cout << "s_bridges.size() = " << s_bridges.size() << '\n';
-	if (s_bridges.size() == 0)
+	if (s_bridges.empty())
 		return true;
+
 	Bridge newBridge = s_bridges.back();
-	//std::cout << "newBridge = " << newBridge << '\n';
-	for (auto it : s_bridges)
+
+	for (const auto& existingBridge : s_bridges)
 	{
-		//std::cout << "it = " << it << '\n';
-		if (it.GetStartPillar().GetPosition() == newBridge.GetStartPillar().GetPosition() ||
-						it.GetStartPillar().GetPosition() == newBridge.GetEndPillar().GetPosition() ||
-						it.GetEndPillar().GetPosition() == newBridge.GetStartPillar().GetPosition() ||
-						it.GetEndPillar().GetPosition() == newBridge.GetEndPillar().GetPosition())
-			continue;
-		if (it.GetStartPillar().GetPosition().first == it.GetEndPillar().GetPosition().first)
-		{
-			if (newBridge.GetStartPillar().GetPosition().first == newBridge.GetEndPillar().GetPosition().first)
-			{
-				if (it.GetStartPillar().GetPosition().first == newBridge.GetStartPillar().GetPosition().first)
-				{
-					if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-					{
-						if (it.GetStartPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
-														newBridge.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-							return false;
-					}
-					else
-					{
-						if (it.GetEndPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
-														newBridge.GetStartPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
-							return false;
-					}
-				}
-			}
-			else
-			{
-				if (it.GetStartPillar().GetPosition().first == newBridge.GetStartPillar().GetPosition().first)
-				{
-					if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-					{
-						if (it.GetStartPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
-														newBridge.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-							return false;
-					}
-					else
-					{
-						if (it.GetEndPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
-														newBridge.GetStartPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
-							return false;
-					}
-				}
-				else
-				{
-					if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-					{
-						if (it.GetStartPillar().GetPosition().second < newBridge.GetEndPillar().GetPosition().second &&
-																					newBridge.GetEndPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-							return false;
-					}
-					else
-					{
-						if (it.GetEndPillar().GetPosition().second < newBridge.GetEndPillar().GetPosition().second &&
-																					newBridge.GetEndPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
-							return false;
-					}
-				}
-			}
-		}
-		else
-		{
-			if (newBridge.GetStartPillar().GetPosition().first == newBridge.GetEndPillar().GetPosition().first)
-			{
-				if (it.GetStartPillar().GetPosition().first == newBridge.GetStartPillar().GetPosition().first)
-				{
-					if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-					{
-						if (it.GetStartPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
-							newBridge.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-							return false;
-					}
-					else
-					{
-						if (it.GetEndPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
-							newBridge.GetStartPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
-							return false;
-					}
-				}
-				else
-				{
-					if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-					{
-						if (it.GetStartPillar().GetPosition().second < newBridge.GetEndPillar().GetPosition().second &&
-							newBridge.GetEndPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-							return false;
-					}
-					else
-					{
-						if (it.GetEndPillar().GetPosition().second < newBridge.GetEndPillar().GetPosition().second &&
-							newBridge.GetEndPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
-							return false;
-					}
-				}
-			}
-			else
-			{
-				if (it.GetStartPillar().GetPosition().first == newBridge.GetStartPillar().GetPosition().first)
-				{
-					if (it.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-					{
-						if (it.GetStartPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
-							newBridge.GetStartPillar().GetPosition().second < it.GetEndPillar().GetPosition().second)
-							return false;
-					}
-					else
-					{
-						if (it.GetEndPillar().GetPosition().second < newBridge.GetStartPillar().GetPosition().second &&
-							newBridge.GetStartPillar().GetPosition().second < it.GetStartPillar().GetPosition().second)
-							return false;
-					}
-				}
-			}
-		}
+		if (Intersects(existingBridge, newBridge))
+			return false;
 	}
+
 	return true;
+}
+
+bool GameBoard::Intersects(const Bridge& bridge1, const Bridge& bridge2)
+{
+	const auto& start1 = bridge1.GetStartPillar().GetPosition();
+	const auto& end1 = bridge1.GetEndPillar().GetPosition();
+	const auto& start2 = bridge2.GetStartPillar().GetPosition();
+	const auto& end2 = bridge2.GetEndPillar().GetPosition();
+
+	return (start1 == start2 || start1 == end2 || end1 == start2 || end1 == end2) &&
+		IntersectsOnSameAxis(bridge1, bridge2);
+}
+
+bool GameBoard::IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2)
+{
+	const auto& start1 = bridge1.GetStartPillar().GetPosition();
+	const auto& end1 = bridge1.GetEndPillar().GetPosition();
+	const auto& start2 = bridge2.GetStartPillar().GetPosition();
+	const auto& end2 = bridge2.GetEndPillar().GetPosition();
+
+	if (start1.first == end1.first)
+	{
+		return start2.first == end2.first &&
+			start1.first == start2.first &&
+			IntersectsOnAxis(start1.second, end1.second, start2.second, end2.second);
+	}
+	else if (start1.second == end1.second)
+	{
+		return start2.second == end2.second &&
+			start1.second == start2.second &&
+			IntersectsOnAxis(start1.first, end1.first, start2.first, end2.first);
+	}
+
+	return false;
+}
+
+bool GameBoard::IntersectsOnAxis(int start1, int end1, int start2, int end2)
+{
+	return (start1 < end1) ? (start1 < start2 && start2 < end1) : (start1 > start2 && start2 > end1);
 }
 
 bool GameBoard::PlayerTurn()
@@ -552,13 +471,7 @@ void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 
 bool GameBoard::IsFreeFoundation(uint16_t row, uint16_t column)
 {
-	if (row == 0 && column == 0)
-		return false;
-	if (row == 0 && column == 23)
-		return false;
-	if (row == 23 && column == 0)
-		return false;
-	if (row == 23 && column == 23)
+	if ((row == 0 || row == 23) && (column == 0 || column == 23))
 		return false;
 	return !s_matrix[row][column].has_value();
 }
