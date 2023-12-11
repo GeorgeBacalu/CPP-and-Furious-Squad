@@ -291,21 +291,28 @@ void GameBoard::PlacePillar(const Pillar& pillar)
 void GameBoard::ProcessNextMove(Pillar& newPillar) {
 	const Position& newPillarPosition = newPillar.GetPosition();
 	const auto& [newRow, newColumn] = newPillarPosition;
+
+	// Check if the new pillar is placed on a board corner
+	if ((newRow == 0 || newRow == kHeight - 1) && (newColumn == 0 || newColumn == kWidth - 1)) 
+	{
+		throw std::invalid_argument("Can't place pillar on any board corner!");
+	}
+
 	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets{ {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
 
-	// exclude corners
-	if ((newRow == 0 || newRow == kHeight - 1) && (newColumn == 0 || newColumn == kWidth - 1))
-		throw std::invalid_argument("Can't place pillar on any board corner!");
-	if (playerTurn) // playerTurn = true <=> red's turn
-	{
-		ProcessPlayerMove(newPillarPosition, Color::RED, "Red player can't place pillar on first or last column!", bridgeAllowedOffsets, newPillar);
+	Color playerColor = (playerTurn) ? Color::RED : Color::BLACK;
+	const std::string errorMessage = (playerTurn) ? "Red player can't place pillar on first or last column!" : "Black player can't place pillar on first or last row!";
+
+	ProcessPlayerMove(newPillarPosition, playerColor, errorMessage, bridgeAllowedOffsets, newPillar);
+
+	// Decrease available pillars
+	if (playerTurn) {
 		--kAvailableRedPillars;
 	}
-	else
-	{
-		ProcessPlayerMove(newPillarPosition, Color::BLACK, "Black player can't place pillar on first or last row!", bridgeAllowedOffsets, newPillar);
+	else {
 		--kAvailableBlackPillars;
 	}
+
 	playerTurn = !playerTurn;
 }
 
@@ -319,60 +326,58 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 		throw std::invalid_argument(errorMessage);
 	}
 
-	std::vector<Pillar> playerPillars = playerColor == Color::RED ? getRedPillars() : getBlackPillars(); // filter player pillars
-
-	/*Pillar newPillar = Pillar(newPillarPosition, playerColor);
-	s_pillars.push_back(newPillar);
-	s_matrix[newRow][newColumn] = newPillar;*/
+	std::vector<Pillar> playerPillars = (playerColor == Color::RED) ? getRedPillars() : getBlackPillars();
 
 	std::vector<Bridge> newBridges;
-	for (auto& playerPillar : playerPillars)
-	{
+	for (auto& playerPillar : playerPillars) {
 		// evaluate if current pillar can form a bridge with the one that is being added
 		const auto& [currentRow, currentColumn] = playerPillar.GetPosition();
-		for (const auto& [offsetX, offsetY] : bridgeAllowedOffsets)
-		{
-			if (currentRow + offsetX == newRow && currentColumn + offsetY == newColumn)
-			{
-				if (CheckNoIntersections())
-				{
-					Bridge newBridge = Bridge(playerPillar, newPillar);
-					newBridges.push_back(newBridge);
-					//s_bridges.push_back(newBridge);
+		for (const auto& [offsetX, offsetY] : bridgeAllowedOffsets) {
+			if (currentRow + offsetX == newRow && currentColumn + offsetY == newColumn) {
+				if (CheckNoIntersections()) {
+					newBridges.emplace_back(playerPillar, newPillar);
 					break;
 				}
 			}
 		}
 	}
 
+	auto& availableBridges = (playerColor == Color::RED) ? kAvailableRedBridges : kAvailableBlackBridges;
+	playerColor == Color::RED ? availableBridges -= newBridges.size() : availableBridges -= std::min(availableBridges, static_cast<uint16_t>(newBridges.size()));
 
-	playerColor == Color::RED ? kAvailableRedBridges -= newBridges.size() : --kAvailableBlackBridges -= newBridges.size();
-	if (playerColor == Color::RED && kAvailableRedBridges > 0 and newBridges.size() > 0)
-	{
-		for (int i = 0; i < abs(kAvailableRedBridges); ++i)
-		{
-			uint16_t optionIndex;
-			std::cout << "Choose a bridge to place from the following options by index: \n";
-			for (int j = 0; j < newBridges.size(); ++j)
-			{
-				std::cout << j << ". " << newBridges[j] << '\n';
-			}
-			std::cin >> optionIndex;
-			s_bridges.push_back(newBridges[optionIndex]);
+	if (availableBridges > 0 && newBridges.size() > 0) {
+		uint16_t numToPlace = std::min(availableBridges, static_cast<uint16_t>(newBridges.size()));
+
+		if (playerColor == Color::RED) {
+			PlaceBridgesFromOptions(newBridges, numToPlace);
+		}
+		else {
+			PlaceRandomBridgesFromOptions(newBridges, numToPlace);
 		}
 	}
-	else if (playerColor == Color::BLACK && kAvailableBlackBridges > 0 and newBridges.size() > 0)
-	{
-		std::random_device randomDevice;
-		std::mt19937 randomEngine(randomDevice());
+}
 
-		for (int i = 0; i < abs(kAvailableBlackBridges); ++i)
-		{
-			if (!newBridges.empty()) {
-				std::uniform_int_distribution<> distribution(0, newBridges.size() - 1);
-				uint16_t optionIndex = distribution(randomEngine);
-				s_bridges.push_back(newBridges[optionIndex]);
-			}
+void GameBoard::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace) {
+	for (uint16_t i = 0; i < numToPlace; ++i) {
+		uint16_t optionIndex;
+		std::cout << "Choose a bridge to place from the following options by index: \n";
+		for (int j = 0; j < bridgeOptions.size(); ++j) {
+			std::cout << j << ". " << bridgeOptions[j] << '\n';
+		}
+		std::cin >> optionIndex;
+		s_bridges.push_back(bridgeOptions[optionIndex]);
+	}
+}
+
+void GameBoard::PlaceRandomBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace) {
+	std::random_device randomDevice;
+	std::mt19937 randomEngine(randomDevice());
+
+	for (uint16_t i = 0; i < numToPlace; ++i) {
+		if (!bridgeOptions.empty()) {
+			std::uniform_int_distribution<> distribution(0, bridgeOptions.size() - 1);
+			uint16_t optionIndex = distribution(randomEngine);
+			s_bridges.push_back(bridgeOptions[optionIndex]);
 		}
 	}
 }

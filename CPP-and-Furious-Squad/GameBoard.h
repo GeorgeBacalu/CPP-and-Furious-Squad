@@ -52,6 +52,8 @@ public:
 	void PlacePillar(uint16_t row, uint16_t column);
 	void ProcessNextMove(Pillar& newPillar);
 	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets, Pillar& newPillar);
+	void PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
+	void PlaceRandomBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
 	bool CheckNoIntersections();
 	bool Intersects(const Bridge& bridge1, const Bridge& bridge2);
 	bool IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2);
