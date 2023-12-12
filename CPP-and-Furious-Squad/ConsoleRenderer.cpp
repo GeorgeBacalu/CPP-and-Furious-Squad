@@ -1,4 +1,5 @@
 #include "ConsoleRenderer.h"
+#include<random>
 #include <iomanip>
 
 void ConsoleRenderer::Render(GameBoard* gb)
@@ -75,4 +76,35 @@ void ConsoleRenderer::TakeInput(GameBoard* gb)
     {
         std::cerr << exception.what() << "\n";
     }
+}
+
+const std::vector<Bridge>& ConsoleRenderer::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace) {
+    std::vector<Bridge> chosenBridges;
+    for (uint16_t i = 0; i < numToPlace; ++i) {
+        uint16_t optionIndex;
+        std::cout << "Choose a bridge to place from the following options by index: \n";
+        for (int j = 0; j < bridgeOptions.size(); ++j)
+        {
+            std::cout << j << ". " << bridgeOptions[j] << '\n';
+        }
+        std::cin >> optionIndex;
+        chosenBridges.push_back(bridgeOptions[optionIndex]);
+    }
+    return chosenBridges;
+}
+
+const std::vector<Bridge>& ConsoleRenderer::PlaceRandomBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace) {
+    std::vector<Bridge> chosenBridges;
+    std::random_device randomDevice;
+    std::mt19937 randomEngine(randomDevice());
+
+    for (uint16_t i = 0; i < numToPlace; ++i) {
+        if (!bridgeOptions.empty())
+        {
+            std::uniform_int_distribution<> distribution(0, bridgeOptions.size() - 1);
+            uint16_t optionIndex = distribution(randomEngine);
+            chosenBridges.push_back(bridgeOptions[optionIndex]);
+        }
+    }
+    return chosenBridges;
 }

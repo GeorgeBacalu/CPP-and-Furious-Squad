@@ -1,7 +1,7 @@
 #include "GameBoard.h"
+#include "ConsoleRenderer.h"
 #include <fstream>
 #include <queue>
-#include <random>
 
 int bridgeCount = 0;
 GameBoard* GameBoard::instance = nullptr;
@@ -342,43 +342,21 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 		}
 	}
 
-	auto& availableBridges = (playerColor == Color::RED) ? kAvailableRedBridges : kAvailableBlackBridges;
-	playerColor == Color::RED ? availableBridges -= newBridges.size() : availableBridges -= std::min(availableBridges, static_cast<uint16_t>(newBridges.size()));
-
-	if (availableBridges > 0 && newBridges.size() > 0) {
-		uint16_t numToPlace = std::min(availableBridges, static_cast<uint16_t>(newBridges.size()));
-
-		if (playerColor == Color::RED) {
-			//PlaceBridgesFromOptions(newBridges, numToPlace);
-			PlaceRandomBridgesFromOptions(newBridges, numToPlace);
-		}
-		else {
-			PlaceRandomBridgesFromOptions(newBridges, numToPlace);
-		}
-	}
-}
-
-void GameBoard::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace) {
-	for (uint16_t i = 0; i < numToPlace; ++i) {
-		uint16_t optionIndex;
-		std::cout << "Choose a bridge to place from the following options by index: \n";
-		for (int j = 0; j < bridgeOptions.size(); ++j) {
-			std::cout << j << ". " << bridgeOptions[j] << '\n';
-		}
-		std::cin >> optionIndex;
-		s_bridges.push_back(bridgeOptions[optionIndex]);
-	}
-}
-
-void GameBoard::PlaceRandomBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace) {
-	std::random_device randomDevice;
-	std::mt19937 randomEngine(randomDevice());
-
-	for (uint16_t i = 0; i < numToPlace; ++i) {
-		if (!bridgeOptions.empty()) {
-			std::uniform_int_distribution<> distribution(0, bridgeOptions.size() - 1);
-			uint16_t optionIndex = distribution(randomEngine);
-			s_bridges.push_back(bridgeOptions[optionIndex]);
+	if (newBridges.size() > 0)
+	{
+		auto& availableBridges = (playerColor == Color::RED) ? kAvailableRedBridges : kAvailableBlackBridges;
+		if (availableBridges - newBridges.size() < 0)
+		{
+			std::vector<Bridge> chosenBridges;
+			if (playerColor == Color::RED)
+				chosenBridges = ConsoleRenderer::PlaceBridgesFromOptions(newBridges, availableBridges);
+			else
+				chosenBridges = ConsoleRenderer::PlaceRandomBridgesFromOptions(newBridges, availableBridges);
+			availableBridges = 0;
+			for (const auto& bridge : chosenBridges)
+			{
+				s_bridges.push_back(bridge);
+			}
 		}
 	}
 }
