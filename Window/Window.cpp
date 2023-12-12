@@ -79,10 +79,7 @@ void Window::paintEvent(QPaintEvent* event)
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
-
-    GameBoard* g = GameBoard::getInstance();
-    //g->LoadGame();
-
+    painter.eraseRect(rect());
     for (Bridge b : g->getBridges())
     {
         Pillar pStart = b.GetStartPillar();
@@ -93,11 +90,10 @@ void Window::paintEvent(QPaintEvent* event)
         else
             painter.setPen(QPen(Qt::black, 2, Qt::SolidLine));
 
-        painter.drawLine(pStart.GetPosition().second * 30+30, pStart.GetPosition().first * 30+30 ,
-            pEnd.GetPosition().second * 30 +30, pEnd.GetPosition().first * 30+30 );
+        painter.drawLine(pStart.GetPosition().second * 30 + 45, pStart.GetPosition().first * 30 + 45,
+            pEnd.GetPosition().second * 30 + 45, pEnd.GetPosition().first * 30 + 45);
     }
 }
-
 void Window::onCircleClick()
 {
     CircleWidget* clickedCircle = qobject_cast<CircleWidget*>(sender());
@@ -108,8 +104,19 @@ void Window::onCircleClick()
 
     bool playerTurn = g->getPlayerTurn();
     QColor newColor = (playerTurn) ? Qt::red : Qt::black;
-    g->switchPlayerTurn();
-    clickedCircle->setColor(newColor);
+    try
+    {
+        g->PlacePillar(row, col);
+        g->EndingPillarsInit();
+        for (auto it : g->getEndingPillars())
+            g->bfs(it);
+        clickedCircle->setColor(newColor);
+        update();
+    }
+    catch (std::invalid_argument& exception)
+    {
+        std::cerr << exception.what() << "\n";
+    }
 }
 
 
