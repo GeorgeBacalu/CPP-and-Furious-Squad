@@ -18,11 +18,20 @@ Window::Window(QWidget* parent)
     setCentralWidget(centralWidget);
 
     layout = new QGridLayout;
-    setupUi();
     centralWidget->setLayout(layout);
+    setupUi();
 }
 void Window::setupUi()
 {
+    QPushButton* newGameButton = new QPushButton("New Game", this);
+    connect(newGameButton, &QPushButton::clicked, this, &Window::newGame);
+    layout->addWidget(newGameButton, 0, 0);
+
+}
+void Window::newGame()
+{
+    clearLayout(layout);
+    update();
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     g = GameBoard::getInstance();
@@ -42,37 +51,14 @@ void Window::setupUi()
     }
 }
 
-//void Window::loadGame()
-//{
-//    QPainter painter(this);
-//    painter.setRenderHint(QPainter::Antialiasing, true);
-//    GameBoard* g = GameBoard::getInstance();
-//    g->LoadGame();
-//    auto game{ g->getMatrix() };
-//    for (int i = 0; i < g->getSize(); i++)
-//    {
-//        for (int j = 0; j < g->getSize(); j++)
-//        {   
-//            CircleWidget circleWidget=
-//            if (game[i][j].has_value())
-//            {
-//                if (game[i][j].value().GetColor() == Color::RED)
-//                {
-//                    circleWidget->setColor(Qt::red);
-//                }
-//                else
-//                {
-//                    circleWidget->setColor(Qt::black);
-//                }
-//            }
-//            else
-//            {
-//                circleWidget->setColor(Qt::white);
-//            }
-//            layout->addWidget(circleWidget, i, j);
-//        }
-//    }
-//}
+void Window::clearLayout(QLayout* layout)
+{
+    QLayoutItem* item;
+    while ((item = layout->takeAt(0)) != nullptr) {
+        delete item->widget();
+        delete item;
+    }
+}
 void Window::drawBridges(QPainter& painter)
 {
     for (Bridge b : g->getBridges())
@@ -136,4 +122,3 @@ void Window::onCircleClick()
 
 Window::~Window()
 {}
-

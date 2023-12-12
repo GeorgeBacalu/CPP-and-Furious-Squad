@@ -349,7 +349,8 @@ void GameBoard::ProcessPlayerMove(const Position& newPillarPosition, Color playe
 		uint16_t numToPlace = std::min(availableBridges, static_cast<uint16_t>(newBridges.size()));
 
 		if (playerColor == Color::RED) {
-			PlaceBridgesFromOptions(newBridges, numToPlace);
+			//PlaceBridgesFromOptions(newBridges, numToPlace);
+			PlaceRandomBridgesFromOptions(newBridges, numToPlace);
 		}
 		else {
 			PlaceRandomBridgesFromOptions(newBridges, numToPlace);
@@ -476,7 +477,13 @@ void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 
 bool GameBoard::IsFreeFoundation(uint16_t row, uint16_t column)
 {
-	if ((row == 0 || row == 23) && (column == 0 || column == 23))
+	if (row == 0 && column == 0)
+		return false;
+	if (row == 0 && column == 23)
+		return false;
+	if (row == 23 && column == 0)
+		return false;
+	if (row == 23 && column == 23)
 		return false;
 	return !s_matrix[row][column].has_value();
 }
