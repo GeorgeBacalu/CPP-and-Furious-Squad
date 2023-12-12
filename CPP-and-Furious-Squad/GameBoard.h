@@ -18,7 +18,8 @@ private:
 	std::array<std::array<std::optional<Pillar>, kWidth>, kHeight> s_matrix;
 	std::vector <Bridge>s_bridges;
 	std::vector<std::vector<Pillar>>ListaAdiacenta;
-	std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>s_paths;
+	std::vector<std::vector<Pillar>> s_redPaths;
+	std::vector<std::vector<Pillar>> s_blackPaths;
 	std::vector<Pillar> s_pillars;
 	std::vector<Pillar> s_redPillars;
 	std::vector<Pillar> s_blackPillars;
@@ -40,7 +41,8 @@ public:
 	void setBridges(std::vector<Bridge> bridges);
 	void setInvalid(bool invalid);
 	std::vector<std::vector<Pillar>> getListaAdiacenta();
-	std::pair<std::vector<std::vector<Pillar>>, std::vector<std::vector<Pillar>>>getPaths();
+	std::vector<std::vector<Pillar>> getRedPaths();
+	std::vector<std::vector<Pillar>> getBlackPaths();
 	std::vector<Pillar>getEndingPillars();
 	std::vector<Pillar> getPillars();
 	std::vector<Pillar> getRedPillars();
