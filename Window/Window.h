@@ -12,9 +12,11 @@ public:
     Window(QWidget* parent = nullptr);
     ~Window();
     void setupUi();
-    void paintEvent(QPaintEvent* event);
+    void drawBridges(QPainter& painter);
     void onCircleClick();
+    void paintEvent(QPaintEvent* event);
 private:
     QGridLayout* layout;
     GameBoard* g;
+    bool needRepaint;
 };

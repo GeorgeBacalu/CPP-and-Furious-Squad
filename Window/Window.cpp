@@ -73,13 +73,8 @@ void Window::setupUi()
 //        }
 //    }
 //}
-void Window::paintEvent(QPaintEvent* event)
+void Window::drawBridges(QPainter& painter)
 {
-    Q_UNUSED(event);
-
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.eraseRect(rect());
     for (Bridge b : g->getBridges())
     {
         Pillar pStart = b.GetStartPillar();
@@ -89,9 +84,27 @@ void Window::paintEvent(QPaintEvent* event)
             painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
         else
             painter.setPen(QPen(Qt::black, 2, Qt::SolidLine));
+        CircleWidget* startCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(pStart.GetPosition().first, pStart.GetPosition().second)->widget());
+        CircleWidget* endCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(pEnd.GetPosition().first, pEnd.GetPosition().second)->widget());
 
-        painter.drawLine(pStart.GetPosition().second * 30 + 45, pStart.GetPosition().first * 30 + 45,
-            pEnd.GetPosition().second * 30 + 45, pEnd.GetPosition().first * 30 + 45);
+        // Calculate the center based on the position within the layout
+        QPoint startCenter = startCircle->mapToParent(startCircle->rect().center());
+        QPoint endCenter = endCircle->mapToParent(endCircle->rect().center());
+
+        painter.drawLine(startCenter, endCenter);
+    }
+    needRepaint = false;
+}
+
+void Window::paintEvent(QPaintEvent* event)
+{
+    Q_UNUSED(event);
+
+    if (needRepaint)
+    {
+        QPainter painter(this);
+        painter.eraseRect(rect());
+        drawBridges(painter);
     }
 }
 void Window::onCircleClick()
@@ -111,6 +124,7 @@ void Window::onCircleClick()
         for (auto it : g->getEndingPillars())
             g->bfs(it);
         clickedCircle->setColor(newColor);
+        needRepaint = true;
         update();
     }
     catch (std::invalid_argument& exception)
