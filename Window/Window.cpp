@@ -26,6 +26,9 @@ void Window::setupUi()
     QPushButton* newGameButton = new QPushButton("New Game", this);
     connect(newGameButton, &QPushButton::clicked, this, &Window::newGame);
     layout->addWidget(newGameButton, 0, 0);
+    QPushButton* loadGameButton = new QPushButton("Load Game", this);
+    connect(loadGameButton, &QPushButton::clicked, this, &Window::loadGame);
+    layout->addWidget(loadGameButton, 1, 0);
 
 }
 void Window::newGame()
@@ -51,6 +54,46 @@ void Window::newGame()
     }
 }
 
+void Window::loadGame()
+{
+    QPainter painter(this);
+    clearLayout(layout);
+    update();
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    g = GameBoard::getInstance();
+    g->LoadGame();
+    auto game{ g->getMatrix() };
+    for (int i = 0; i < g->getSize(); i++)
+    {
+        for (int j = 0; j < g->getSize(); j++)
+        {   
+            CircleWidget* circleWidget = new CircleWidget();
+            circleWidget->setFixedSize(30, 30);
+            circleWidget->setProperty("row", i);
+            circleWidget->setProperty("column", j);
+            connect(circleWidget, &CircleWidget::clicked, this, &Window::onCircleClick);
+            if (game[i][j].has_value())
+            {
+                if (game[i][j].value().GetColor() == Color::RED)
+                {
+                    circleWidget->setColor(Qt::red);
+                }
+                else
+                {
+                    circleWidget->setColor(Qt::black);
+                }
+            }
+            else
+            {
+                circleWidget->setColor(Qt::white);
+            }
+            layout->addWidget(circleWidget, i, j);
+        }
+    }
+    needRepaint = true;
+    update();
+}
+
 void Window::clearLayout(QLayout* layout)
 {
     QLayoutItem* item;
@@ -61,10 +104,11 @@ void Window::clearLayout(QLayout* layout)
 }
 void Window::drawBridges(QPainter& painter)
 {
-    for (Bridge b : g->getBridges())
+    std::vector<Bridge> b = g->getBridges();
+    for (Bridge br : b)
     {
-        Pillar pStart = b.GetStartPillar();
-        Pillar pEnd = b.GetEndPillar();
+        Pillar pStart = br.GetStartPillar();
+        Pillar pEnd = br.GetEndPillar();
 
         if (pStart.GetColor() == Color::RED)
             painter.setPen(QPen(Qt::red, 2, Qt::SolidLine));
