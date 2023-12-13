@@ -8,26 +8,26 @@ void ConsoleRenderer::Render(GameBoard* gb)
     std::cout << "  ";
     for (int i = 1; i < GameBoard::kWidth; ++i)
     {
-        PrintCell(gb->getMatrix()[0][i]);
+        PrintCell(gb->GetMatrix()[0][i]);
     }
     std::cout << "\n  " << std::setfill('-') << std::setw(GameBoard::kWidth) << "\n";
 
     for (int i = 1; i < GameBoard::kWidth; ++i)
     {
-        PrintCell(gb->getMatrix()[i][0], true);
+        PrintCell(gb->GetMatrix()[i][0], true);
 
         for (int j = 1; j < GameBoard::kHeight; ++j)
         {
-            PrintCell(gb->getMatrix()[i][j]);
+            PrintCell(gb->GetMatrix()[i][j]);
         }
 
-        PrintCell(gb->getMatrix()[i][GameBoard::kHeight - 1], true, true);
+        PrintCell(gb->GetMatrix()[i][GameBoard::kHeight - 1], true, true);
     }
 
     std::cout << "  " << std::setfill('-') << std::setw(GameBoard::kWidth) << "\n";
     for (int i = 0; i < GameBoard::kWidth; ++i)
     {
-        PrintCell(gb->getMatrix()[GameBoard::kWidth - 1][i]);
+        PrintCell(gb->GetMatrix()[GameBoard::kWidth - 1][i]);
     }
     std::cout << "\nDimension: " << GameBoard::kWidth << "\n";
 }
@@ -55,9 +55,9 @@ void ConsoleRenderer::PrintCell(const std::optional<Pillar>& cell, bool withBord
     }
 }
 
-void ConsoleRenderer::TakeInput(GameBoard* gb)
+void ConsoleRenderer::TakeInput(GameBoard* gameBoard)
 {
-    if (gb->PlayerTurn())
+    if (gameBoard->GetPlayerTurn())
         std::cout << "Red player's turn\n";
     else
         std::cout << "Black player's turn\n";
@@ -67,10 +67,10 @@ void ConsoleRenderer::TakeInput(GameBoard* gb)
     //place pillar and switch player
     try
     {
-        gb->PlacePillar(x, y);
-        gb->EndingPillarsInit();
-        for (auto it : gb->getEndingPillars())
-            gb->bfs(it);
+        gameBoard->PlacePillar(x, y);
+        gameBoard->InitEndPillars();
+        for (auto it : gameBoard->GetEndPillars())
+            gameBoard->BFS(it);
     }
     catch (std::invalid_argument& exception)
     {

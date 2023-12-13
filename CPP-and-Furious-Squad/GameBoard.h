@@ -1,114 +1,101 @@
 #pragma once
-#include"Pillar.h"
-#include"Bridge.h"
-#include"Utils.h"
-#include<iostream>
-#include<vector>
-#include<memory>	
-#include<optional>
-#include<array>
+#include "Pillar.h"
+#include "Bridge.h"
+#include "Utils.h"
+#include <iostream>
+#include <vector>
+#include <memory>	
+#include <optional>
+#include <array>
+
 class GameBoard
 {
 public:
 	static constexpr size_t kWidth{ 5 };
 	static constexpr size_t kHeight{ 5 };
 private:
-	bool playerTurn = true;
-	bool invalid = false;
-	std::array<std::array<std::optional<Pillar>, kWidth>, kHeight> s_matrix;
-	std::vector <Bridge>s_bridges;
-	std::vector<std::vector<Pillar>>ListaAdiacenta;
-	std::vector<std::vector<Pillar>> s_redPaths;
-	std::vector<std::vector<Pillar>> s_blackPaths;
-	std::vector<Pillar> s_pillars;
-	std::vector<Pillar> s_redPillars;
-	std::vector<Pillar> s_blackPillars;
-	std::vector<Pillar>endingPillars;
+	bool m_playerTurn = true;
+	bool m_invalid = false;
+	std::array<std::array<std::optional<Pillar>, kWidth>, kHeight> m_matrix;
+	std::vector<std::vector<Pillar>> m_adjacencyList;
+	std::vector<std::vector<Pillar>> m_redPaths;
+	std::vector<std::vector<Pillar>> m_blackPaths;
+	std::vector<Pillar> m_redPillars;
+	std::vector<Pillar> m_blackPillars;
+	std::vector<Bridge> m_bridges;
+	std::vector<Pillar> m_endPillars;
 	static GameBoard* instance;
+
 	GameBoard();
 	void PlacePillar(const Pillar& pillar);
 public:
-	GameBoard(const GameBoard& obj) = delete;
-	static GameBoard* getInstance();
+	static GameBoard* GetInstance();
+
+	GameBoard(const GameBoard& other) = delete;
+	GameBoard& operator=(const GameBoard& other) = delete;
 	~GameBoard() = default;
 
-	//getR/setR
-	uint16_t getSize();
-	std::array<std::array<std::optional<Pillar>, kWidth>, kHeight>getMatrix();
-	std::vector<Bridge>getBridges();
-	void setSize(uint16_t size);
-	void setMatrix(std::vector<std::vector<std::optional<Pillar>>>matrix);
-	void setBridges(std::vector<Bridge> bridges);
-	void setInvalid(bool invalid);
-	std::vector<std::vector<Pillar>> getListaAdiacenta();
-	std::vector<std::vector<Pillar>> getRedPaths();
-	std::vector<std::vector<Pillar>> getBlackPaths();
-	std::vector<Pillar>getEndingPillars();
-	std::vector<Pillar> getPillars();
-	std::vector<Pillar> getRedPillars();
-	std::vector<Pillar> getBlackPillars();
-	bool getPlayerTurn();
-	void switchPlayerTurn();
+	// Getters and Setters
+	uint16_t GetWidth();
+	uint16_t GetHeight();
+	bool GetPlayerTurn();
+	bool GetInvalid();
+	const std::array<std::array<std::optional<Pillar>, kWidth>, kHeight>& GetMatrix();
+	const std::vector<std::vector<Pillar>>& GetAdjacencyList();
+	const std::vector<std::vector<Pillar>>& GetRedPaths();
+	const std::vector<std::vector<Pillar>>& GetBlackPaths();
+	const std::vector<Pillar>& GetRedPillars();
+	const std::vector<Pillar>& GetBlackPillars();
+	const std::vector<Bridge>& GetBridges();
+	const std::vector<Pillar>& GetEndPillars();
+	void SetPlayerTurn(bool playerTurn);
+	void SetInvalid(bool invalid);
+	void SetMatrix(const std::array<std::array<std::optional<Pillar>, kWidth>, kHeight>& matrix);
+	void SetAdjacencyList(const std::vector<std::vector<Pillar>>& adjacencyList);
+	void SetRedPaths(const std::vector<std::vector<Pillar>>& redPaths);
+	void SetBlackPaths(const std::vector<std::vector<Pillar>>& blackPaths);
+	void SetRedPillars(const std::vector<Pillar>& redPillars);
+	void SetBlackPillars(const std::vector<Pillar>& blackPillars);
+	void SetBridges(const std::vector<Bridge>& bridges);
+	void SetEndPillars(const std::vector<Pillar>& endPillars);
 
-	//logic methods
+	// Logic methods
+	void SwitchPlayerTurn();
+	void InitAdjacencyList();
+	void UpdateAdjacencyList();
+	void BFS(const Pillar& start);
+	bool CheckWin(Color playerColor);
+	void InitEndPillars();
+	uint16_t GetAvailablePieces(IPiece* pieceType, Color color);
+
+	// Player move methods
 	void PlacePillar(uint16_t row, uint16_t column);
 	void ProcessNextMove(Pillar& newPillar);
-	void ProcessPlayerMove(const Position& newPillarPosition, Color playerColor, const std::string& errorMessage, const std::vector<std::pair<int16_t, int16_t>>& bridgeAllowedOffsets, Pillar& newPillar);
-	void PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
-	void PlaceRandomBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
+	void ValidateNewPillarPlacement(const Pillar& newPillar, Color playerColor);
+	const std::vector<Bridge>& ProcessBridgesForNewPillar(const Pillar& newPillar);
+	void UpdateAvailablePieces(const std::vector<Bridge>& newBridges, const Pillar& newPillar);
+	void RemovePillar(uint16_t row, uint16_t column);
+
+	// Check intersection methods
 	bool CheckNoIntersections();
 	bool Intersects(const Bridge& bridge1, const Bridge& bridge2);
 	bool IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2);
-	bool IntersectsOnAxis(int start1, int end1, int start2, int end2);
-	bool PlayerTurn();
-	uint16_t GetAvailablePieces(IPiece* pieceType, Color color);
+	bool IntersectsOnAxis(size_t start1, size_t end1, size_t start2, size_t end2);
 
-
-	void RemovePillar(uint16_t row, uint16_t column);
+	// Game flow methods
 	bool IsFreeFoundation(uint16_t row, uint16_t column);
-	void ResetGame();
-	void SaveGame();
 	void LoadGame();
-	void ListaAdiacentaInit();
-	void ListaAdiacentaUpdate();
-	void bfs(const Pillar& start);
-	bool checkWin(Color playerColor);
-	void EndingPillarsInit();
+	void LoadPillarsFromFile(const std::string& filename);
+	void LoadBridgesFromFile(const std::string& filename);
+	void SaveGame();
+	void ResetGame();
 
-	// related to AI player
+	// Related to AI player
 	int64_t GetHashWithPosition(const Position& position) const;
 
-	// overloaded operator
+	// Overloaded operators
 	std::optional<Pillar>& operator[](const Position& position);
 	const std::optional<Pillar>& operator[](const Position& position) const;
 
-	friend std::ostream& operator<<(std::ostream& out, const GameBoard& gb)
-	{
-		for (uint16_t i = 0; i < gb.kWidth; i++)
-		{
-			for (uint16_t j = 0; j < gb.kHeight; j++)
-			{
-				if (i == 0 && j == 0 || i == 0 && j == kHeight - 1 || i == kWidth - 1 && j == 0 || i == kWidth - 1 && j == kHeight - 1)
-				{
-					out << "   ";
-				}
-				else
-				{
-					if (!gb.s_matrix[i][j].has_value())
-						out << 0 << "  ";
-					else
-					{
-						if (gb.s_matrix[i][j].value().GetColor() == Color::RED)
-							out << 1 << "  ";
-						else
-							out << 2 << "  ";
-					}
-				}
-			}
-			out << "\n\n";
-		}
-		return out;
-	}
+	friend std::ostream& operator<<(std::ostream& out, const GameBoard& gameBoard);
 };
-
-

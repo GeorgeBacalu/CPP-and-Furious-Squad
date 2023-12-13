@@ -8,8 +8,6 @@ Bridge::Bridge() : m_startPillar{ pillar }, m_endPillar{ pillar }
 
 Bridge::Bridge(const Pillar& startPillar, const Pillar& endPillar) : m_startPillar{ startPillar }, m_endPillar{ endPillar }
 {
-	if (!IsValid())
-		throw std::invalid_argument("Can't build bridge between this pillars.");
 }
 
 Bridge::Bridge(const Bridge& other) : Bridge{ other.m_startPillar, other.m_endPillar }

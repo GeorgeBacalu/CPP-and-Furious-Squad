@@ -6,7 +6,7 @@
 #include <iostream>
 import RandareConsola;
 
-void TwixtGame::Run() 
+void TwixtGame::Run()
 {
 	std::ofstream fout{ "game-board.prodb" };
 	std::vector<Pillar> pillars;
@@ -36,65 +36,68 @@ void TwixtGame::Run()
 	displayBridges(bridges);
 	system("pause");
 
-	GameBoard* gb = GameBoard::getInstance();
+	GameBoard* gameBoard = GameBoard::GetInstance();
 	std::vector<std::vector<std::optional<Pillar>>> matrix(GameBoard::kWidth);
 	for (int i = 0; i < GameBoard::kWidth; ++i)
 		matrix[i].resize(GameBoard::kWidth);
 
-	for (auto pi : pillars)
-		matrix[pi.GetPosition().first][pi.GetPosition().second] = pi;
-	//gb->setMatrix(matrix);
+	for (auto pillar : pillars)
+	{
+		const auto& [row, column] = pillar.GetPosition();
+		matrix[row][column] = pillar;
+	}
+	//gameBoard->setMatrix(matrix);
 
 	while (true)
 	{
 		//add key listener
-		ConsoleRenderer::Render(gb);
-		ConsoleRenderer::TakeInput(gb);
-		if (gb->checkWin(Color::BLACK))
+		ConsoleRenderer::Render(gameBoard);
+		ConsoleRenderer::TakeInput(gameBoard);
+		if (gameBoard->CheckWin(Color::BLACK))
 		{
-			ConsoleRenderer::Render(gb);
+			ConsoleRenderer::Render(gameBoard);
 			std::cout << "Black wins!\n";
 			break;
 		}
-		if (gb->checkWin(Color::RED))
+		if (gameBoard->CheckWin(Color::RED))
 		{
-			ConsoleRenderer::Render(gb);
+			ConsoleRenderer::Render(gameBoard);
 			std::cout << "Red wins!\n";
 			break;
 		}
 	}
 
-	//gb->ListaAdiacentaInit();
-	//for (auto it : gb->getListaAdiacenta())
+	//gameBoard->ListaAdiacentaInit();
+	//for (auto it : gameBoard->getListaAdiacenta())
 	//{
 	//	for (auto it2 : it)
 	//		std::cout << it2 << ' ';
 	//	std::cout << "\n";
 	//}
-	//gb->EndingPillarsInit();
-	//for (auto it : gb->getEndingPillars())
+	//gameBoard->EndingPillarsInit();
+	//for (auto it : gameBoard->getEndingPillars())
 	//{
-	//	gb->bfs(it);
+	//	gameBoard->bfs(it);
 	//}
 
 	//try
 	//{
-	//	gb->PlacePillar(2, 2); // red
-	//	gb->PlacePillar(21, 2); // black
-	//	gb->PlacePillar(6, 2); // red
-	//	gb->PlacePillar(17, 2); // black
-	//	gb->PlacePillar(4, 3); // red
-	//	gb->PlacePillar(19, 3); // black
-	//	displayBridges(gb->getBridges());
-	//	displayPillars(gb->getPillars());
+	//	gameBoard->PlacePillar(2, 2); // red
+	//	gameBoard->PlacePillar(21, 2); // black
+	//	gameBoard->PlacePillar(6, 2); // red
+	//	gameBoard->PlacePillar(17, 2); // black
+	//	gameBoard->PlacePillar(4, 3); // red
+	//	gameBoard->PlacePillar(19, 3); // black
+	//	displayBridges(gameBoard->getBridges());
+	//	displayPillars(gameBoard->getPillars());
 	//}
 	//catch (const std::invalid_argument& e)
 	//{
 	//	std::cerr << e.what() << std::endl;
-	//	gb->setInvalid(true);
+	//	gameBoard->setInvalid(true);
 	//}
 
-	//fout << *gb;
+	//fout << *gameBoard;
 }
 
 void TwixtGame::readPillars(std::vector<Pillar>& pillars)
@@ -112,9 +115,9 @@ void TwixtGame::readPillars(std::vector<Pillar>& pillars)
 			inPillar >> pillar;
 			pillars.push_back(pillar);
 		}
-		catch (const std::invalid_argument& e)
+		catch (const std::invalid_argument& exception)
 		{
-			std::cerr << e.what() << std::endl;
+			std::cerr << exception.what() << std::endl;
 			break;
 		}
 	}
@@ -135,9 +138,9 @@ void TwixtGame::readBridges(std::vector<Bridge>& bridges)
 			inBridge >> bridge;
 			bridges.push_back(bridge);
 		}
-		catch (const std::invalid_argument& e)
+		catch (const std::invalid_argument& exception)
 		{
-			std::cerr << e.what() << std::endl;
+			std::cerr << exception.what() << std::endl;
 			break;
 		}
 	}
