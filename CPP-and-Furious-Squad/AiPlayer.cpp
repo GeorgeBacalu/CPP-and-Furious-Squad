@@ -100,3 +100,8 @@ void AiPlayer::LoadPolicy() {
         m_stateActionCosts[stateActionHash] = estimation;
     }
 }
+
+void AiPlayer::SetPolicyName(std::string_view policyName)
+{
+	m_policyName = policyName;
+}
