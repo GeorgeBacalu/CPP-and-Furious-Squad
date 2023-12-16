@@ -68,6 +68,8 @@ public:
 	void InitEndPillars();
 	uint16_t GetAvailablePieces(IPiece* pieceType, Color color);
 
+	const bool IsPositionValid(const Position& position);
+
 	// Player move methods
 	void PlacePillar(uint16_t row, uint16_t column);
 	void ProcessNextMove(Pillar& newPillar);

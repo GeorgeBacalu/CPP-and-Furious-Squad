@@ -1,4 +1,5 @@
 #include "TwixtGame.h"
+#include "AiPlayer.h"
 //#include "ConsoleRenderer.h"
 #include <fstream>
 #include <thread>
@@ -48,11 +49,14 @@ void TwixtGame::Run()
 	}
 	//gameBoard->setMatrix(matrix);
 
+	AiPlayer aiPlayer{ *gameBoard, "Ai_rewards.txt" };
+
 	while (true)
 	{
 		//add key listener
 		ConsoleRenderer::Render(gameBoard);
-		ConsoleRenderer::TakeInput(gameBoard);
+		//ConsoleRenderer::TakeInput(gameBoard);
+		ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
 		if (gameBoard->CheckWin(Color::BLACK))
 		{
 			ConsoleRenderer::Render(gameBoard);

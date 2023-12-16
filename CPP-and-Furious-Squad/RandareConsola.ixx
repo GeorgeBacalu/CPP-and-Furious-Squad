@@ -1,4 +1,5 @@
 #include "GameBoard.h"
+#include "AiPlayer.h"
 
 export module RandareConsola;
 
@@ -10,4 +11,5 @@ public:
 	~ConsoleRenderer() = default;
 	static void Render(GameBoard* gb);
 	static void TakeInput(GameBoard* gb);
+	static void TakeInputWithAi(GameBoard* gb, AiPlayer* ai);
 };

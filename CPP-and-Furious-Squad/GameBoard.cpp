@@ -245,6 +245,12 @@ uint16_t GameBoard::GetAvailablePieces(IPiece* pieceType, Color color)
 	}
 }
 
+const bool GameBoard::IsPositionValid(const Position& position)
+{
+	const auto& [row, column] = position;
+	return row < kHeight && column < kWidth;
+}
+
 // Player move methods
 
 void GameBoard::PlacePillar(uint16_t row, uint16_t column)

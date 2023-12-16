@@ -9,6 +9,41 @@ ConsoleRenderer::ConsoleRenderer()
 {
 }
 
+void ConsoleRenderer::TakeInputWithAi(GameBoard* gb, AiPlayer* ai)
+{
+	int x, y;
+	if (gb->GetPlayerTurn())
+	{
+		std::cout << "Red player's turn\n";
+		std::cout << "Enter the coordinates of the pillar you want to place: ";
+		std::cin >> x >> y;
+	}
+	else
+	{
+		std::cout << "AI player's turn\n";
+		std::cout << "Enter the coordinates of the pillar you want to place: ";
+		const auto& [row, column] = ai->GetNextAction();
+		x = row;
+		y = column;
+		std::cout << x << " " << y << "\n";
+	}
+	//place pillar and switch player
+	try
+	{
+		gb->PlacePillar(x, y);
+		gb->InitEndPillars();
+		for (auto it : gb->GetEndPillars())
+			gb->BFS(it);
+	}
+	catch (std::invalid_argument& exception)
+	{
+		std::cerr << exception.what() << "\n";
+	}
+	//ai->FreeReward(0.0f);
+	//ai->FreeReward(0.0f);
+	//ai->FreeReward	
+}
+
 void ConsoleRenderer::Render(GameBoard* gameBoard)
 {
 	system("CLS");

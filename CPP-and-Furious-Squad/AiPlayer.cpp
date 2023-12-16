@@ -72,12 +72,12 @@ void AiPlayer::FreeReward(float target)
     m_previousStateActions.clear();
 }
 
-std::vector<Position> AiPlayer::GenerateActions(const GameBoard& gameBoard) {
+std::vector<Position> AiPlayer::GenerateActions(GameBoard& gameBoard) {
     std::vector<Position> possibleActions;
     for (uint32_t i = 0; i < GameBoard::kWidth; ++i)
         for (uint32_t j = 0; j < GameBoard::kHeight; ++j) {
             Position position = { i, j };
-            if (!gameBoard[position])
+            if (!gameBoard[position] && gameBoard.IsPositionValid(position))
                 possibleActions.emplace_back(position);
         }
     return possibleActions;
