@@ -1,14 +1,11 @@
 #include "GameBoard.h"
 #include "ConsoleRenderer.h"
-#include <fstream>
-#include <queue>
 
-int bridgeCount = 0;
-GameBoard* GameBoard::instance = nullptr;
-static uint16_t kAvailableRedPillars = 50;
-static uint16_t kAvailableBlackPillars = 50;
-static uint16_t kAvailableRedBridges = 50;
-static uint16_t kAvailableBlackBridges = 50;
+static GameBoard* instance = nullptr;
+static uint16_t kAvailableRedPillars{ 50 };
+static uint16_t kAvailableBlackPillars{ 50 };
+static uint16_t kAvailableRedBridges{ 50 };
+static uint16_t kAvailableBlackBridges{ 50 };
 
 GameBoard::GameBoard() : m_matrix{}, m_adjacencyList{ kWidth * kHeight }, m_redPaths{}, m_blackPaths{}, m_redPillars{}, m_blackPillars{}, m_bridges{}, m_endPillars{}
 {
@@ -95,9 +92,8 @@ void GameBoard::SetInvalid(bool invalid)
 
 void GameBoard::SetMatrix(const std::array<std::array<std::optional<Pillar>, kWidth>, kHeight>& matrix)
 {
-	for (size_t i = 0; i < kWidth; ++i)
-		for (size_t j = 0; j < kHeight; ++j)
-			m_matrix[i][j] = i < matrix.size() && j < matrix[i].size() ? matrix[i][j] : std::nullopt;
+	for (size_t row = 0; row < kHeight; ++row)
+		std::ranges::copy(matrix[row], m_matrix[row].begin());
 }
 
 void GameBoard::SetAdjacencyList(const std::vector<std::vector<Pillar>>& adjacencyList)
@@ -135,6 +131,56 @@ void GameBoard::SetEndPillars(const std::vector<Pillar>& endPillars)
 	m_endPillars = endPillars;
 }
 
+uint16_t GameBoard::GetAvailablePieces(IPiece* pieceType, Color color)
+{
+	return (dynamic_cast<Pillar*>(pieceType))
+		? (color == Color::RED ? kAvailableRedPillars : kAvailableBlackPillars)
+		: (color == Color::RED ? kAvailableRedBridges : kAvailableBlackBridges);
+}
+
+// Overloaded operators
+
+std::optional<Pillar>& GameBoard::operator[](const Position& position)
+{
+	const auto& [row, column] = position;
+	if (row > kHeight || column > kWidth)
+	{
+		m_invalid = true;
+		throw std::out_of_range("Position out of bounds");
+	}
+	return m_matrix[row][column];
+}
+
+const std::optional<Pillar>& GameBoard::operator[](const Position& position) const
+{
+	const auto& [row, column] = position;
+	if (row > kHeight || column > kWidth)
+	{
+		throw std::out_of_range("Position out of bounds");
+	}
+	return m_matrix[row][column];
+}
+
+std::ostream& operator<<(std::ostream& out, const GameBoard& gameBoard)
+{
+	size_t width = gameBoard.kWidth;
+	size_t height = gameBoard.kHeight;
+	for (size_t row = 0; row < width; row++)
+	{
+		for (size_t column = 0; column < height; column++)
+		{
+			if (row == 0 && column == 0 || row == 0 && column == height - 1 || row == width - 1 && column == 0 || row == width - 1 && column == height - 1)
+				out << "   ";
+			else if (!gameBoard.m_matrix[row][column].has_value())
+				out << 0 << "  ";
+			else
+				out << (gameBoard.m_matrix[row][column].value().GetColor() == Color::RED ? 1 : 2) << "  ";
+		}
+		out << "\n\n";
+	}
+	return out;
+}
+
 // Logic methods
 
 void GameBoard::SwitchPlayerTurn()
@@ -142,11 +188,18 @@ void GameBoard::SwitchPlayerTurn()
 	m_playerTurn = !m_playerTurn;
 }
 
+bool GameBoard::IsFreeFoundation(uint16_t row, uint16_t column)
+{
+	if ((row == 0 && column == 0) || (row == 0 && column == kWidth - 1) || (row == kHeight - 1 && column == 0) || (row == kHeight - 1 && column == kWidth - 1))
+		return false;
+	return !m_matrix[row][column].has_value();
+}
+
 void GameBoard::InitAdjacencyList()
 {
 	for (const auto& bridge : m_bridges)
 	{
-		++bridgeCount;
+		++nrBridges;
 		const auto& [startRow, startColumn] = bridge.GetStartPillar().GetPosition();
 		const auto& [endRow, endColumn] = bridge.GetEndPillar().GetPosition();
 		m_adjacencyList[startRow * kWidth + startColumn].push_back(bridge.GetEndPillar());
@@ -156,10 +209,10 @@ void GameBoard::InitAdjacencyList()
 
 void GameBoard::UpdateAdjacencyList()
 {
-	if (bridgeCount < m_bridges.size())
+	if (nrBridges < m_bridges.size())
 	{
 		const auto& lastBridge = m_bridges.back();
-		++bridgeCount;
+		++nrBridges;
 		const auto& [startRow, startColumn] = lastBridge.GetStartPillar().GetPosition();
 		const auto& [endRow, endColumn] = lastBridge.GetEndPillar().GetPosition();
 		m_adjacencyList[startRow * kWidth + startColumn].push_back(lastBridge.GetEndPillar());
@@ -222,27 +275,9 @@ void GameBoard::InitEndPillars()
 {
 	//generate endPillars from m_matrix
 	for (uint16_t row = 0; row < kWidth; ++row)
-	{
 		for (uint16_t column = 0; column < kHeight; ++column)
-		{
-			if (m_matrix[row][column].has_value())
-			{
-				if (row == 0 || row == kHeight - 1 || column == 0 || column == kWidth - 1)
-					m_endPillars.push_back(m_matrix[row][column].value());
-			}
-		}
-	}
-}
-
-uint16_t GameBoard::GetAvailablePieces(IPiece* pieceType, Color color)
-{
-	if (dynamic_cast<Pillar*>(pieceType))
-	{
-		return color == Color::RED ? kAvailableRedPillars : kAvailableBlackPillars;
-	}
-	else {
-		return color == Color::RED ? kAvailableRedBridges : kAvailableBlackBridges;
-	}
+			if (m_matrix[row][column].has_value() && (row == 0 || row == kHeight - 1 || column == 0 || column == kWidth - 1))
+				m_endPillars.push_back(m_matrix[row][column].value());
 }
 
 // Player move methods
@@ -251,21 +286,12 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 {
 	if (IsFreeFoundation(row, column))
 	{
-		Pillar pillar;
-		pillar.SetPosition({ row, column });
-		if (m_playerTurn)
-			pillar.SetColor(Color::RED);
-		else
-			pillar.SetColor(Color::BLACK);
+		Pillar pillar{ {row, column}, m_playerTurn ? Color::RED : Color::BLACK };
 		ProcessNextMove(pillar);
-
 		if (m_invalid == false)
 		{
 			m_matrix[row][column] = std::optional<Pillar>{ pillar };
-			if (m_playerTurn)
-				m_redPillars.push_back(pillar);
-			else
-				m_blackPillars.push_back(pillar);
+			m_playerTurn ? m_redPillars.push_back(pillar) : m_blackPillars.push_back(pillar);
 		}
 	}
 	else
@@ -279,9 +305,7 @@ void GameBoard::ProcessNextMove(Pillar& newPillar)
 {
 	Color playerColor = newPillar.GetColor();
 	ValidateNewPillarPlacement(newPillar, playerColor);
-
 	std::vector<Bridge> newBridges = ProcessBridgesForNewPillar(newPillar);
-
 	UpdateAvailablePieces(newBridges, newPillar);
 	SwitchPlayerTurn();
 }
@@ -289,46 +313,37 @@ void GameBoard::ProcessNextMove(Pillar& newPillar)
 void GameBoard::ValidateNewPillarPlacement(const Pillar& newPillar, Color playerColor)
 {
 	const auto& [newRow, newColumn] = newPillar.GetPosition();
+	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets{ {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
 
 	if ((newRow == 0 || newRow == kHeight - 1) && (newColumn == 0 || newColumn == kWidth - 1))
 	{
 		m_invalid = true;
 		throw std::invalid_argument("Can't place pillar on any board corner!");
 	}
-
-	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets{ {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
-
-
-
-	// exclude first and last columns or rows
 	if ((playerColor == Color::RED && (newColumn == 0 || newColumn == kWidth - 1)) ||
 		(playerColor == Color::BLACK && (newRow == 0 || newRow == kHeight - 1)))
 	{
 		m_invalid = true;
-		if (playerColor == Color::RED)
-			throw std::invalid_argument("Red player can't place pillar on first or last column!");
-		else
-			throw std::invalid_argument("Black player can't place pillar on first or last row!");
+		throw std::invalid_argument(playerColor == Color::RED ? "Red player can't place pillar on first or last column!" : "Black player can't place pillar on first or last row!");
 	}
 }
 
 const std::vector<Bridge>& GameBoard::ProcessBridgesForNewPillar(const Pillar& newPillar)
 {
 	const auto& [newRow, newColumn] = newPillar.GetPosition();
-
-	Color playerColor = newPillar.GetColor();
-
-	std::vector<Pillar> playerPillars = (playerColor == Color::RED) ? m_redPillars : m_blackPillars;
-
+	std::vector<Pillar> playerPillars = (newPillar.GetColor() == Color::RED) ? m_redPillars : m_blackPillars;
 	const std::vector<std::pair<int16_t, int16_t>> bridgeAllowedOffsets{ {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
-
 	std::vector<Bridge> newBridges;
-	for (auto& currentPillar : playerPillars) {
-		// evaluate if current pillar can form a bridge with the one that is being added
+
+	for (auto& currentPillar : playerPillars)
+	{
 		const auto& [currentRow, currentColumn] = currentPillar.GetPosition();
-		for (const auto& [offsetX, offsetY] : bridgeAllowedOffsets) {
-			if (currentRow + offsetX == newRow && currentColumn + offsetY == newColumn) {
-				if (CheckNoIntersections()) {
+		for (const auto& [offsetX, offsetY] : bridgeAllowedOffsets)
+		{
+			if (currentRow + offsetX == newRow && currentColumn + offsetY == newColumn)
+			{
+				if (CheckNoIntersections())
+				{
 					newBridges.emplace_back(currentPillar, newPillar);
 					break;
 				}
@@ -347,30 +362,21 @@ void GameBoard::UpdateAvailablePieces(const std::vector<Bridge>& newBridges, con
 		auto& availableBridges = (playerColor == Color::RED) ? kAvailableRedBridges : kAvailableBlackBridges;
 		if (availableBridges - newBridges.size() < 0)
 		{
-			std::vector<Bridge> chosenBridges;
-			if (playerColor == Color::RED)
-				chosenBridges = ConsoleRenderer::PlaceBridgesFromOptions(newBridges, availableBridges);
-			else
-				chosenBridges = ConsoleRenderer::PlaceRandomBridgesFromOptions(newBridges, availableBridges);
+			std::vector<Bridge> chosenBridges = playerColor == Color::RED ? ConsoleRenderer::PlaceBridgesFromOptions(newBridges, availableBridges) : ConsoleRenderer::PlaceRandomBridgesFromOptions(newBridges, availableBridges);
 			availableBridges = 0;
+			m_bridges.insert(m_bridges.end(), chosenBridges.begin(), chosenBridges.end());
 			for (const auto& bridge : chosenBridges)
-			{
 				m_bridges.push_back(bridge);
-			}
 		}
 	}
-
-	if (m_playerTurn)
-		--kAvailableRedPillars;
-	else
-		--kAvailableBlackPillars;
+	m_playerTurn ? --kAvailableRedPillars : --kAvailableBlackPillars;
 }
 
 void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 {
 	if (!IsFreeFoundation(row, column))
 	{
-		m_matrix[row][column] = std::optional<Pillar>{};
+		m_matrix[row][column] = std::nullopt;
 		for (auto it = m_bridges.begin(); it != m_bridges.end();)
 		{
 			if (it->GetEndPillar().GetPosition() == Position{ row,column } || it->GetStartPillar().GetPosition() == Position{ row,column })
@@ -392,15 +398,10 @@ bool GameBoard::CheckNoIntersections()
 {
 	if (m_bridges.empty())
 		return true;
-
 	Bridge newBridge = m_bridges.back();
-
 	for (const auto& existingBridge : m_bridges)
-	{
 		if (Intersects(existingBridge, newBridge))
 			return false;
-	}
-
 	return true;
 }
 
@@ -410,7 +411,6 @@ bool GameBoard::Intersects(const Bridge& bridge1, const Bridge& bridge2)
 	const auto& end1 = bridge1.GetEndPillar().GetPosition();
 	const auto& start2 = bridge2.GetStartPillar().GetPosition();
 	const auto& end2 = bridge2.GetEndPillar().GetPosition();
-
 	return (start1 == start2 || start1 == end2 || end1 == start2 || end1 == end2) && IntersectsOnSameAxis(bridge1, bridge2);
 }
 
@@ -422,13 +422,9 @@ bool GameBoard::IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge
 	const auto& [endRow2, endColumn2] = bridge2.GetEndPillar().GetPosition();
 
 	if (startRow1 == endRow1)
-	{
 		return startRow2 == endRow2 && startRow1 == startRow2 && IntersectsOnAxis(startColumn1, endColumn1, startColumn2, endColumn2);
-	}
 	else if (startColumn1 == endColumn1)
-	{
 		return startColumn2 == endColumn2 && startColumn1 == startColumn2 && IntersectsOnAxis(startRow1, endRow1, startRow2, endRow2);
-	}
 	return false;
 }
 
@@ -438,13 +434,6 @@ bool GameBoard::IntersectsOnAxis(size_t start1, size_t end1, size_t start2, size
 }
 
 // Game flow methods
-
-bool GameBoard::IsFreeFoundation(uint16_t row, uint16_t column)
-{
-	if ((row == 0 && column == 0) || (row == 0 && column == kWidth - 1) || (row == kHeight - 1 && column == 0) || row == kHeight - 1 && column == kWidth - 1)
-		return false;
-	return !m_matrix[row][column].has_value();
-}
 
 void GameBoard::LoadGame()
 {
@@ -457,7 +446,6 @@ void GameBoard::LoadPillarsFromFile(const std::string& filename)
 {
 	std::ifstream fp{ filename };
 	Pillar pillar;
-
 	while (fp >> pillar)
 	{
 		try
@@ -478,7 +466,6 @@ void GameBoard::LoadBridgesFromFile(const std::string& filename)
 {
 	std::ifstream fb{ filename };
 	Bridge bridge;
-
 	while (fb >> bridge)
 	{
 		try
@@ -518,14 +505,9 @@ void GameBoard::ResetGame()
 	std::cout << "1 for yes , 0 for no";
 	bool ok;
 	std::cin >> ok;*/
-	if (true)
-	{
-		for (uint16_t i = 0; i < kWidth; ++i)
-		{
-			for (uint16_t j = 0; j < kHeight; ++j)
-				m_matrix[i][j] = std::optional<Pillar>{};
-		}
-	}
+	for (uint16_t i = 0; i < kWidth; ++i)
+		for (uint16_t j = 0; j < kHeight; ++j)
+			m_matrix[i][j] = std::optional<Pillar>{};
 	m_adjacencyList = std::vector<std::vector<Pillar>>{ kWidth * kHeight };
 	m_redPaths = {};
 	m_blackPaths = {};
@@ -538,7 +520,6 @@ void GameBoard::ResetGame()
 // Related to AI player
 
 int64_t GameBoard::GetHashWithPosition(const Position& position) const {
-	// TODO: implement hashing functionality
 	std::hash<int64_t> hasher;
 	int64_t hash = 0;
 	const auto& [row, column] = position;
@@ -548,56 +529,4 @@ int64_t GameBoard::GetHashWithPosition(const Position& position) const {
 		hash = hasher(static_cast<int64_t>(pillar.GetColor()));
 	}
 	return hash;
-}
-
-// Overloaded operators
-
-std::optional<Pillar>& GameBoard::operator[](const Position& position)
-{
-	const auto& [row, column] = position;
-	if (row > kHeight || column > kWidth)
-	{
-		m_invalid = true;
-		throw std::out_of_range("Position out of bounds");
-	}
-	return m_matrix[row][column];
-}
-
-const std::optional<Pillar>& GameBoard::operator[](const Position& position) const
-{
-	const auto& [row, column] = position;
-	if (row > kHeight || column > kWidth)
-	{
-		throw std::out_of_range("Position out of bounds");
-	}
-	return m_matrix[row][column];
-}
-
-std::ostream& operator<<(std::ostream& out, const GameBoard& gameBoard)
-{
-	size_t width = gameBoard.kWidth;
-	size_t height = gameBoard.kHeight;
-	for (size_t row = 0; row < width; row++)
-	{
-		for (size_t column = 0; column < height; column++)
-		{
-			if (row == 0 && column == 0 || row == 0 && column == height - 1 || row == width - 1 && column == 0 || row == width - 1 && column == height - 1)
-				out << "   ";
-			else
-			{
-				if (!gameBoard.m_matrix[row][column].has_value())
-					out << 0 << "  ";
-				else
-				{
-					Pillar pillar = gameBoard.m_matrix[row][column].value();
-					if (pillar.GetColor() == Color::RED)
-						out << 1 << "  ";
-					else
-						out << 2 << "  ";
-				}
-			}
-		}
-		out << "\n\n";
-	}
-	return out;
 }
