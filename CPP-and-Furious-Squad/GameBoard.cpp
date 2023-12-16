@@ -539,7 +539,15 @@ void GameBoard::ResetGame()
 
 int64_t GameBoard::GetHashWithPosition(const Position& position) const {
 	// TODO: implement hashing functionality
-	return 0;
+	std::hash<int64_t> hasher;
+	int64_t hash = 0;
+	const auto& [row, column] = position;
+	if (m_matrix[row][column].has_value())
+	{
+		Pillar pillar = m_matrix[row][column].value();
+		hash = hasher(static_cast<int64_t>(pillar.GetColor()));
+	}
+	return hash;
 }
 
 // Overloaded operators
