@@ -1,12 +1,11 @@
 #pragma once
-#include "Pillar.h"
 #include "Bridge.h"
-#include "Utils.h"
 #include <iostream>
+#include <fstream>
 #include <vector>
-#include <memory>	
-#include <optional>
 #include <array>
+#include <queue>
+#include <optional>
 
 class GameBoard
 {
@@ -14,8 +13,9 @@ public:
 	static constexpr size_t kWidth{ 5 };
 	static constexpr size_t kHeight{ 5 };
 private:
-	bool m_playerTurn = true;
-	bool m_invalid = false;
+	bool m_playerTurn{ true };
+	bool m_invalid{ false };
+	uint16_t nrBridges{ 0 };
 	std::array<std::array<std::optional<Pillar>, kWidth>, kHeight> m_matrix;
 	std::vector<std::vector<Pillar>> m_adjacencyList;
 	std::vector<std::vector<Pillar>> m_redPaths;
@@ -24,10 +24,8 @@ private:
 	std::vector<Pillar> m_blackPillars;
 	std::vector<Bridge> m_bridges;
 	std::vector<Pillar> m_endPillars;
-	static GameBoard* instance;
 
 	GameBoard();
-	void PlacePillar(const Pillar& pillar);
 public:
 	static GameBoard* GetInstance();
 
@@ -48,6 +46,7 @@ public:
 	const std::vector<Pillar>& GetBlackPillars();
 	const std::vector<Bridge>& GetBridges();
 	const std::vector<Pillar>& GetEndPillars();
+	uint16_t GetAvailablePieces(IPiece* pieceType, Color color);
 	void SetPlayerTurn(bool playerTurn);
 	void SetInvalid(bool invalid);
 	void SetMatrix(const std::array<std::array<std::optional<Pillar>, kWidth>, kHeight>& matrix);
@@ -59,14 +58,19 @@ public:
 	void SetBridges(const std::vector<Bridge>& bridges);
 	void SetEndPillars(const std::vector<Pillar>& endPillars);
 
+	// Overloaded operators
+	std::optional<Pillar>& operator[](const Position& position);
+	const std::optional<Pillar>& operator[](const Position& position) const;
+	friend std::ostream& operator<<(std::ostream& out, const GameBoard& gameBoard);
+
 	// Logic methods
 	void SwitchPlayerTurn();
+	bool IsFreeFoundation(uint16_t row, uint16_t column);
 	void InitAdjacencyList();
 	void UpdateAdjacencyList();
 	void BFS(const Pillar& start);
 	bool CheckWin(Color playerColor);
 	void InitEndPillars();
-	uint16_t GetAvailablePieces(IPiece* pieceType, Color color);
 
 	const bool IsPositionValid(const Position& position);
 
@@ -85,7 +89,6 @@ public:
 	bool IntersectsOnAxis(size_t start1, size_t end1, size_t start2, size_t end2);
 
 	// Game flow methods
-	bool IsFreeFoundation(uint16_t row, uint16_t column);
 	void LoadGame();
 	void LoadPillarsFromFile(const std::string& filename);
 	void LoadBridgesFromFile(const std::string& filename);
@@ -94,10 +97,4 @@ public:
 
 	// Related to AI player
 	int64_t GetHashWithPosition(const Position& position) const;
-
-	// Overloaded operators
-	std::optional<Pillar>& operator[](const Position& position);
-	const std::optional<Pillar>& operator[](const Position& position) const;
-
-	friend std::ostream& operator<<(std::ostream& out, const GameBoard& gameBoard);
 };
