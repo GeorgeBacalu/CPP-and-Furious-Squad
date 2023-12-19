@@ -143,7 +143,11 @@
     <ClInclude Include="Bridge.h" />
     <ClInclude Include="ConsoleRenderer.h" />
     <ClInclude Include="GameBoard.h" />
+    <ClInclude Include="GameBoardCore.h" />
+    <ClInclude Include="GameController.h" />
+    <ClInclude Include="GameIOManager.h" />
     <ClInclude Include="HumanPlayer.h" />
+    <ClInclude Include="IntersectionChecker.h" />
     <ClInclude Include="IPiece.h" />
     <ClInclude Include="IPlayer.h" />
     <ClInclude Include="Pillar.h" />
@@ -156,7 +160,11 @@
     <ClCompile Include="Bridge.cpp" />
     <ClCompile Include="ConsoleRenderer.cpp" />
     <ClCompile Include="GameBoard.cpp" />
+    <ClCompile Include="GameBoardCore.cpp" />
+    <ClCompile Include="GameController.cpp" />
+    <ClCompile Include="GameIOManager.cpp" />
     <ClCompile Include="HumanPlayer.cpp" />
+    <ClCompile Include="IntersectionChecker.cpp" />
     <ClCompile Include="Pillar.cpp" />
     <ClCompile Include="RandareConsola.cpp" />
     <ClCompile Include="RandareConsola.ixx" />

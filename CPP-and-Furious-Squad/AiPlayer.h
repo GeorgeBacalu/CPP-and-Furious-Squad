@@ -23,7 +23,6 @@ public:
 
 	Position GetNextAction() override;
 	std::string_view GetName() const override;
-	void SetPolicyName(std::string_view policyName);
 
 	void FreeReward(float target);
 };

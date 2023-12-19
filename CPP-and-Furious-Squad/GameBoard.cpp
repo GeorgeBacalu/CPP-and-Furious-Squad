@@ -251,10 +251,7 @@ void GameBoard::BFS(const Pillar& start)
 				queue.push(node);
 		}
 	}
-	if (start.GetColor() == Color::RED)
-		m_redPaths = paths;
-	else
-		m_blackPaths = paths;
+	start.GetColor() == Color::RED ? m_redPaths = paths : m_blackPaths = paths;
 }
 
 bool GameBoard::CheckWin(Color playerColor)
@@ -265,7 +262,7 @@ bool GameBoard::CheckWin(Color playerColor)
 		const auto& [startRow, startColumn] = path.front().GetPosition();
 		const auto& [endRow, endColumn] = path.back().GetPosition();
 		if (playerColor == Color::RED && ((startRow == 0 && endRow == kHeight - 1) || (startRow == kHeight - 1 && endRow == 0)) ||
-			(playerColor == Color::BLACK && ((startColumn == 0 && endColumn == kWidth - 1) || (startColumn == kWidth - 1 && endColumn == 0))))
+		   (playerColor == Color::BLACK && ((startColumn == 0 && endColumn == kWidth - 1) || (startColumn == kWidth - 1 && endColumn == 0))))
 			return true;
 	}
 	return false;
@@ -297,7 +294,7 @@ void GameBoard::PlacePillar(uint16_t row, uint16_t column)
 		if (m_invalid == false)
 		{
 			m_matrix[row][column] = std::optional<Pillar>{ pillar };
-			m_playerTurn ? m_redPillars.push_back(pillar) : m_blackPillars.push_back(pillar);
+			pillar.GetColor() == Color::RED ? m_redPillars.push_back(pillar) : m_blackPillars.push_back(pillar);
 		}
 	}
 	else
