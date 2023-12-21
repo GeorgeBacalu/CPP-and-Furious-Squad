@@ -331,7 +331,7 @@ void GameBoard::ValidateNewPillarPlacement(const Pillar& newPillar, Color player
 	}
 }
 
-const std::vector<Bridge>& GameBoard::ProcessBridgesForNewPillar(const Pillar& newPillar)
+std::vector<Bridge> GameBoard::ProcessBridgesForNewPillar(const Pillar& newPillar)
 {
 	const auto& [newRow, newColumn] = newPillar.GetPosition();
 	std::vector<Pillar> playerPillars = (newPillar.GetColor() == Color::RED) ? m_redPillars : m_blackPillars;
@@ -360,17 +360,23 @@ void GameBoard::UpdateAvailablePieces(const std::vector<Bridge>& newBridges, con
 {
 	Color playerColor = newPillar.GetColor();
 
+
 	if (newBridges.size() > 0)
 	{
 		auto& availableBridges = (playerColor == Color::RED) ? kAvailableRedBridges : kAvailableBlackBridges;
-		if (availableBridges - newBridges.size() < 0)
+		std::vector<Bridge> chosenBridges = playerColor == Color::RED ? ConsoleRenderer::PlaceRandomBridgesFromOptions(newBridges, newBridges.size()) : ConsoleRenderer::PlaceRandomBridgesFromOptions(newBridges, newBridges.size());
+		availableBridges -=  chosenBridges.size();
+		for (const auto& bridge : chosenBridges)
 		{
-			std::vector<Bridge> chosenBridges = playerColor == Color::RED ? ConsoleRenderer::PlaceBridgesFromOptions(newBridges, availableBridges) : ConsoleRenderer::PlaceRandomBridgesFromOptions(newBridges, availableBridges);
-			availableBridges = 0;
-			m_bridges.insert(m_bridges.end(), chosenBridges.begin(), chosenBridges.end());
-			for (const auto& bridge : chosenBridges)
+			if (availableBridges > 0)
+			{
 				m_bridges.push_back(bridge);
+				availableBridges--;
+			}
+			else
+				break;//rest of the checks to be implemented later 
 		}
+
 	}
 	m_playerTurn ? --kAvailableRedPillars : --kAvailableBlackPillars;
 }
@@ -449,10 +455,11 @@ void GameBoard::LoadPillarsFromFile(const std::string& filename)
 {
 	std::ifstream fp{ filename };
 	Pillar pillar;
-	while (fp >> pillar)
+	while (!fp.eof())
 	{
 		try
 		{
+			fp >> pillar;
 			const auto& [row, column] = pillar.GetPosition();
 			PlacePillar(row, column);
 		}
@@ -469,10 +476,11 @@ void GameBoard::LoadBridgesFromFile(const std::string& filename)
 {
 	std::ifstream fb{ filename };
 	Bridge bridge;
-	while (fb >> bridge)
+	while (!fb.eof())
 	{
 		try
 		{
+			fb >> bridge;
 			m_bridges.push_back(bridge);
 		}
 		catch (const std::invalid_argument& exception)

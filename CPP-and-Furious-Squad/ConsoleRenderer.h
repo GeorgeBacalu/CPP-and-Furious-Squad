@@ -14,6 +14,6 @@ public:
 	static void Render(GameBoard* gb);
 	static void PrintCell(const std::optional<Pillar>& cell, bool withBorder = false, bool endOfLine = false);
 	static void TakeInput(GameBoard* gb);
-	static const std::vector<Bridge>& PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
-	static const std::vector<Bridge>& PlaceRandomBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
+	static  std::vector<Bridge> PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
+	static  std::vector<Bridge> PlaceRandomBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
 };

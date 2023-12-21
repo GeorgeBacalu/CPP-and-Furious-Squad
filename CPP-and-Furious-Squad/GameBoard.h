@@ -78,7 +78,7 @@ public:
 	void PlacePillar(uint16_t row, uint16_t column);
 	void ProcessNextMove(Pillar& newPillar);
 	void ValidateNewPillarPlacement(const Pillar& newPillar, Color playerColor);
-	const std::vector<Bridge>& ProcessBridgesForNewPillar(const Pillar& newPillar);
+	std::vector<Bridge> ProcessBridgesForNewPillar(const Pillar& newPillar);
 	void UpdateAvailablePieces(const std::vector<Bridge>& newBridges, const Pillar& newPillar);
 	void RemovePillar(uint16_t row, uint16_t column);
 

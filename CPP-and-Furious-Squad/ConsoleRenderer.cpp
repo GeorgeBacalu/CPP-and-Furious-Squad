@@ -78,7 +78,7 @@ void ConsoleRenderer::TakeInput(GameBoard* gameBoard)
     }
 }
 
-const std::vector<Bridge>& ConsoleRenderer::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace) {
+std::vector<Bridge> ConsoleRenderer::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace) {
     std::vector<Bridge> chosenBridges;
     for (uint16_t i = 0; i < numToPlace; ++i) {
         uint16_t optionIndex;
@@ -93,7 +93,7 @@ const std::vector<Bridge>& ConsoleRenderer::PlaceBridgesFromOptions(const std::v
     return chosenBridges;
 }
 
-const std::vector<Bridge>& ConsoleRenderer::PlaceRandomBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace) {
+std::vector<Bridge> ConsoleRenderer::PlaceRandomBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace) {
     std::vector<Bridge> chosenBridges;
     std::random_device randomDevice;
     std::mt19937 randomEngine(randomDevice());
