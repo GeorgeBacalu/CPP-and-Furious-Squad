@@ -112,7 +112,7 @@
     <None Include="pillars.prodb" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CircleWidget.h" />
+    <QtMoc Include="CircleWidget.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

@@ -2,7 +2,14 @@
 #include <QMainWindow>
 #include <QGridLayout>
 #include <QLabel>
-#include<GameBoard.h>
+#include <QApplication>
+#include <QWidget>
+#include <QPalette>
+#include <QPainter>
+#include <qpen.h>
+#include <QPushButton>
+#include <GameBoard.h>
+#include"CircleWidget.h"
 
 class Window : public QMainWindow
 {
@@ -14,6 +21,7 @@ public:
     void setupUi();
     void drawBridges(QPainter& painter);
     void onCircleClick();
+    void onSaveClick();
     void paintEvent(QPaintEvent* event);
     void newGame();
     void loadGame();

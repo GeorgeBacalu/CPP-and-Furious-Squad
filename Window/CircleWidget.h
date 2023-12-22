@@ -17,7 +17,6 @@ public:
 
     void setColor(const QColor& newColor);
 
-protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event);
 

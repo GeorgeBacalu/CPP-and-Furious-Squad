@@ -464,12 +464,18 @@ void GameBoard::LoadPillarsFromFile(const std::string& filename)
 {
 	std::ifstream fp{ filename };
 	Pillar pillar;
+	uint16_t blackCounter{ 0 };
+	uint16_t redCounter{ 0 };
 	while (!fp.eof())
 	{
 		try
 		{
 			fp >> pillar;
 			PlacePillarFromFile(pillar);
+			if (pillar.GetColor() == Color::RED)
+				redCounter++;
+			else
+				blackCounter++;
 		}
 		catch (const std::invalid_argument& exception)
 		{
@@ -477,6 +483,10 @@ void GameBoard::LoadPillarsFromFile(const std::string& filename)
 			break;
 		}
 	}
+	if (redCounter >= blackCounter)
+		m_playerTurn = false;
+	else
+		m_playerTurn = true;
 	fp.close();
 }
 

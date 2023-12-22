@@ -1,15 +1,4 @@
 #include "Window.h"
-#include "GameBoard.h"
-#include "Bridge.h"
-#include "CircleWidget.h"
-#include <QApplication>
-#include <QWidget>
-#include <QGridLayout>
-#include <QLabel>
-#include <QPalette>
-#include <QPainter>
-#include <qpen.h>
-#include <QPushButton>
 
 Window::Window(QWidget* parent)
     : QMainWindow(parent)
@@ -36,12 +25,11 @@ void Window::newGame()
     clearLayout(layout);
     update();
     QPainter painter(this);
+    g = GameBoard::GetInstance();
     painter.setRenderHint(QPainter::Antialiasing, true);
-    g = GameBoard::getInstance();
-    auto game{ g->getMatrix() };
-    for (int i = 0; i < g->getSize(); i++)
+    for (int i = 0; i < g->GetWidth(); i++)
     {
-        for (int j = 0; j < g->getSize(); j++)
+        for (int j = 0; j < g->GetWidth(); j++)
         {
             CircleWidget* circleWidget = new CircleWidget();
             circleWidget->setFixedSize(30, 30);
@@ -52,6 +40,12 @@ void Window::newGame()
             layout->addWidget(circleWidget, i, j);
         }
     }
+    QPushButton* saveButton = new QPushButton("Save");
+    connect(saveButton, &QPushButton::clicked, this, &Window::onSaveClick);
+    layout->addWidget(saveButton, g->GetWidth(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
+
+    // Set the size constraint of the Save button
+    saveButton->setFixedSize(30 * g->GetWidth(), 30);
 }
 
 void Window::loadGame()
@@ -60,12 +54,12 @@ void Window::loadGame()
     clearLayout(layout);
     update();
     painter.setRenderHint(QPainter::Antialiasing, true);
-    g = GameBoard::getInstance();
+    g = GameBoard::GetInstance();
     g->LoadGame();
-    auto game{ g->getMatrix() };
-    for (int i = 0; i < g->getSize(); i++)
+    auto game{ g->GetMatrix() };
+    for (int i = 0; i < game.size(); i++)
     {
-        for (int j = 0; j < g->getSize(); j++)
+        for (int j = 0; j < game.size(); j++)
         {   
             CircleWidget* circleWidget = new CircleWidget();
             circleWidget->setFixedSize(30, 30);
@@ -104,7 +98,7 @@ void Window::clearLayout(QLayout* layout)
 }
 void Window::drawBridges(QPainter& painter)
 {
-    std::vector<Bridge> b = g->getBridges();
+    std::vector<Bridge> b = g->GetBridges();
     for (Bridge br : b)
     {
         Pillar pStart = br.GetStartPillar();
@@ -145,14 +139,14 @@ void Window::onCircleClick()
     int row = clickedCircle->property("row").toInt();
     int col = clickedCircle->property("column").toInt();
 
-    bool playerTurn = g->getPlayerTurn();
+    bool playerTurn = g->GetPlayerTurn();
     QColor newColor = (playerTurn) ? Qt::red : Qt::black;
     try
     {
         g->PlacePillar(row, col);
-        g->EndingPillarsInit();
-        for (auto it : g->getEndingPillars())
-            g->bfs(it);
+        g->InitEndPillars();
+        for (auto it : g->GetEndPillars())
+            g->BFS(it);
         clickedCircle->setColor(newColor);
         needRepaint = true;
         update();
@@ -161,6 +155,10 @@ void Window::onCircleClick()
     {
         std::cerr << exception.what() << "\n";
     }
+}
+void Window::onSaveClick()
+{
+    g->SaveGame();
 }
 
 

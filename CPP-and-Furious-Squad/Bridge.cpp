@@ -39,7 +39,7 @@ std::istream& operator>>(std::istream& in, Bridge& bridge)
 
 std::ostream& operator<<(std::ostream& out, const Bridge& bridge)
 {
-	return out << "Start pillar: " << bridge.m_startPillar << "End Pillar: " << bridge.m_endPillar << "\n";
+	return out << " " << bridge.m_startPillar << " " << bridge.m_endPillar << "\n";
 }
 
 const Pillar& Bridge::GetStartPillar() const
