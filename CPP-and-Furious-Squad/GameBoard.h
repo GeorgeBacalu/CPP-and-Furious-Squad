@@ -25,6 +25,7 @@ private:
 	std::vector<Bridge> m_bridges;
 	std::vector<Pillar> m_endPillars;
 
+	void PlacePillarFromFile(const Pillar& pillar);
 	GameBoard();
 public:
 	static GameBoard* GetInstance();

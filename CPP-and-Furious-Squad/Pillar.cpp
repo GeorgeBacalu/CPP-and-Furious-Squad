@@ -55,9 +55,15 @@ std::istream& operator>>(std::istream& in, Pillar& pillar)
 		throw std::invalid_argument("Error reading pillar input!");
 	}
 	const auto& [row, column] = pillar.m_position;
-	if (row >= Pillar::kHeight || column >= Pillar::kWidth || colorMap.find(colorString) == colorMap.end())
-		throw std::invalid_argument("Invalid pillar input!");
 	pillar.m_color = colorMap.at(colorString);
+	if (pillar.GetColor() == Color::BLACK)
+	{
+		if (row >= Pillar::kHeight|| row == 0 || colorMap.find(colorString) == colorMap.end())
+			throw std::invalid_argument("Invalid pillar input!");
+	}
+	else
+		if (column >= Pillar::kWidth || column == 0 || colorMap.find(colorString) == colorMap.end())
+			throw std::invalid_argument("Invalid pillar input!");
 	return in;
 }
 
@@ -65,7 +71,8 @@ std::ostream& operator<<(std::ostream& out, const Pillar& pillar)
 {
 	std::unordered_map<Color, std::string> colorMap{ {Color::RED, "RED"}, {Color::BLACK, "BLACK"} };
 	const auto& [row, column] = pillar.m_position;
-	return out << "Position: (" << row << ", " << column << "), Color: " << colorMap[pillar.m_color] << "\n";
+	//return out << "Position: (" << row << ", " << column << "), Color: " << colorMap[pillar.m_color] << "\n";
+	return out << row << " " << column << " " << colorMap[pillar.m_color]<<"\n";
 }
 
 bool Pillar::operator==(const Pillar& other) const

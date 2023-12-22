@@ -450,6 +450,15 @@ void GameBoard::LoadGame()
 	LoadPillarsFromFile("pillars.prodb");
 	LoadBridgesFromFile("bridges.prodb");
 }
+void GameBoard::PlacePillarFromFile(const Pillar& pillar)
+{
+	const auto& [row, column] = pillar.GetPosition();
+	if (IsFreeFoundation(row, column))
+		m_matrix[row][column] = std::optional<Pillar>{ pillar };
+	else
+		throw std::invalid_argument("Position is not valid");
+}
+
 
 void GameBoard::LoadPillarsFromFile(const std::string& filename)
 {
@@ -460,8 +469,7 @@ void GameBoard::LoadPillarsFromFile(const std::string& filename)
 		try
 		{
 			fp >> pillar;
-			const auto& [row, column] = pillar.GetPosition();
-			PlacePillar(row, column);
+			PlacePillarFromFile(pillar);
 		}
 		catch (const std::invalid_argument& exception)
 		{
