@@ -42,10 +42,8 @@ void Window::newGame()
     }
     QPushButton* saveButton = new QPushButton("Save");
     connect(saveButton, &QPushButton::clicked, this, &Window::onSaveClick);
-    layout->addWidget(saveButton, g->GetWidth(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
-
-    // Set the size constraint of the Save button
     saveButton->setFixedSize(30 * g->GetWidth(), 30);
+    layout->addWidget(saveButton, g->GetWidth(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
 }
 
 void Window::loadGame()
@@ -84,6 +82,10 @@ void Window::loadGame()
             layout->addWidget(circleWidget, i, j);
         }
     }
+    QPushButton* saveButton = new QPushButton("Save");
+    connect(saveButton, &QPushButton::clicked, this, &Window::onSaveClick);
+    saveButton->setFixedSize(30 * g->GetWidth(), 30);
+    layout->addWidget(saveButton, g->GetWidth(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
     needRepaint = true;
     update();
 }

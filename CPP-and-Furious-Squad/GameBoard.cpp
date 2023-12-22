@@ -454,7 +454,10 @@ void GameBoard::PlacePillarFromFile(const Pillar& pillar)
 {
 	const auto& [row, column] = pillar.GetPosition();
 	if (IsFreeFoundation(row, column))
+	{
 		m_matrix[row][column] = std::optional<Pillar>{ pillar };
+		pillar.GetColor() == Color::RED ? m_redPillars.push_back(pillar) : m_blackPillars.push_back(pillar);
+	}
 	else
 		throw std::invalid_argument("Position is not valid");
 }
@@ -483,7 +486,7 @@ void GameBoard::LoadPillarsFromFile(const std::string& filename)
 			break;
 		}
 	}
-	if (redCounter >= blackCounter)
+	if (redCounter > blackCounter)
 		m_playerTurn = false;
 	else
 		m_playerTurn = true;
