@@ -135,26 +135,35 @@ void Window::onCircleClick()
 {
     CircleWidget* clickedCircle = qobject_cast<CircleWidget*>(sender());
 
-    // Get the row and column of the clicked CircleWidget
     int row = clickedCircle->property("row").toInt();
     int col = clickedCircle->property("column").toInt();
 
     bool playerTurn = g->GetPlayerTurn();
+
     QColor newColor = (playerTurn) ? Qt::red : Qt::black;
     try
     {
-        g->PlacePillar(row, col);
+        Pillar p;
+        p.SetPosition(Position(row, col));
+        p.SetColor((playerTurn) ? Color::RED : Color::BLACK);
+        std::vector<Bridge> newBridges{ g->ProcessNextMoveQT(p) };
+        std::vector<Bridge> chosenBridges{ PlaceBridgesFromOptions(newBridges, newBridges.size()) };
+        std::vector<Bridge> bridges = g->GetBridges();
+        bridges.insert(bridges.end(), chosenBridges.begin(), chosenBridges.end());
+        g->SetBridges(bridges);
+        g->PlacePillarQT(row, col);
         g->InitEndPillars();
         for (auto it : g->GetEndPillars())
             g->BFS(it);
         clickedCircle->setColor(newColor);
-        needRepaint = true;
-        update();
+        QCoreApplication::processEvents();
     }
     catch (std::invalid_argument& exception)
     {
         std::cerr << exception.what() << "\n";
     }
+    needRepaint = true;
+    update();
 }
 void Window::onSaveClick()
 {

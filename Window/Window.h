@@ -9,6 +9,7 @@
 #include <qpen.h>
 #include <QPushButton>
 #include <GameBoard.h>
+#include"BridgeOptions.h"
 #include"CircleWidget.h"
 
 class Window : public QMainWindow
@@ -26,6 +27,7 @@ public:
     void newGame();
     void loadGame();
     void clearLayout(QLayout * layout);
+    std::vector<Bridge>PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
 private:
     QGridLayout* layout;
     GameBoard* g;
