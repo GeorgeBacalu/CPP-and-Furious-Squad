@@ -30,7 +30,12 @@ TEST_F(GameBoardTest, SwitchPlayerTurn) {
     ASSERT_NE(initialTurn, gameBoard->GetPlayerTurn());
 }
 
-// Add more test cases for other methods as needed
+// Test case for the ProcessNextMove method
+TEST_F(GameBoardTest, ProcessNextMove) {
+    Pillar newPillar{ {1, 2}, Color::RED };
+    ASSERT_NO_THROW(gameBoard->ProcessNextMove(newPillar));
+    // Add more assertions as needed
+}
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
