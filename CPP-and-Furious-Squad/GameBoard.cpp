@@ -380,6 +380,33 @@ void GameBoard::UpdateAvailablePieces(const std::vector<Bridge>& newBridges, con
 	}
 	m_playerTurn ? --kAvailableRedPillars : --kAvailableBlackPillars;
 }
+void GameBoard::PlacePillarQT(uint16_t row, uint16_t column)
+{
+	m_invalid = false;
+	if (IsFreeFoundation(row, column))
+	{
+		Pillar pillar{ {row, column}, m_playerTurn ? Color::RED : Color::BLACK };
+
+		if (m_invalid == false)
+		{
+			m_matrix[row][column] = std::optional<Pillar>{ pillar };
+			pillar.GetColor() == Color::RED ? m_redPillars.push_back(pillar) : m_blackPillars.push_back(pillar);
+			SwitchPlayerTurn();
+		}
+	}
+	else
+	{
+		m_invalid = true;
+		throw std::invalid_argument("Position is not valid");
+	}
+}
+std::vector<Bridge> GameBoard::ProcessNextMoveQT(Pillar& newPillar)
+{
+	Color playerColor = newPillar.GetColor();
+	ValidateNewPillarPlacement(newPillar, playerColor);
+	std::vector<Bridge> newBridges = ProcessBridgesForNewPillar(newPillar);
+	return newBridges;
+}
 
 void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 {

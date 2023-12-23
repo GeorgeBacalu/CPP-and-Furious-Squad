@@ -82,6 +82,9 @@ public:
 	std::vector<Bridge> ProcessBridgesForNewPillar(const Pillar& newPillar);
 	void UpdateAvailablePieces(const std::vector<Bridge>& newBridges, const Pillar& newPillar);
 	void RemovePillar(uint16_t row, uint16_t column);
+	//QT player move methods
+	void PlacePillarQT(uint16_t row, uint16_t column);
+	std::vector<Bridge> ProcessNextMoveQT(Pillar& newPillar);
 
 	// Check intersection methods
 	bool CheckNoIntersections();
