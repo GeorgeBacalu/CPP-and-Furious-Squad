@@ -112,8 +112,6 @@ void Window::drawBridges(QPainter& painter)
             painter.setPen(QPen(Qt::black, 2, Qt::SolidLine));
         CircleWidget* startCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(pStart.GetPosition().first, pStart.GetPosition().second)->widget());
         CircleWidget* endCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(pEnd.GetPosition().first, pEnd.GetPosition().second)->widget());
-
-        // Calculate the center based on the position within the layout
         QPoint startCenter = startCircle->mapToParent(startCircle->rect().center());
         QPoint endCenter = endCircle->mapToParent(endCircle->rect().center());
 
@@ -163,6 +161,31 @@ void Window::onSaveClick()
     g->SaveGame();
 }
 
-
+std::vector<Bridge> Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace)
+{
+    std::vector<Bridge> chosenBridges;
+    if (bridgeOptions.size() > 0)
+    {
+        BridgeOptions dialog;
+        dialog.setMessage("Choose a bridge to place:");
+        for (uint16_t i = 0; i < numToPlace; ++i)
+        {
+             dialog.setBridgeInfo(bridgeOptions[i],i);
+             QCoreApplication::processEvents();
+        }
+       connect(&dialog, &BridgeOptions::addBridgeClicked, this, [&]() {
+            int optionIndex = dialog.getSelectedOptionIndex();
+            if (optionIndex >= 0 && optionIndex < bridgeOptions.size()) {
+                chosenBridges.push_back(bridgeOptions[optionIndex]);
+            }
+        });
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            int optionIndex = dialog.getUserInput().toInt();
+            chosenBridges.push_back(bridgeOptions[optionIndex]);
+        }
+    }
+    return chosenBridges;
+}
 Window::~Window()
 {}
