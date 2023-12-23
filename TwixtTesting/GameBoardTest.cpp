@@ -37,6 +37,27 @@ TEST_F(GameBoardTest, ProcessNextMove) {
     // Add more assertions as needed
 }
 
+// Test case for the ValidateNewPillarPlacement method
+TEST_F(GameBoardTest, ValidateNewPillarPlacement) {
+    Pillar newPillar{ {1, 0}, Color::BLACK };
+    ASSERT_THROW(gameBoard->ValidateNewPillarPlacement(newPillar, Color::BLACK), std::invalid_argument);
+}
+
+// Test case for the ProcessBridgesForNewPillar method
+TEST_F(GameBoardTest, ProcessBridgesForNewPillar) {
+    Pillar newPillar{ {2, 3}, Color::RED };
+    std::vector<Bridge> newBridges = gameBoard->ProcessBridgesForNewPillar(newPillar);
+    ASSERT_EQ(newBridges.size(), 2);  // Adjust based on the actual expected result
+}
+
+// Test case for the UpdateAvailablePieces method
+TEST_F(GameBoardTest, UpdateAvailablePieces) {
+    Pillar newPillar{ {3, 1}, Color::BLACK };
+    std::vector<Bridge> newBridges;
+    ASSERT_NO_THROW(gameBoard->UpdateAvailablePieces(newBridges, newPillar));
+    ASSERT_EQ(gameBoard->GetAvailablePieces(nullptr, Color::BLACK), 49);  // Adjust based on the actual expected result
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
