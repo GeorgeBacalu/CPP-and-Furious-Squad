@@ -146,21 +146,36 @@ void Window::onCircleClick()
         Pillar p;
         p.SetPosition(Position(row, col));
         p.SetColor((playerTurn) ? Color::RED : Color::BLACK);
+        g->PlacePillarQT(row, col);
+        clickedCircle->setColor(newColor);
+        needRepaint = true;
+        repaint();
         std::vector<Bridge> newBridges{ g->ProcessNextMoveQT(p) };
         std::vector<Bridge> chosenBridges{ PlaceBridgesFromOptions(newBridges, newBridges.size()) };
         std::vector<Bridge> bridges = g->GetBridges();
         bridges.insert(bridges.end(), chosenBridges.begin(), chosenBridges.end());
         g->SetBridges(bridges);
-        g->PlacePillarQT(row, col);
         g->InitEndPillars();
         for (auto it : g->GetEndPillars())
             g->BFS(it);
-        clickedCircle->setColor(newColor);
         QCoreApplication::processEvents();
     }
     catch (std::invalid_argument& exception)
     {
         std::cerr << exception.what() << "\n";
+    }
+    needRepaint = true;
+    update();
+    auto player = playerTurn ? Color::RED : Color::BLACK;
+    if (g->CheckWin(player))
+    {
+        QColor winnerColor = (playerTurn) ? Qt::red : Qt::black;
+        QString winnerMessage = (playerTurn) ? "Player RED Wins!" : "Player BLACK Wins!";
+        WinnerDialog* winnerDialog = new WinnerDialog(winnerMessage, winnerColor, this);
+        winnerDialog->show();
+        QCoreApplication::processEvents();
+        needRepaint = true;
+        update();
     }
     needRepaint = true;
     update();
@@ -175,24 +190,25 @@ std::vector<Bridge> Window::PlaceBridgesFromOptions(const std::vector<Bridge>& b
     std::vector<Bridge> chosenBridges;
     if (bridgeOptions.size() > 0)
     {
+        QCoreApplication::processEvents();
         BridgeOptions dialog;
         dialog.setMessage("Choose a bridge to place:");
         for (uint16_t i = 0; i < numToPlace; ++i)
         {
              dialog.setBridgeInfo(bridgeOptions[i],i);
-             QCoreApplication::processEvents();
         }
        connect(&dialog, &BridgeOptions::addBridgeClicked, this, [&]() {
             int optionIndex = dialog.getSelectedOptionIndex();
             if (optionIndex >= 0 && optionIndex < bridgeOptions.size()) {
                 chosenBridges.push_back(bridgeOptions[optionIndex]);
+                needRepaint = true;
+                update();
             }
         });
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            int optionIndex = dialog.getUserInput().toInt();
-            chosenBridges.push_back(bridgeOptions[optionIndex]);
-        }
+
+            dialog.exec();
+            needRepaint = true;
+            update();
     }
     return chosenBridges;
 }

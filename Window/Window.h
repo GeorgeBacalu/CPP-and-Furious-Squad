@@ -11,6 +11,7 @@
 #include <GameBoard.h>
 #include"BridgeOptions.h"
 #include"CircleWidget.h"
+#include"WinnerDialog.h"
 
 class Window : public QMainWindow
 {

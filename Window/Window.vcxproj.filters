@@ -59,5 +59,13 @@
     <QtMoc Include="CircleWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="BridgeOptions.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="WinnerDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
