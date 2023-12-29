@@ -8,6 +8,7 @@ Window::Window(QWidget* parent)
 
     layout = new QGridLayout;
     centralWidget->setLayout(layout);
+    g = GameBoard::GetInstance();
     setupUi();
 }
 void Window::setupUi()
@@ -86,7 +87,6 @@ void Window::loadGame()
     connect(saveButton, &QPushButton::clicked, this, &Window::onSaveClick);
     saveButton->setFixedSize(30 * g->GetWidth(), 30);
     layout->addWidget(saveButton, g->GetWidth(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
-    needRepaint = true;
     update();
 }
 
@@ -117,19 +117,14 @@ void Window::drawBridges(QPainter& painter)
 
         painter.drawLine(startCenter, endCenter);
     }
-    needRepaint = false;
 }
 
 void Window::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
-
-    if (needRepaint)
-    {
-        QPainter painter(this);
-        painter.eraseRect(rect());
-        drawBridges(painter);
-    }
+    QPainter painter(this);
+    painter.eraseRect(rect());
+    drawBridges(painter);
 }
 void Window::onCircleClick()
 {
@@ -148,24 +143,57 @@ void Window::onCircleClick()
         p.SetColor((playerTurn) ? Color::RED : Color::BLACK);
         g->PlacePillarQT(row, col);
         clickedCircle->setColor(newColor);
-        needRepaint = true;
-        repaint();
-        std::vector<Bridge> newBridges{ g->ProcessNextMoveQT(p) };
-        std::vector<Bridge> chosenBridges{ PlaceBridgesFromOptions(newBridges, newBridges.size()) };
-        std::vector<Bridge> bridges = g->GetBridges();
-        bridges.insert(bridges.end(), chosenBridges.begin(), chosenBridges.end());
-        g->SetBridges(bridges);
-        g->InitEndPillars();
-        for (auto it : g->GetEndPillars())
-            g->BFS(it);
-        QCoreApplication::processEvents();
+        std::vector<Bridge> newBridges{ g->ProcessBridgesForNewPillar(p)};
+        PlaceBridgesFromOptions(newBridges, newBridges.size());
     }
     catch (std::invalid_argument& exception)
     {
         std::cerr << exception.what() << "\n";
     }
-    needRepaint = true;
     update();
+}
+void Window::onSaveClick()
+{
+    g->SaveGame();
+}
+
+void Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace)
+{
+    if (bridgeOptions.size() > 0)
+    {
+        dialog = new BridgeOptions;
+        dialog->setMessage("Choose a bridge to place:");
+
+        for (uint16_t i = 0; i < numToPlace; ++i)
+        {
+            dialog->setBridgeInfo(bridgeOptions[i], i);
+        }
+        dialog->setBridgeOptions(bridgeOptions);
+        connect(dialog, &BridgeOptions::addBridgeClicked, this, [&]() {
+            int optionIndex = dialog->getSelectedOptionIndex();
+            if (optionIndex >= 0 && optionIndex < dialog->getBridgeOptions().size()) {
+                std::vector<Bridge> bridges = g->GetBridges();
+                bridges.push_back(dialog->getBridgeOptions()[optionIndex]);
+                g->SetBridges(bridges);
+                checkWinner(!g->GetPlayerTurn());
+                update();
+            }
+            });
+        connect(dialog, &BridgeOptions::closeButtonClicked, this, [&]() 
+            {
+                dialog->reject();
+                update();
+            });
+        update();
+        dialog->show();
+    }
+
+}
+void Window::checkWinner(bool playerTurn)
+{
+    g->InitEndPillars();
+    for (auto it : g->GetEndPillars())
+        g->BFS(it);
     auto player = playerTurn ? Color::RED : Color::BLACK;
     if (g->CheckWin(player))
     {
@@ -174,43 +202,8 @@ void Window::onCircleClick()
         WinnerDialog* winnerDialog = new WinnerDialog(winnerMessage, winnerColor, this);
         winnerDialog->show();
         QCoreApplication::processEvents();
-        needRepaint = true;
         update();
     }
-    needRepaint = true;
-    update();
-}
-void Window::onSaveClick()
-{
-    g->SaveGame();
-}
-
-std::vector<Bridge> Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace)
-{
-    std::vector<Bridge> chosenBridges;
-    if (bridgeOptions.size() > 0)
-    {
-        QCoreApplication::processEvents();
-        BridgeOptions dialog;
-        dialog.setMessage("Choose a bridge to place:");
-        for (uint16_t i = 0; i < numToPlace; ++i)
-        {
-             dialog.setBridgeInfo(bridgeOptions[i],i);
-        }
-       connect(&dialog, &BridgeOptions::addBridgeClicked, this, [&]() {
-            int optionIndex = dialog.getSelectedOptionIndex();
-            if (optionIndex >= 0 && optionIndex < bridgeOptions.size()) {
-                chosenBridges.push_back(bridgeOptions[optionIndex]);
-                needRepaint = true;
-                update();
-            }
-        });
-
-            dialog.exec();
-            needRepaint = true;
-            update();
-    }
-    return chosenBridges;
 }
 Window::~Window()
 {}

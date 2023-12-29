@@ -28,9 +28,10 @@ public:
     void newGame();
     void loadGame();
     void clearLayout(QLayout * layout);
-    std::vector<Bridge>PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
+    void PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
+    void checkWinner(bool playerTurn);
 private:
     QGridLayout* layout;
     GameBoard* g;
-    bool needRepaint;
+    BridgeOptions *dialog;
 };

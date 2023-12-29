@@ -97,6 +97,7 @@
     <QtRcc Include="Window.qrc" />
     <QtUic Include="Window.ui" />
     <QtMoc Include="Window.h" />
+    <ClCompile Include="BridgeOptions.cpp" />
     <ClCompile Include="CircleWidget.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="main.cpp" />

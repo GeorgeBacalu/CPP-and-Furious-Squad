@@ -246,7 +246,7 @@ void GameBoard::BFS(const Pillar& start)
 		}
 		for (const auto& node : m_adjacencyList[row * kWidth + column])
 		{
-			const auto& [nodeRow, nodeColumn] = current.GetPosition();
+			const auto& [nodeRow, nodeColumn] = node.GetPosition();
 			if (!visited[nodeRow * kWidth + nodeColumn] && node.GetColor() == start.GetColor())
 				queue.push(node);
 		}
@@ -386,7 +386,7 @@ void GameBoard::PlacePillarQT(uint16_t row, uint16_t column)
 	if (IsFreeFoundation(row, column))
 	{
 		Pillar pillar{ {row, column}, m_playerTurn ? Color::RED : Color::BLACK };
-
+		ValidateNewPillarPlacement(pillar, pillar.GetColor());
 		if (m_invalid == false)
 		{
 			m_matrix[row][column] = std::optional<Pillar>{ pillar };
@@ -400,14 +400,6 @@ void GameBoard::PlacePillarQT(uint16_t row, uint16_t column)
 		throw std::invalid_argument("Position is not valid");
 	}
 }
-std::vector<Bridge> GameBoard::ProcessNextMoveQT(Pillar& newPillar)
-{
-	Color playerColor = newPillar.GetColor();
-	ValidateNewPillarPlacement(newPillar, playerColor);
-	std::vector<Bridge> newBridges = ProcessBridgesForNewPillar(newPillar);
-	return newBridges;
-}
-
 void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 {
 	if (!IsFreeFoundation(row, column))
