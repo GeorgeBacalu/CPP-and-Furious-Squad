@@ -72,12 +72,35 @@ void AiPlayer::FreeReward(float target)
     m_previousStateActions.clear();
 }
 
+bool AiPlayer::isPositionValid(const Position& position,GameBoard& gameBoard)
+{
+	if(position.first < 0 || position.first >= GameBoard::kWidth || position.second < 0 || position.second >= GameBoard::kHeight)
+		return false;
+    //check if position is at the corners of the board
+    if ((position.first == 0 && position.second == 0) || (position.first == 0 && position.second == GameBoard::kHeight - 1) ||
+        		(position.first == GameBoard::kWidth - 1 && position.second == 0) || (position.first == GameBoard::kWidth - 1 && position.second == GameBoard::kHeight - 1))
+		return false;
+
+    //if AI is red, check if position is on first or last row
+    if (m_color == Color::RED)
+        if(position.second == 0 or position.second == GameBoard::kHeight - 1)
+			return false;
+        else
+            return !gameBoard[position] and gameBoard.IsPositionValid(position);
+    //if AI is black, check if position is on first or last column
+    if (m_color == Color::BLACK)
+   		if(position.first == 0 or position.first == GameBoard::kWidth - 1)
+            return false;
+        else
+            return !gameBoard[position] and gameBoard.IsPositionValid(position);
+}
+
 std::vector<Position> AiPlayer::GenerateActions(GameBoard& gameBoard) {
     std::vector<Position> possibleActions;
     for (uint32_t i = 0; i < GameBoard::kWidth; ++i)
         for (uint32_t j = 0; j < GameBoard::kHeight; ++j) {
             Position position = { i, j };
-            if (!gameBoard[position] && gameBoard.IsPositionValid(position))
+            if (isPositionValid(position,gameBoard))
                 possibleActions.emplace_back(position);
         }
     return possibleActions;

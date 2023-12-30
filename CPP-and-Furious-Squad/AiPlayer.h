@@ -12,7 +12,7 @@ class AiPlayer : public IPlayer {
 	std::vector<int64_t> m_previousStateActions;
 	std::unordered_map<int64_t, float> m_stateActionCosts;
 
-	static std::vector<Position> GenerateActions(GameBoard& gameBoard);
+	std::vector<Position> GenerateActions(GameBoard& gameBoard);
 	void SavePolicy() const;
 	void LoadPolicy();
 
@@ -23,6 +23,8 @@ public:
 
 	Position GetNextAction() override;
 	std::string_view GetName() const override;
+
+	bool isPositionValid(const Position& position, GameBoard& gameBoard);
 
 	void FreeReward(float target);
 };
