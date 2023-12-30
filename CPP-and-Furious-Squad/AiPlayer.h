@@ -6,7 +6,7 @@
 #include "GameBoard.h"
 
 class AiPlayer : public IPlayer {
-	Color m_color = Color::BLACK;
+	Color m_color;
 	GameBoard& m_gameBoard;
 	std::string m_policyName;
 	std::vector<int64_t> m_previousStateActions;
@@ -18,7 +18,7 @@ class AiPlayer : public IPlayer {
 
 	void SetPolicyName(std::string_view policyName);
 public:
-	AiPlayer(GameBoard& gameBoard, std::string_view policyName);
+	AiPlayer(GameBoard& gameBoard, std::string_view policyName, Color color);
 	~AiPlayer() override;
 
 	Position GetNextAction() override;

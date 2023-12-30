@@ -10,7 +10,7 @@ const float initialEstimation{ 0.5f };
 const float explorationRate{ 0.1f };
 const float learningRate{ 0.1f };
 
-AiPlayer::AiPlayer(GameBoard& gameBoard, std::string_view policyName) : m_gameBoard{ gameBoard }, m_policyName{ policyName }
+AiPlayer::AiPlayer(GameBoard& gameBoard, std::string_view policyName, Color color) : m_gameBoard{ gameBoard }, m_policyName{ policyName }, m_color{ color }
 {
 	LoadPolicy();
 }

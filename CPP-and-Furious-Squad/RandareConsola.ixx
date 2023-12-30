@@ -12,4 +12,5 @@ public:
 	static void Render(GameBoard* gb);
 	static void TakeInput(GameBoard* gb);
 	static void TakeInputWithAi(GameBoard* gb, AiPlayer* ai);
+	static void TakeInputWithAi2(GameBoard* gb, AiPlayer* ai, AiPlayer* ai2);
 };

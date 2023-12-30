@@ -1,4 +1,6 @@
 #include "GameBoard.h"
+#include <chrono>
+#include <thread>
 
 module RandareConsola;
 
@@ -45,6 +47,50 @@ void ConsoleRenderer::TakeInputWithAi(GameBoard* gb, AiPlayer* ai)
 	//ai->FreeReward(0.0f);
 	//ai->FreeReward	
 }
+
+void ConsoleRenderer::TakeInputWithAi2(GameBoard* gb, AiPlayer* ai, AiPlayer* ai2)
+{
+	int x, y;
+	if (gb->GetPlayerTurn())
+	{
+		std::cout << "Red AI player's turn\n";
+		std::cout << "Enter the coordinates of the pillar you want to place: ";
+		std::cout << "Black AI player's turn\n";
+		std::cout << "Enter the coordinates of the pillar you want to place: ";
+		const auto& [row, column] = ai->GetNextAction();
+		x = row;
+		y = column;
+		std::cout << x << " " << y << "\n";
+		system("pause");
+	}
+	else
+	{
+		std::cout << "Black AI player's turn\n";
+		std::cout << "Enter the coordinates of the pillar you want to place: ";
+		const auto& [row, column] = ai->GetNextAction();
+		x = row;
+		y = column;
+		std::cout << x << " " << y << "\n";
+		system("pause");
+	}
+	//place pillar and switch player
+	try
+	{
+		gb->PlacePillar(x, y);
+		gb->InitEndPillars();
+		for (auto it : gb->GetEndPillars())
+			gb->BFS(it);
+	}
+	catch (std::invalid_argument& exception)
+	{
+		std::cerr << exception.what() << "\n";
+	}
+	//ai->FreeReward(0.0f);
+	//ai->FreeReward(0.0f);
+	//ai->FreeReward
+}
+
+
 
 void ConsoleRenderer::Render(GameBoard* gameBoard)
 {

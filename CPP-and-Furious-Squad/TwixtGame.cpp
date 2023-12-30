@@ -49,14 +49,16 @@ void TwixtGame::Run()
 	}
 	//gameBoard->setMatrix(matrix);
 
-	AiPlayer aiPlayer{ *gameBoard, "Ai_rewards.txt" };
+	AiPlayer aiPlayer{ *gameBoard, "Ai_rewards.txt", Color::BLACK };
+	AiPlayer aiPlayer2{ *gameBoard, "Ai_rewards2.txt", Color::RED };
 
 	while (true)
 	{
 		//add key listener
 		ConsoleRenderer::Render(gameBoard);
 		//ConsoleRenderer::TakeInput(gameBoard);
-		ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
+		//ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
+		ConsoleRenderer::TakeInputWithAi2(gameBoard, &aiPlayer, &aiPlayer2);
 		if (gameBoard->CheckWin(Color::BLACK))
 		{
 			ConsoleRenderer::Render(gameBoard);
