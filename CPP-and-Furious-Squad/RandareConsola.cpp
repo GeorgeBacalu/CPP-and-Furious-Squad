@@ -55,8 +55,6 @@ void ConsoleRenderer::TakeInputWithAi2(GameBoard* gb, AiPlayer* ai, AiPlayer* ai
 	{
 		std::cout << "Red AI player's turn\n";
 		std::cout << "Enter the coordinates of the pillar you want to place: ";
-		std::cout << "Black AI player's turn\n";
-		std::cout << "Enter the coordinates of the pillar you want to place: ";
 		const auto& [row, column] = ai->GetNextAction();
 		x = row;
 		y = column;
@@ -67,7 +65,7 @@ void ConsoleRenderer::TakeInputWithAi2(GameBoard* gb, AiPlayer* ai, AiPlayer* ai
 	{
 		std::cout << "Black AI player's turn\n";
 		std::cout << "Enter the coordinates of the pillar you want to place: ";
-		const auto& [row, column] = ai->GetNextAction();
+		const auto& [row, column] = ai2->GetNextAction();
 		x = row;
 		y = column;
 		std::cout << x << " " << y << "\n";
