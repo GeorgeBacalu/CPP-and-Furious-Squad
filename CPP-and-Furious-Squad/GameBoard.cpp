@@ -280,6 +280,8 @@ void GameBoard::InitEndPillars()
 const bool GameBoard::IsPositionValid(const Position& position)
 {
 	const auto& [row, column] = position;
+	if (row == 0 && column == 0 || row == 0 && column == kWidth - 1 || row == kHeight - 1 && column == 0 || row == kHeight - 1 && column == kWidth - 1)
+		return false;
 	return row < kHeight && column < kWidth;
 }
 

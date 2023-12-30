@@ -26,12 +26,14 @@ void ConsoleRenderer::TakeInputWithAi(GameBoard* gb, AiPlayer* ai)
 		x = row;
 		y = column;
 		std::cout << x << " " << y << "\n";
+		system("pause");
 	}
 	//place pillar and switch player
 	try
 	{
 		gb->PlacePillar(x, y);
 		gb->InitEndPillars();
+		std::cout << "OK\n";
 		for (auto it : gb->GetEndPillars())
 			gb->BFS(it);
 	}
