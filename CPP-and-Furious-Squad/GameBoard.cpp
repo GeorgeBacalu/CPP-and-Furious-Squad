@@ -239,10 +239,21 @@ void GameBoard::BFS(const Pillar& start)
 		queue.pop();
 		path.push_back(current);
 		visited[row * kWidth + column] = true;
-		if (current != start && (row == 0 || row == kWidth - 1))
+		if (start.GetColor() == Color::RED)
 		{
-			paths.push_back(path);
-			path.clear();
+			if (current != start && (row == 0 || row == kWidth - 1))
+			{
+				paths.push_back(path);
+				path.clear();
+			}
+		}
+		else
+		{
+			if (current != start && (column == 0 || column  == kWidth - 1))
+			{
+				paths.push_back(path);
+				path.clear();
+			}
 		}
 		for (const auto& node : m_adjacencyList[row * kWidth + column])
 		{
