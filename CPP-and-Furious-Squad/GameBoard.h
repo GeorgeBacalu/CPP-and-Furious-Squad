@@ -108,51 +108,92 @@ public:
 		std::vector<std::vector<T>> paths;
 		std::queue<T> queue;
 		std::vector<T> path;
-		std::vector<bool> visited(adjacencyList.size(), false);
+		std::unordered_map<T, bool> visited;
+		std::unordered_map<T, T> parent;
+
+		for(const auto& row : adjacencyList)
+			for (const auto& node : row)
+			{
+				visited[node] = false;
+				parent[node] = node;
+			}
+
+
 
 		queue.push({ start });
+		visited[start] = true;
 
 		while (!queue.empty())
 		{
 			T current = queue.front();
 			queue.pop();
-			path.push_back(current);
-
-			if constexpr (std::is_same_v<T, Pillar>)
+			for (const auto & node : adjacencyList[current])
 			{
-				const auto& [row, column] = current.GetPosition();
-				visited[row * kWidth + column] = true;
-				if (current.GetColor() == Color::RED)
+				if (!visited[node])
 				{
-					if (current != start && (row == 0 || row == kWidth - 1))
-					{
-						paths.push_back(path);
-						path.clear();
-					}
+					visited[node] = true;
+					parent[node] = current;
+					queue.push(node);
 				}
-				else
+			}
+		}
+
+		for (const auto& node : parent)
+		{
+			if (node.first != node.second)
+			{
+				path.push_back(node.first);
+				if (node.first == start)
 				{
-					if (current != start && (column == 0 || column == kWidth - 1))
-					{
-						paths.push_back(path);
-						path.clear();
-					}
+					paths.push_back(path);
+					path.clear();
 				}
-				for (const Pillar& node : adjacencyList[row * kWidth + column])
+			}
+		}
+		return paths;
+	}
+	template<>
+	static std::vector<std::vector<Pillar>> BFS(const Pillar& start, const std::vector<std::vector<Pillar>>& adjacencyList)
+	{
+		// Make paths from startPillar to endPillars. All the paths must have same color of pillars
+		std::vector<std::vector<Pillar>> paths;
+		std::vector<Pillar> path;
+		std::vector<bool> visited(kWidth * kHeight, false);
+		std::queue<Pillar> queue;
+
+		//UpdateAdjacencyList();
+		queue.push(start);
+
+		// The red_paths must have it's first element the start pillar
+		while (!queue.empty())
+		{
+			Pillar current = queue.front();
+			const auto& [row, column] = current.GetPosition();
+			queue.pop();
+			path.push_back(current);
+			visited[row * kWidth + column] = true;
+			if (start.GetColor() == Color::RED)
+			{
+				if (current != start && (row == 0 || row == kWidth - 1))
 				{
-					const auto& [nodeRow, nodeColumn] = node.GetPosition();
-					if (!visited[nodeRow * kWidth + nodeColumn] && node.GetColor() == start.GetColor())
-						queue.push(node);
+					paths.push_back(path);
+					path.clear();
 				}
 			}
 			else
-				if constexpr (std::is_same_v<T, int>)
+			{
+				if (current != start && (column == 0 || column == kWidth - 1))
 				{
-					visited[current] = true;
-					for (const auto& node : adjacencyList[current])
-						if (!visited[node])
-							queue.push(node);
+					paths.push_back(path);
+					path.clear();
 				}
+			}
+			for (const auto& node : adjacencyList[row * kWidth + column])
+			{
+				const auto& [nodeRow, nodeColumn] = node.GetPosition();
+				if (!visited[nodeRow * kWidth + nodeColumn] && node.GetColor() == start.GetColor())
+					queue.push(node);
+			}
 		}
 		return paths;
 	}

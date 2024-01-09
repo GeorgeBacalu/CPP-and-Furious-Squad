@@ -228,7 +228,7 @@ void GameBoard::BFS(const Pillar& start)
 	std::vector<bool> visited(kWidth * kHeight, false);
 	std::queue<Pillar> queue;
 
-	UpdateAdjacencyList();
+	//UpdateAdjacencyList();
 	queue.push(start);
 
 	// The red_paths must have it's first element the start pillar

@@ -166,9 +166,9 @@ void ConsoleRenderer::TakeInput(GameBoard* gameBoard)
 		{
 			gameBoard->UpdateAdjacencyList();
 			if (it.GetColor() == Color::RED)
-				gameBoard->SetRedPaths(GameBoard::BFS<Pillar>(it, gameBoard->GetAdjacencyList()));
+				gameBoard->SetRedPaths(GameBoard::BFS(it, gameBoard->GetAdjacencyList()));
 			else
-				gameBoard->SetBlackPaths(GameBoard::BFS<Pillar>(it, gameBoard->GetAdjacencyList()));
+				gameBoard->SetBlackPaths(GameBoard::BFS(it, gameBoard->GetAdjacencyList()));
 		}
 	}
 	catch (std::invalid_argument& exception)
