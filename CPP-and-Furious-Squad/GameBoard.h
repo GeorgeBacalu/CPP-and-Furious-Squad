@@ -101,4 +101,59 @@ public:
 
 	// Related to AI player
 	int64_t GetHashWithPosition(const Position& position) const;
+
+	template<typename T>
+	static std::vector<std::vector<T>> BFS(const T& start, const std::vector<std::vector<T>>& adjacencyList)
+	{
+		std::vector<std::vector<T>> paths;
+		std::queue<T> queue;
+		std::vector<T> path;
+		std::vector<bool> visited(adjacencyList.size(), false);
+
+		queue.push({ start });
+
+		while (!queue.empty())
+		{
+			T current = queue.front();
+			queue.pop();
+			path.push_back(current);
+
+			if constexpr (std::is_same_v<T, Pillar>)
+			{
+				const auto& [row, column] = current.GetPosition();
+				visited[row * kWidth + column] = true;
+				if (current.GetColor() == Color::RED)
+				{
+					if (current != start && (row == 0 || row == kWidth - 1))
+					{
+						paths.push_back(path);
+						path.clear();
+					}
+				}
+				else
+				{
+					if (current != start && (column == 0 || column == kWidth - 1))
+					{
+						paths.push_back(path);
+						path.clear();
+					}
+				}
+				for (const Pillar& node : adjacencyList[row * kWidth + column])
+				{
+					const auto& [nodeRow, nodeColumn] = node.GetPosition();
+					if (!visited[nodeRow * kWidth + nodeColumn] && node.GetColor() == start.GetColor())
+						queue.push(node);
+				}
+			}
+			else
+				if constexpr (std::is_same_v<T, int>)
+				{
+					visited[current] = true;
+					for (const auto& node : adjacencyList[current])
+						if (!visited[node])
+							queue.push(node);
+				}
+		}
+		return paths;
+	}
 };

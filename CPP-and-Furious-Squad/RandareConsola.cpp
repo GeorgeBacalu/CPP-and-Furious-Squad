@@ -162,11 +162,18 @@ void ConsoleRenderer::TakeInput(GameBoard* gameBoard)
 	{
 		gameBoard->PlacePillar(x, y);
 		gameBoard->InitEndPillars();
-		for (auto it : gameBoard->GetEndPillars())
-			gameBoard->BFS(it);
+		for (const auto& it : gameBoard->GetEndPillars())
+		{
+			gameBoard->UpdateAdjacencyList();
+			if (it.GetColor() == Color::RED)
+				gameBoard->SetRedPaths(GameBoard::BFS<Pillar>(it, gameBoard->GetAdjacencyList()));
+			else
+				gameBoard->SetBlackPaths(GameBoard::BFS<Pillar>(it, gameBoard->GetAdjacencyList()));
+		}
 	}
 	catch (std::invalid_argument& exception)
 	{
 		std::cerr << exception.what() << "\n";
+		system("pause");
 	}
 }

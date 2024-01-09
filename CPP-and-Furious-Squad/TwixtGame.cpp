@@ -56,9 +56,9 @@ void TwixtGame::Run()
 	{
 		//add key listener
 		ConsoleRenderer::Render(gameBoard);
-		//ConsoleRenderer::TakeInput(gameBoard);
+		ConsoleRenderer::TakeInput(gameBoard);
 		//ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
-		ConsoleRenderer::TakeInputWithAi2(gameBoard, &aiPlayer2, &aiPlayer);
+		//ConsoleRenderer::TakeInputWithAi2(gameBoard, &aiPlayer2, &aiPlayer);
 		if (gameBoard->CheckWin(Color::BLACK))
 		{
 			ConsoleRenderer::Render(gameBoard);
