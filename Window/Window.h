@@ -30,9 +30,12 @@ public:
     void clearLayout(QLayout * layout);
     void PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, uint16_t numToPlace);
     void checkWinner(bool playerTurn);
+    void removePillar(uint16_t row, uint16_t column);
+    void stopEditing();
 private:
     QGridLayout* layout;
     GameBoard* g;
     BridgeOptions *dialog;
     bool paintGameBoard;
+    bool editing;
 };

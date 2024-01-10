@@ -51,7 +51,13 @@ void Window::newGame()
     QPushButton* saveButton = new QPushButton("Save");
     connect(saveButton, &QPushButton::clicked, this, &Window::onSaveClick);
     saveButton->setFixedSize(30 * g->GetWidth(), 30);
-    layout->addWidget(saveButton, g->GetWidth(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
+    layout->addWidget(saveButton, g->GetHeight(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
+    QPushButton* editButton = new QPushButton("Stop editing");
+    connect(editButton, &QPushButton::clicked, this, &Window::stopEditing);
+    editButton->setFixedSize(30 * g->GetWidth(), 30);
+    editButton->setVisible(false);
+    layout->addWidget(editButton, g->GetHeight() + 1, 0, 1, g->GetWidth(), Qt::AlignCenter);
+    update();
 }
 
 void Window::loadGame()
@@ -93,8 +99,13 @@ void Window::loadGame()
     }
     QPushButton* saveButton = new QPushButton("Save");
     connect(saveButton, &QPushButton::clicked, this, &Window::onSaveClick);
-    saveButton->setFixedSize(30 , 30);
-    layout->addWidget(saveButton, g->GetWidth(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
+    saveButton->setFixedSize(30 * g->GetWidth(), 30);
+    layout->addWidget(saveButton, g->GetHeight(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
+    QPushButton* editButton = new QPushButton("Stop editing");
+    connect(editButton, &QPushButton::clicked, this, &Window::stopEditing);
+    editButton->setFixedSize(30 * g->GetWidth(), 30);
+    editButton->setVisible(false);
+    layout->addWidget(editButton, g->GetHeight() + 1, 0, 1, g->GetWidth(), Qt::AlignCenter);
     update();
 }
 
@@ -260,6 +271,9 @@ void Window::removePillar(uint16_t row, uint16_t column)
     CircleWidget* Circle = qobject_cast<CircleWidget*>(layout->itemAtPosition(row,column)->widget());
     Circle->setColor(Qt::white);
     g->RemovePillar(row, column);
+}
+void Window::stopEditing()
+{
 }
 Window::~Window()
 {}

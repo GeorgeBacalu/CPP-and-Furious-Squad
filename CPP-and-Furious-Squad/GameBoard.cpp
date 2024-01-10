@@ -416,7 +416,8 @@ void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 	if (!IsFreeFoundation(row, column))
 	{
 		m_matrix[row][column] = std::nullopt;
-		for (auto it = m_bridges.begin(); it != m_bridges.end();)
+		auto bridgesAux = m_bridges;
+		for (auto it = bridgesAux.begin(); it != bridgesAux.end();)
 		{
 			if (it->GetEndPillar().GetPosition() == Position{ row,column } || it->GetStartPillar().GetPosition() == Position{ row,column })
 				m_bridges.erase(it);
