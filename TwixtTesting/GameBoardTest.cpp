@@ -103,6 +103,21 @@ TEST_F(GameBoardTest, ResetGame) {
     // Add assertions based on the expected behavior after resetting the game
 }
 
+//Test case for the RemovePillar method
+TEST_F(GameBoardTest, RemovePillar) {
+    uint16_t row = 2;
+    uint16_t column = 3;
+    ASSERT_NO_THROW(gameBoard->RemovePillar(row, column));
+    ASSERT_FALSE(gameBoard->GetMatrix()[row][column].has_value());
+}
+
+//Test case for the Intersects method
+TEST_F(GameBoardTest, Intersects) {
+    Bridge bridge1{ {1, 2}, {3, 2}, Color::RED };
+    Bridge bridge2{ {2, 3}, {2, 1}, Color::BLACK };
+    ASSERT_TRUE(gameBoard->Intersects(bridge1, bridge2));
+}
+
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
