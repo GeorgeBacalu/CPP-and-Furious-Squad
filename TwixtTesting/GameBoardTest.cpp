@@ -157,6 +157,35 @@ TEST_F(GameBoardTest, InitEndPillarsSecondTest) {
     ASSERT_EQ(gameBoard->GetEndPillars().size(), 4);  // Adjust based on the actual expected result
 }
 
+//Test case for the PlacePillarQT method
+TEST_F(GameBoardTest, PlacePillarQT) {
+    uint16_t row = 2;
+    uint16_t column = 1;
+    ASSERT_NO_THROW(gameBoard->PlacePillarQT(row, column));
+    ASSERT_TRUE(gameBoard->GetMatrix()[row][column].has_value());
+}
+
+//Test case for the ProcessNextMoveQT method
+TEST_F(GameBoardTest, ProcessNextMoveQT) {
+    Pillar newPillar{ {0, 1}, Color::BLACK };
+    ASSERT_NO_THROW(gameBoard->ProcessNextMoveQT(newPillar));
+    // Add more assertions as needed
+}
+
+//Test case for the LoadPillarsFromFile method
+TEST_F(GameBoardTest, LoadPillarsFromFile) {
+    std::string filename = "test_pillars.txt";
+    ASSERT_NO_THROW(gameBoard->LoadPillarsFromFile(filename));
+    // Add assertions based on the expected behavior after loading pillars from a file
+}
+
+//Test case for the LoadBridgesFromFile method
+TEST_F(GameBoardTest, LoadBridgesFromFile) {
+    std::string filename = "test_bridges.txt";
+    ASSERT_NO_THROW(gameBoard->LoadBridgesFromFile(filename));
+    // Add assertions based on the expected behavior after loading bridges from a file
+}
+
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
