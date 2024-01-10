@@ -131,6 +131,32 @@ TEST_F(GameBoardTest, IsPositionValid) {
     ASSERT_TRUE(gameBoard->IsPositionValid(validPosition));
 }
 
+//Test case for the GetHashWithPosition method
+TEST_F(GameBoardTest, GetHashWithPosition) {
+    Position position{ 2, 3 };
+    int64_t hash = gameBoard->GetHashWithPosition(position);
+    ASSERT_NE(hash, 0);  // Adjust based on the actual expected result
+}
+
+//Test case for the InitAdjacencyList method
+TEST_F(GameBoardTest, InitAdjacencyList) {
+    ASSERT_NO_THROW(gameBoard->InitAdjacencyList());
+    ASSERT_GT(gameBoard->GetAdjacencyList().size(), 0);
+}
+
+//Test case for the UpdateAdjacencyList method
+TEST_F(GameBoardTest, UpdateAdjacencyList) {
+    ASSERT_NO_THROW(gameBoard->UpdateAdjacencyList());
+    ASSERT_GT(gameBoard->GetAdjacencyList().size(), 0);
+}
+
+//Test case for the InitEndPillars method (second test)
+TEST_F(GameBoardTest, InitEndPillarsSecondTest) {
+    gameBoard->ResetGame();
+    ASSERT_NO_THROW(gameBoard->InitEndPillars());
+    ASSERT_EQ(gameBoard->GetEndPillars().size(), 4);  // Adjust based on the actual expected result
+}
+
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
