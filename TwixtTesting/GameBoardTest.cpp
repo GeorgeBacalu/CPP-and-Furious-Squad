@@ -97,6 +97,12 @@ TEST_F(GameBoardTest, SaveGame) {
     // Add assertions based on the expected behavior after saving a game
 }
 
+//Test case for the ResetGame method
+TEST_F(GameBoardTest, ResetGame) {
+    ASSERT_NO_THROW(gameBoard->ResetGame());
+    // Add assertions based on the expected behavior after resetting the game
+}
+
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
