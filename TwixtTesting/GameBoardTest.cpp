@@ -58,6 +58,12 @@ TEST_F(GameBoardTest, UpdateAvailablePieces) {
     ASSERT_EQ(gameBoard->GetAvailablePieces(nullptr, Color::BLACK), 49);  // Adjust based on the actual expected result
 }
 
+TEST_F(GameBoardTest, IsFreeFoundation) {
+    uint16_t row = 2;
+    uint16_t column = 4;
+    ASSERT_TRUE(gameBoard->IsFreeFoundation(row, column));
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
