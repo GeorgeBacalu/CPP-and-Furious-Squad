@@ -118,6 +118,19 @@ TEST_F(GameBoardTest, Intersects) {
     ASSERT_TRUE(gameBoard->Intersects(bridge1, bridge2));
 }
 
+//Test case for the CheckNoIntersections method
+TEST_F(GameBoardTest, CheckNoIntersections) {
+    ASSERT_TRUE(gameBoard->CheckNoIntersections());
+}
+
+//Test case for the IsPositionValid method
+TEST_F(GameBoardTest, IsPositionValid) {
+    Position invalidPosition{ 5, 5 };
+    Position validPosition{ 2, 3 };
+    ASSERT_FALSE(gameBoard->IsPositionValid(invalidPosition));
+    ASSERT_TRUE(gameBoard->IsPositionValid(validPosition));
+}
+
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
