@@ -29,9 +29,9 @@ void Window::newGame()
     QPainter painter(this);
     g = GameBoard::GetInstance();
     painter.setRenderHint(QPainter::Antialiasing, true);
-    for (int i = 0; i < g->GetWidth(); i++)
+    for (uint16_t i = 0; i < g->GetWidth(); i++)
     {
-        for (int j = 0; j < g->GetHeight(); j++)
+        for (uint16_t j = 0; j < g->GetHeight(); j++)
         {
             if ((i == 0 && (j == 0 || j == g->GetWidth() - 1)) ||
                 (i == g->GetHeight() - 1 && (j == 0 || j == g->GetWidth() - 1)))
@@ -64,9 +64,9 @@ void Window::loadGame()
     g = GameBoard::GetInstance();
     g->LoadGame();
     auto game{ g->GetMatrix() };
-    for (int i = 0; i < game.size(); i++)
+    for (uint16_t i = 0; i < game.size(); i++)
     {
-        for (int j = 0; j < game.size(); j++)
+        for (uint16_t j = 0; j < game.size(); j++)
         {   
             CircleWidget* circleWidget = new CircleWidget();
             circleWidget->setFixedSize(30, 30);
@@ -93,7 +93,7 @@ void Window::loadGame()
     }
     QPushButton* saveButton = new QPushButton("Save");
     connect(saveButton, &QPushButton::clicked, this, &Window::onSaveClick);
-    saveButton->setFixedSize(30 * g->GetWidth(), 30);
+    saveButton->setFixedSize(30 , 30);
     layout->addWidget(saveButton, g->GetWidth(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
     update();
 }
@@ -109,7 +109,7 @@ void Window::clearLayout(QLayout* layout)
 void Window::drawBridges(QPainter& painter)
 {
     std::vector<Bridge> b = g->GetBridges();
-    for (Bridge br : b)
+    for (const Bridge& br : b)
     {
         Pillar pStart = br.GetStartPillar();
         Pillar pEnd = br.GetEndPillar();
@@ -254,6 +254,12 @@ void Window::checkWinner(bool playerTurn)
         QCoreApplication::processEvents();
         update();
     }
+}
+void Window::removePillar(uint16_t row, uint16_t column)
+{
+    CircleWidget* Circle = qobject_cast<CircleWidget*>(layout->itemAtPosition(row,column)->widget());
+    Circle->setColor(Qt::white);
+    g->RemovePillar(row, column);
 }
 Window::~Window()
 {}
