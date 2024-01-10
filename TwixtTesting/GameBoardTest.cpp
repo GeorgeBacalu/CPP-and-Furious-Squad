@@ -58,11 +58,19 @@ TEST_F(GameBoardTest, UpdateAvailablePieces) {
     ASSERT_EQ(gameBoard->GetAvailablePieces(nullptr, Color::BLACK), 49);  // Adjust based on the actual expected result
 }
 
+//Test case for the IsFreeFoundation method
 TEST_F(GameBoardTest, IsFreeFoundation) {
     uint16_t row = 2;
     uint16_t column = 4;
     ASSERT_TRUE(gameBoard->IsFreeFoundation(row, column));
 }
+
+//Test case for the InitEndPillars method
+TEST_F(GameBoardTest, InitEndPillars) {
+    ASSERT_NO_THROW(gameBoard->InitEndPillars());
+    ASSERT_EQ(gameBoard->GetEndPillars().size(), 4);  // Adjust based on the actual expected result
+}
+
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
