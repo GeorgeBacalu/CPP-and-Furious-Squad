@@ -85,6 +85,18 @@ TEST_F(GameBoardTest, CheckWin) {
     // Add assertions based on the expected behavior of CheckWin
 }
 
+//Test case for the LoadGame method
+TEST_F(GameBoardTest, LoadGame) {
+    ASSERT_NO_THROW(gameBoard->LoadGame());
+    // Add assertions based on the expected behavior after loading a game
+}
+
+//Test case for the SaveGame method
+TEST_F(GameBoardTest, SaveGame) {
+    ASSERT_NO_THROW(gameBoard->SaveGame());
+    // Add assertions based on the expected behavior after saving a game
+}
+
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
