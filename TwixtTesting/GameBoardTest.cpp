@@ -71,6 +71,13 @@ TEST_F(GameBoardTest, InitEndPillars) {
     ASSERT_EQ(gameBoard->GetEndPillars().size(), 4);  // Adjust based on the actual expected result
 }
 
+// Test case for the BFS method
+TEST_F(GameBoardTest, BFS) {
+    Pillar startPillar{ {0, 0}, Color::RED };
+    ASSERT_NO_THROW(gameBoard->BFS(startPillar));
+    // Add assertions based on the expected behavior of BFS
+}
+
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
