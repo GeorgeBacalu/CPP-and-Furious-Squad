@@ -79,6 +79,10 @@ bool Pillar::operator==(const Pillar& other) const
 {
 	return m_position == other.m_position && m_color == other.m_color;
 }
+bool Pillar::operator!=(const Pillar& other) const
+{
+	return !(*this == other);
+}
 
 const Position& Pillar::GetPosition() const
 {

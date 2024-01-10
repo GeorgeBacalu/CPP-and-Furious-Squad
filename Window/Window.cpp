@@ -24,21 +24,28 @@ void Window::setupUi()
 void Window::newGame()
 {
     clearLayout(layout);
+    paintGameBoard = true;
     update();
     QPainter painter(this);
     g = GameBoard::GetInstance();
     painter.setRenderHint(QPainter::Antialiasing, true);
     for (int i = 0; i < g->GetWidth(); i++)
     {
-        for (int j = 0; j < g->GetWidth(); j++)
+        for (int j = 0; j < g->GetHeight(); j++)
         {
-            CircleWidget* circleWidget = new CircleWidget();
-            circleWidget->setFixedSize(30, 30);
-            circleWidget->setColor(Qt::white);
-            circleWidget->setProperty("row", i);
-            circleWidget->setProperty("column", j);
-            connect(circleWidget, &CircleWidget::clicked, this, &Window::onCircleClick);
-            layout->addWidget(circleWidget, i, j);
+            if ((i == 0 && (j == 0 || j == g->GetWidth() - 1)) ||
+                (i == g->GetHeight() - 1 && (j == 0 || j == g->GetWidth() - 1)))
+                    layout->addItem(new QSpacerItem(30, 30, QSizePolicy::Fixed, QSizePolicy::Fixed), i, j);
+            else
+            {
+                CircleWidget* circleWidget = new CircleWidget();
+                circleWidget->setFixedSize(30, 30);
+                circleWidget->setColor(Qt::white);
+                circleWidget->setProperty("row", i);
+                circleWidget->setProperty("column", j);
+                connect(circleWidget, &CircleWidget::clicked, this, &Window::onCircleClick);
+                layout->addWidget(circleWidget, i, j);
+            }
         }
     }
     QPushButton* saveButton = new QPushButton("Save");
@@ -51,6 +58,7 @@ void Window::loadGame()
 {
     QPainter painter(this);
     clearLayout(layout);
+    paintGameBoard = true;
     update();
     painter.setRenderHint(QPainter::Antialiasing, true);
     g = GameBoard::GetInstance();
@@ -125,6 +133,42 @@ void Window::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.eraseRect(rect());
     drawBridges(painter);
+    if (paintGameBoard)
+    {
+        CircleWidget* startCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(0,1)->widget());
+        CircleWidget* endCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(0, g->GetWidth() - 2)->widget());
+
+        QPoint start = startCircle->mapToParent(startCircle->rect().bottomLeft());
+        QPoint end = endCircle->mapToParent(startCircle->rect().bottomRight());
+
+        painter.setPen(QPen(Qt::red, 3, Qt::SolidLine));
+        painter.drawLine(start,end);
+
+        startCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(g->GetHeight() - 1, 1)->widget());
+        endCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(g->GetHeight() - 1, g->GetWidth() - 2)->widget());
+
+        start = startCircle->mapToParent(startCircle->rect().topLeft());
+        end = endCircle->mapToParent(startCircle->rect().topRight());
+
+        painter.drawLine(start, end);
+
+        startCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(1,0)->widget());
+        endCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(g->GetHeight() - 2,0)->widget());
+
+        start = startCircle->mapToParent(startCircle->rect().topRight());
+        end = endCircle->mapToParent(startCircle->rect().bottomRight());
+
+        painter.setPen(QPen(Qt::black, 3, Qt::SolidLine));
+        painter.drawLine(start, end);
+
+        startCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(1, g->GetWidth()-1)->widget());
+        endCircle = qobject_cast<CircleWidget*>(layout->itemAtPosition(g->GetHeight() - 2, g->GetWidth()-1)->widget());
+
+        start = startCircle->mapToParent(startCircle->rect().topLeft());
+        end = endCircle->mapToParent(startCircle->rect().bottomLeft());
+
+        painter.drawLine(start, end);
+    }
 }
 void Window::onCircleClick()
 {
@@ -192,8 +236,14 @@ void Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, u
 void Window::checkWinner(bool playerTurn)
 {
     g->InitEndPillars();
-    for (auto it : g->GetEndPillars())
-        g->BFS(it);
+    for (const auto& it : g->GetEndPillars())
+    {
+        g->UpdateAdjacencyList();
+        if (it.GetColor() == Color::RED)
+            g->SetRedPaths(GameBoard::BFS(it, g->GetAdjacencyList()));
+        else
+            g->SetBlackPaths(GameBoard::BFS(it, g->GetAdjacencyList()));
+    }
     auto player = playerTurn ? Color::RED : Color::BLACK;
     if (g->CheckWin(player))
     {

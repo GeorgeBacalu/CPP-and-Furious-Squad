@@ -32,7 +32,7 @@ public:
 	friend std::istream& operator>>(std::istream& in, Pillar& pillar);
 	friend std::ostream& operator<<(std::ostream& out, const Pillar& pillar);
 	bool operator==(const Pillar& other) const;
-
+	bool operator!=(const Pillar& other) const;
 	const Position& GetPosition() const;
 	void SetPosition(const Position& position);
 	void SetPosition(size_t row, size_t column);

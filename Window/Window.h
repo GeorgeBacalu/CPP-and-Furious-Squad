@@ -34,4 +34,5 @@ private:
     QGridLayout* layout;
     GameBoard* g;
     BridgeOptions *dialog;
+    bool paintGameBoard;
 };
