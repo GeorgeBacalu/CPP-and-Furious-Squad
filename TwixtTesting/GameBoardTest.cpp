@@ -186,6 +186,34 @@ TEST_F(GameBoardTest, LoadBridgesFromFile) {
     // Add assertions based on the expected behavior after loading bridges from a file
 }
 
+TEST_F(GameBoardTest, ProcessNextMoveQT) {
+    Pillar newPillar{ {0, 1}, Color::BLACK };
+    gameBoard->PlacePillarQT(0, 1);  // Setup the initial state
+    gameBoard->ProcessNextMoveQT(newPillar);
+    // Verify that the new pillar is added and the player turn is switched
+    ASSERT_TRUE(gameBoard->GetMatrix()[0][1].has_value());
+    ASSERT_EQ(gameBoard->GetMatrix()[0][1]->GetColor(), Color::BLACK);
+    ASSERT_NE(gameBoard->GetPlayerTurn(), Color::BLACK);
+}
+
+
+TEST_F(GameBoardTest, LoadPillarsFromFile) {
+    std::string filename = "test_pillars.txt";
+    gameBoard->LoadPillarsFromFile(filename);
+    // Assertions depend on the contents of test_pillars.txt
+    // Verify that the pillars are correctly loaded and placed
+}
+
+TEST_F(GameBoardTest, IsFreeFoundationCorner) {
+    ASSERT_FALSE(gameBoard->IsFreeFoundation(0, 0)); // Corner case
+    gameBoard->PlacePillar(2, 3); // Occupied cell
+    ASSERT_FALSE(gameBoard->IsFreeFoundation(2, 3));
+}
+
+TEST_F(GameBoardTest, IntersectsOnAxis) {
+    // Set up various bridge configurations and test for intersections
+    // Assertions depend on the specific cases tested
+}
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
