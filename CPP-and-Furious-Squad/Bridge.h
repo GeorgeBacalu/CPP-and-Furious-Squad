@@ -15,6 +15,8 @@ public:
 	Bridge(const Pillar& startPillar, const Pillar& endPillar);
 	Bridge(const Bridge& other);
 	Bridge& operator=(const Bridge& other);
+	Bridge reverse() const;
+
 	Bridge(Bridge&& other) noexcept = default;
 	Bridge& operator=(Bridge&& other) noexcept = default;
 	~Bridge() = default;
@@ -25,6 +27,5 @@ public:
 	const Pillar& GetEndPillar() const;
 	Color GetColor() const override;
 	bool operator==(const Bridge& other) const;
-
 	bool IsValid() const;
 };

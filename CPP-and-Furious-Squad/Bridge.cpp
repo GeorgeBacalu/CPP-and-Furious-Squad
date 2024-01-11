@@ -24,6 +24,11 @@ Bridge& Bridge::operator=(const Bridge& other)
 	return *this;
 }
 
+Bridge Bridge::reverse() const
+{
+	return Bridge{ this->m_endPillar, this->m_startPillar };
+}
+
 std::istream& operator>>(std::istream& in, Bridge& bridge)
 {
 	if (!(in >> bridge.m_startPillar >> bridge.m_endPillar))

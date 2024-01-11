@@ -7,6 +7,7 @@
 #include <QPalette>
 #include <QPainter>
 #include <qpen.h>
+#include<qmessagebox.h>
 #include <QPushButton>
 #include <GameBoard.h>
 #include"BridgeOptions.h"
@@ -32,10 +33,13 @@ public:
     void checkWinner(bool playerTurn);
     void removePillar(uint16_t row, uint16_t column);
     void stopEditing();
+    void updateUiForPlaceableBridges(const std::vector<Bridge>& bridgeOptions,BridgeOptions* dialog);
 private:
     QGridLayout* layout;
     GameBoard* g;
     BridgeOptions *dialog;
-    bool paintGameBoard;
+    QPushButton* editButton;
+    bool winnerFound;
     bool editing;
+    bool paintGameBoard;
 };
