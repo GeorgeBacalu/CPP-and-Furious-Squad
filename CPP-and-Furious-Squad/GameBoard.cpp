@@ -402,7 +402,6 @@ void GameBoard::PlacePillarQT(uint16_t row, uint16_t column)
 		{
 			m_matrix[row][column] = std::optional<Pillar>{ pillar };
 			pillar.GetColor() == Color::RED ? m_redPillars.push_back(pillar) : m_blackPillars.push_back(pillar);
-			SwitchPlayerTurn();
 		}
 	}
 	else

@@ -33,13 +33,18 @@ public:
     void checkWinner(bool playerTurn);
     void removePillar(uint16_t row, uint16_t column);
     void stopEditing();
+    void startEditing();
     void updateUiForPlaceableBridges(const std::vector<Bridge>& bridgeOptions,BridgeOptions* dialog);
+    void advanceTurn();
 private:
     QGridLayout* layout;
     GameBoard* g;
     BridgeOptions *dialog;
     QPushButton* editButton;
+    QPushButton* stopEditButton;
+    QPushButton* nextTurn;
     bool winnerFound;
     bool editing;
     bool paintGameBoard;
+    bool placedPillar;
 };

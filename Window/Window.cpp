@@ -52,11 +52,24 @@ void Window::newGame()
     connect(saveButton, &QPushButton::clicked, this, &Window::onSaveClick);
     saveButton->setFixedSize(30 * g->GetWidth(), 30);
     layout->addWidget(saveButton, g->GetHeight(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
-    editButton = new QPushButton("Stop editing");
-    connect(editButton, &QPushButton::clicked, this, &Window::stopEditing);
+
+    stopEditButton = new QPushButton("Stop editing");
+    connect(stopEditButton, &QPushButton::clicked, this, &Window::stopEditing);
+    stopEditButton->setFixedSize(30 * g->GetWidth(), 30);
+    stopEditButton->setVisible(false);
+    layout->addWidget(stopEditButton, g->GetHeight() + 1, 0, 1, g->GetWidth(), Qt::AlignCenter);
+
+    editButton = new QPushButton("Start editing");
+    connect(editButton, &QPushButton::clicked, this, &Window::startEditing);
     editButton->setFixedSize(30 * g->GetWidth(), 30);
-    editButton->setVisible(false);
+    editButton->setVisible(true);
     layout->addWidget(editButton, g->GetHeight() + 1, 0, 1, g->GetWidth(), Qt::AlignCenter);
+
+    nextTurn = new QPushButton("Advance Turn");
+    connect(nextTurn, &QPushButton::clicked, this, &Window::advanceTurn);
+    nextTurn->setFixedSize(30 * g->GetWidth(), 30);
+    nextTurn->setVisible(true);
+    layout->addWidget(nextTurn, g->GetHeight() + 2, 0, 1, g->GetWidth(), Qt::AlignCenter);
     update();
 }
 
@@ -101,11 +114,24 @@ void Window::loadGame()
     connect(saveButton, &QPushButton::clicked, this, &Window::onSaveClick);
     saveButton->setFixedSize(30 * g->GetWidth(), 30);
     layout->addWidget(saveButton, g->GetHeight(), 0, 1, g->GetWidth(), Qt::AlignHCenter);
-    editButton = new QPushButton("Stop editing");
-    connect(editButton, &QPushButton::clicked, this, &Window::stopEditing);
+
+    stopEditButton = new QPushButton("Stop editing");
+    connect(stopEditButton, &QPushButton::clicked, this, &Window::stopEditing);
+    stopEditButton->setFixedSize(30 * g->GetWidth(), 30);
+    stopEditButton->setVisible(false);
+    layout->addWidget(stopEditButton, g->GetHeight() + 1, 0, 1, g->GetWidth(), Qt::AlignCenter);
+
+    editButton = new QPushButton("Start editing");
+    connect(editButton, &QPushButton::clicked, this, &Window::startEditing);
     editButton->setFixedSize(30 * g->GetWidth(), 30);
-    editButton->setVisible(false);
+    editButton->setVisible(true);
     layout->addWidget(editButton, g->GetHeight() + 1, 0, 1, g->GetWidth(), Qt::AlignCenter);
+
+    nextTurn = new QPushButton("Advance Turn");
+    connect(nextTurn, &QPushButton::clicked, this, &Window::advanceTurn);
+    nextTurn->setFixedSize(30 * g->GetWidth(), 30);
+    nextTurn->setVisible(true);
+    layout->addWidget(nextTurn, g->GetHeight() + 2, 0, 1, g->GetWidth(), Qt::AlignCenter);
     update();
 }
 
@@ -179,6 +205,12 @@ void Window::paintEvent(QPaintEvent* event)
         end = endCircle->mapToParent(startCircle->rect().bottomLeft());
 
         painter.drawLine(start, end);
+
+        QColor turnColor = (g->GetPlayerTurn()) ? Qt::red : Qt::black;
+        QString turnText = (g->GetPlayerTurn()) ? "Red Player's Turn" : "Black Player's Turn";
+        painter.setPen(QPen(turnColor));
+        painter.setFont(QFont("Arial", 10));
+        painter.drawText(rect(), Qt::AlignTop | Qt::AlignHCenter, turnText);
     }
 }
 void Window::onCircleClick()
@@ -191,7 +223,7 @@ void Window::onCircleClick()
     bool playerTurn = g->GetPlayerTurn();
     if (editing)
     {
-        Color pillarColor = (!playerTurn) ? Color::RED : Color::BLACK;
+        Color pillarColor = (playerTurn) ? Color::RED : Color::BLACK;
         if(!g->IsFreeFoundation(row,col))
             if (g->GetMatrix()[row][col].value().GetColor() == pillarColor)
             {
@@ -200,7 +232,8 @@ void Window::onCircleClick()
             }
             else
             {
-                QMessageBox::warning(this, "Invalid Selection", "Please select your pillars");
+                if (!g->GetMatrix()[row][col].has_value() || g->GetMatrix()[row][col].value().GetColor() != pillarColor)
+                    QMessageBox::warning(this, "Invalid Selection", "Please select your pillars");
             }
     }
     else
@@ -215,6 +248,7 @@ void Window::onCircleClick()
             clickedCircle->setColor(newColor);
             std::vector<Bridge> newBridges{ g->ProcessBridgesForNewPillar(p) };
             PlaceBridgesFromOptions(newBridges, newBridges.size());
+            placedPillar = true;
         }
         catch (std::invalid_argument& exception)
         {
@@ -233,7 +267,7 @@ void Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, u
     if (bridgeOptions.size() > 0)
     {
         dialog = new BridgeOptions;
-        dialog->setMessage("Choose a bridge to place:","Choose a bridge to remove");
+        dialog->setMessage("Choose a bridge to place:", "Choose a bridge to remove");
         updateUiForPlaceableBridges(bridgeOptions, dialog);
         dialog->setBridgeOptions(bridgeOptions);
         //add the bridge from the placeable bridges and update the UI 
@@ -244,11 +278,11 @@ void Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, u
                 bridges.push_back(dialog->getPlaceable()[optionIndex]);
                 g->SetBridges(bridges);
                 updateUiForPlaceableBridges(dialog->getBridgeOptions(), dialog);
-                checkWinner(!g->GetPlayerTurn());
+                checkWinner(g->GetPlayerTurn());
                 update();
             }
             });
-        //delete the bridges that can be deleted , a bridge is considered START->END,END->START
+        //delete  START->END,END->START
         connect(dialog, &BridgeOptions::RemoveBridgeClicked, this, [&]() {
             int optionIndex = dialog->getSelectedOptionIndex();
             if (optionIndex >= 0 && optionIndex < dialog->getRemovable().size()) {
@@ -261,7 +295,7 @@ void Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, u
                 else
                 {
                     it = std::find(bridges.begin(), bridges.end(), removedBridge.reverse());
-                    if (it != bridges.end()) 
+                    if (it != bridges.end())
                         bridges.erase(it);
                 }
                 g->SetBridges(bridges);
@@ -269,23 +303,9 @@ void Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, u
                 update();
             }
             });
-        connect(dialog, &BridgeOptions::closeButtonClicked, this, [&]() 
+        connect(dialog, &BridgeOptions::closeButtonClicked, this, [&]()
             {
                 dialog->reject();
-                if (!editing && !winnerFound)
-                {
-                    QMessageBox msgBox;
-                    msgBox.setText("Do you want to edit your pieces?");
-                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                    msgBox.setDefaultButton(QMessageBox::No);
-                    QCoreApplication::processEvents();
-                    int answer{ msgBox.exec() };
-                    if (answer == QMessageBox::Yes)
-                    {
-                        editing = true;
-                        editButton->setVisible(true);
-                    }
-                }
                 update();
             });
         update();
@@ -309,9 +329,9 @@ void Window::updateUiForPlaceableBridges(const std::vector<Bridge>& bridgeOption
     }
     dialog->clearRemovableAndPlaceable();
     for (uint16_t i = 0; i < placeable.size(); ++i)
-        dialog->setBridgeInfo(bridgeOptions[i], i, false);
+        dialog->setBridgeInfo(placeable[i], i, false);
     for (uint16_t i = 0; i < removable.size(); ++i)
-        dialog->setBridgeInfo(bridgeOptions[i], i, true);
+        dialog->setBridgeInfo(removable[i], i, true);
 
     dialog->setRemovable(removable);
     dialog->setPlaceable(placeable);
@@ -348,8 +368,44 @@ void Window::removePillar(uint16_t row, uint16_t column)
 void Window::stopEditing()
 {
     editing = false;
-    editButton->setVisible(false);
+    stopEditButton->setVisible(false);
+    if(!winnerFound)
+        checkWinner(g->GetPlayerTurn());
+    editButton->setVisible(true);
+    g->SwitchPlayerTurn();
     update();
+}
+void Window::startEditing()
+{
+    if (!placedPillar)
+    {
+        QMessageBox::warning(this, "Invalid Action", "Please place your pillar");
+    }
+    else
+    {
+        editing = true;
+        editButton->setVisible(false);
+        stopEditButton->setVisible(true);
+    }
+    update();
+}
+void Window::advanceTurn()
+{
+    if (editing)
+    {
+        stopEditing();
+        placedPillar = false;
+        return;
+    }
+    if (!placedPillar)
+    {
+        QMessageBox::warning(this, "Invalid Action", "Please place your pillar");
+        return;
+    }
+    g->SwitchPlayerTurn();
+    update();
+    placedPillar = false;
+    
 }
 Window::~Window()
 {}
