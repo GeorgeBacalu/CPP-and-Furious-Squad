@@ -219,6 +219,36 @@ void GameBoard::UpdateAdjacencyList()
 		m_adjacencyList[endRow * kHeight + endColumn].push_back(lastBridge.GetStartPillar());
 	}
 }
+void GameBoard::RemoveBridge(const Bridge& bridge)
+{
+	auto it = std::find(m_bridges.begin(), m_bridges.end(), bridge);
+	if (it != m_bridges.end()) {
+		m_bridges.erase(it);
+	}
+	else
+	{
+		it = std::find(m_bridges.begin(), m_bridges.end(), bridge.reverse());
+		if (it != m_bridges.end())
+			m_bridges.erase(it);
+	}
+
+	nrBridges--;
+	const auto& [startRow, startColumn] = bridge.GetStartPillar().GetPosition();
+	const auto& [endRow, endColumn] = bridge.GetEndPillar().GetPosition();
+	auto& startPillarAdjList = m_adjacencyList[startRow * kWidth + startColumn];
+
+	startPillarAdjList.erase(std::remove_if(startPillarAdjList.begin(), startPillarAdjList.end(),
+		[&](const Pillar& pillar) {
+			return pillar == bridge.GetEndPillar();
+		}), startPillarAdjList.end());
+
+	auto& endPillarAdjList = m_adjacencyList[endRow * kHeight + endColumn];
+	endPillarAdjList.erase(std::remove_if(endPillarAdjList.begin(), endPillarAdjList.end(),
+		[&](const Pillar& pillar) {
+			return pillar == bridge.GetStartPillar();
+		}), endPillarAdjList.end());
+}
+
 
 void GameBoard::BFS(const Pillar& start)
 {
@@ -282,6 +312,7 @@ bool GameBoard::CheckWin(Color playerColor)
 void GameBoard::InitEndPillars()
 {
 	//generate endPillars from m_matrix
+	m_endPillars.clear();
 	for (uint16_t row = 0; row < kWidth; ++row)
 		for (uint16_t column = 0; column < kHeight; ++column)
 			if (m_matrix[row][column].has_value() && (row == 0 || row == kHeight - 1 || column == 0 || column == kWidth - 1))

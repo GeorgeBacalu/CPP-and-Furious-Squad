@@ -282,23 +282,12 @@ void Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, u
                 update();
             }
             });
-        //delete  START->END,END->START
+        //delete  the bridge from the removable bridges . A bridge is considered START->END,END->START
         connect(dialog, &BridgeOptions::RemoveBridgeClicked, this, [&]() {
             int optionIndex = dialog->getSelectedOptionIndex();
             if (optionIndex >= 0 && optionIndex < dialog->getRemovable().size()) {
                 Bridge removedBridge = dialog->getRemovable()[optionIndex];
-                std::vector<Bridge> bridges = g->GetBridges();
-                auto it = std::find(bridges.begin(), bridges.end(), removedBridge);
-                if (it != bridges.end()) {
-                    bridges.erase(it);
-                }
-                else
-                {
-                    it = std::find(bridges.begin(), bridges.end(), removedBridge.reverse());
-                    if (it != bridges.end())
-                        bridges.erase(it);
-                }
-                g->SetBridges(bridges);
+                g->RemoveBridge(removedBridge);
                 updateUiForPlaceableBridges(dialog->getBridgeOptions(), dialog);
                 update();
             }

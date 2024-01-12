@@ -82,6 +82,7 @@ public:
 	std::vector<Bridge> ProcessBridgesForNewPillar(const Pillar& newPillar);
 	void UpdateAvailablePieces(const std::vector<Bridge>& newBridges, const Pillar& newPillar);
 	void RemovePillar(uint16_t row, uint16_t column);
+	void RemoveBridge(const Bridge& bridge);
 	//QT player move methods
 	void PlacePillarQT(uint16_t row, uint16_t column);
 	std::vector<Bridge> ProcessNextMoveQT(Pillar& newPillar);
