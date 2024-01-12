@@ -69,7 +69,7 @@ void ConsoleRenderer::TakeInputWithAi2(GameBoard* gb, AiPlayer* ai, AiPlayer* ai
 			x = row;
 			y = column;
 			std::cout << x << " " << y << "\n";
-			system("pause");
+			//system("pause");
 		}
 		else
 		{
@@ -79,7 +79,7 @@ void ConsoleRenderer::TakeInputWithAi2(GameBoard* gb, AiPlayer* ai, AiPlayer* ai
 			x = row;
 			y = column;
 			std::cout << x << " " << y << "\n";
-			system("pause");
+			//system("pause");
 		}
 	}
 	catch (std::invalid_argument& exception)

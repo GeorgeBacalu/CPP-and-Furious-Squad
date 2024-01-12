@@ -52,32 +52,36 @@ void TwixtGame::Run()
 	AiPlayer aiPlayer{ *gameBoard, "Ai_rewards.txt", Color::BLACK };
 	AiPlayer aiPlayer2{ *gameBoard, "Ai_rewards2.txt", Color::RED };
 
-	while (true)
+	for(int i=0;i<2;++i)
 	{
-		//add key listener
-		ConsoleRenderer::Render(gameBoard);
-		try
+		gameBoard->ResetGame();
+		while (true)
 		{
-			ConsoleRenderer::TakeInput(gameBoard);
-			/*ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
-			ConsoleRenderer::TakeInputWithAi2(gameBoard, &aiPlayer2, &aiPlayer);*/
-		}
-		catch (const std::invalid_argument& exception)
-		{
-			std::cerr << exception.what() << "\n";
-			break;
-		}
-		if (gameBoard->CheckWin(Color::BLACK))
-		{
+			//add key listener
 			ConsoleRenderer::Render(gameBoard);
-			std::cout << "Black wins!\n";
-			break;
-		}
-		if (gameBoard->CheckWin(Color::RED))
-		{
-			ConsoleRenderer::Render(gameBoard);
-			std::cout << "Red wins!\n";
-			break;
+			try
+			{
+				//ConsoleRenderer::TakeInput(gameBoard);
+				//ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
+				ConsoleRenderer::TakeInputWithAi2(gameBoard, &aiPlayer2, &aiPlayer);
+			}
+			catch (const std::invalid_argument& exception)
+			{
+				std::cerr << exception.what() << "\n";
+				break;
+			}
+			if (gameBoard->CheckWin(Color::BLACK))
+			{
+				ConsoleRenderer::Render(gameBoard);
+				std::cout << "Black wins!\n";
+				break;
+			}
+			if (gameBoard->CheckWin(Color::RED))
+			{
+				ConsoleRenderer::Render(gameBoard);
+				std::cout << "Red wins!\n";
+				break;
+			}
 		}
 	}
 
