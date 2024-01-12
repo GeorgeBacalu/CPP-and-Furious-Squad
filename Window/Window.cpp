@@ -5,7 +5,7 @@ Window::Window(QWidget* parent)
 {
     QWidget* centralWidget = new QWidget;
     setCentralWidget(centralWidget);
-
+    turnNumber = 0;
     layout = new QGridLayout;
     centralWidget->setLayout(layout);
     g = GameBoard::GetInstance();
@@ -238,6 +238,22 @@ void Window::onCircleClick()
     }
     else
     {
+        if (turnNumber == 1)
+        {
+            QMessageBox msgBox;
+            msgBox.setText("Do you want to switch your color");
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::No);
+            int answer = msgBox.exec();
+            if (answer == QMessageBox::Yes)
+            {
+            }
+        }
+        if (placedPillar)
+        {
+            QMessageBox::warning(this, "Invalid Action", "You already placed a pillar");
+            return;
+        }
         QColor newColor = (playerTurn) ? Qt::red : Qt::black;
         try
         {
@@ -392,6 +408,7 @@ void Window::advanceTurn()
         return;
     }
     g->SwitchPlayerTurn();
+    turnNumber++;
     update();
     placedPillar = false;
     

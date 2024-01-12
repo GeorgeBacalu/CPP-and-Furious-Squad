@@ -43,8 +43,10 @@ private:
     QPushButton* editButton;
     QPushButton* stopEditButton;
     QPushButton* nextTurn;
+    uint16_t turnNumber;
     bool winnerFound;
     bool editing;
     bool paintGameBoard;
     bool placedPillar;
+    bool secondPlayerIsAI;
 };
