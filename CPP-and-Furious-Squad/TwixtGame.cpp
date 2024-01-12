@@ -52,8 +52,9 @@ void TwixtGame::Run()
 	AiPlayer aiPlayer{ *gameBoard, "Ai_rewards.txt", Color::BLACK };
 	AiPlayer aiPlayer2{ *gameBoard, "Ai_rewards2.txt", Color::RED };
 
-	for(int i=0;i<2;++i)
+	for(int i=0;i<1;++i)
 	{
+		std::cout<<"Game "<<i+1<<"\n";
 		gameBoard->ResetGame();
 		while (true)
 		{

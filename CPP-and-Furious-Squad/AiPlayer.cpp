@@ -32,7 +32,7 @@ Position AiPlayer::GetNextAction()
     std::reference_wrapper<Position> bestAction{ possibleActions[0] };
     int64_t bestStateActionHash = 0;
     std::bernoulli_distribution bernoulliDistribution(explorationRate); // generates "true" with explorationRate probability
-    if (bernoulliDistribution(randomEngine)) 
+    if (bernoulliDistribution(randomEngine) < explorationRate)
     {
         // randomly pick an action
         std::uniform_int_distribution<uint32_t> uniformDistribution(0, (uint32_t)possibleActions.size() - 1);
@@ -58,6 +58,7 @@ Position AiPlayer::GetNextAction()
         }
     }
     m_previousStateActions.emplace_back(bestStateActionHash);
+
     return bestAction;
 }
 
@@ -129,7 +130,6 @@ std::vector<Position> AiPlayer::GenerateActions(GameBoard& gameBoard) {
 void AiPlayer::SavePolicy() const {
     std::ofstream out(m_policyName);
     for (const auto& [stateActionHash, costEstimation] : m_stateActionCosts)
-        if (stateActionHash != initialEstimation)
             out << stateActionHash << " " << costEstimation << "\n";
 }
 

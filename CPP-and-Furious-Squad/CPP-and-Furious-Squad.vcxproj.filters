@@ -99,5 +99,8 @@
     <Text Include="AI_rewards.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="Ai_rewards2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

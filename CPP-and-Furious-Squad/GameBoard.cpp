@@ -633,10 +633,25 @@ int64_t GameBoard::GetHashWithPosition(const Position& position) const {
 	std::hash<int64_t> hasher;
 	int64_t hash = 0;
 	const auto& [row, column] = position;
-	if (m_matrix[row][column].has_value())
-	{
-		Pillar pillar = m_matrix[row][column].value();
-		hash = hasher(static_cast<int64_t>(pillar.GetColor()));
-	}
+
+	if (row == 0 && column == 0)
+		hash = 0;
+	else if (row == 0 && column == kWidth - 1)
+		hash = 1;
+	else if (row == kHeight - 1 && column == 0)
+		hash = 2;
+	else if (row == kHeight - 1 && column == kWidth - 1)
+		hash = 3;
+	else if (row == 0)
+		hash = 4 + column - 1;
+	else if (row == kHeight - 1)
+		hash = 4 + kWidth - 2 + column - 1;
+	else if (column == 0)
+		hash = 4 + 2 * (kWidth - 2) + row - 1;
+	else if (column == kWidth - 1)
+		hash = 4 + 2 * (kWidth - 2) + kHeight - 2 + row - 1;
+	else
+		hash = 4 + 2 * (kWidth - 2) + 2 * (kHeight - 2) + (row - 1) * (kWidth - 2) + column - 1;
+
 	return hash;
 }
