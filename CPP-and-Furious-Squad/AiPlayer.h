@@ -22,6 +22,7 @@ public:
 	~AiPlayer() override;
 
 	Position GetNextAction() override;
+	Position RandomAction();
 	std::string_view GetName() const override;
 
 	bool isPositionValid(const Position& position, GameBoard& gameBoard);

@@ -10,8 +10,8 @@
 class GameBoard
 {
 public:
-	static constexpr size_t kWidth{ 5 };
-	static constexpr size_t kHeight{ 5 };
+	static constexpr size_t kWidth{ 3 };
+	static constexpr size_t kHeight{ 3 };
 private:
 	bool m_playerTurn{ true };
 	bool m_invalid{ false };

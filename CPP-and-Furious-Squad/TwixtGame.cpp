@@ -42,11 +42,11 @@ void TwixtGame::Run()
 	for (int i = 0; i < GameBoard::kWidth; ++i)
 		matrix[i].resize(GameBoard::kWidth);
 
-	for (auto pillar : pillars)
+	/*for (auto pillar : pillars)
 	{
 		const auto& [row, column] = pillar.GetPosition();
 		matrix[row][column] = pillar;
-	}
+	}*/
 	//gameBoard->setMatrix(matrix);
 
 	AiPlayer aiPlayer{ *gameBoard, "Ai_rewards.txt", Color::BLACK };
@@ -56,9 +56,17 @@ void TwixtGame::Run()
 	{
 		//add key listener
 		ConsoleRenderer::Render(gameBoard);
-		ConsoleRenderer::TakeInput(gameBoard);
-		//ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
-		//ConsoleRenderer::TakeInputWithAi2(gameBoard, &aiPlayer2, &aiPlayer);
+		try
+		{
+			ConsoleRenderer::TakeInput(gameBoard);
+			/*ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
+			ConsoleRenderer::TakeInputWithAi2(gameBoard, &aiPlayer2, &aiPlayer);*/
+		}
+		catch (const std::invalid_argument& exception)
+		{
+			std::cerr << exception.what() << "\n";
+			break;
+		}
 		if (gameBoard->CheckWin(Color::BLACK))
 		{
 			ConsoleRenderer::Render(gameBoard);

@@ -14,21 +14,29 @@ ConsoleRenderer::ConsoleRenderer()
 void ConsoleRenderer::TakeInputWithAi(GameBoard* gb, AiPlayer* ai)
 {
 	int x, y;
-	if (gb->GetPlayerTurn())
+	try
 	{
-		std::cout << "Red player's turn\n";
-		std::cout << "Enter the coordinates of the pillar you want to place: ";
-		std::cin >> x >> y;
+		if (gb->GetPlayerTurn())
+		{
+			std::cout << "Red player's turn\n";
+			std::cout << "Enter the coordinates of the pillar you want to place: ";
+			std::cin >> x >> y;
+		}
+		else
+		{
+			std::cout << "AI player's turn\n";
+			std::cout << "Enter the coordinates of the pillar you want to place: ";
+			const auto& [row, column] = ai->GetNextAction();
+			x = row;
+			y = column;
+			std::cout << x << " " << y << "\n";
+			system("pause");
+		}
 	}
-	else
+	catch (std::invalid_argument& exception)
 	{
-		std::cout << "AI player's turn\n";
-		std::cout << "Enter the coordinates of the pillar you want to place: ";
-		const auto& [row, column] = ai->GetNextAction();
-		x = row;
-		y = column;
-		std::cout << x << " " << y << "\n";
-		system("pause");
+		std::cerr << exception.what() << "\n";
+		throw (std::invalid_argument("TIE"));
 	}
 	//place pillar and switch player
 	try
@@ -51,25 +59,33 @@ void ConsoleRenderer::TakeInputWithAi(GameBoard* gb, AiPlayer* ai)
 void ConsoleRenderer::TakeInputWithAi2(GameBoard* gb, AiPlayer* ai, AiPlayer* ai2)
 {
 	int x, y;
-	if (gb->GetPlayerTurn())
+	try
 	{
-		std::cout << "Red AI player's turn\n";
-		std::cout << "Enter the coordinates of the pillar you want to place: ";
-		const auto& [row, column] = ai->GetNextAction();
-		x = row;
-		y = column;
-		std::cout << x << " " << y << "\n";
-		system("pause");
+		if (gb->GetPlayerTurn())
+		{
+			std::cout << "Red AI player's turn\n";
+			std::cout << "Enter the coordinates of the pillar you want to place: ";
+			const auto& [row, column] = ai->RandomAction();
+			x = row;
+			y = column;
+			std::cout << x << " " << y << "\n";
+			system("pause");
+		}
+		else
+		{
+			std::cout << "Black AI player's turn\n";
+			std::cout << "Enter the coordinates of the pillar you want to place: ";
+			const auto& [row, column] = ai2->GetNextAction();
+			x = row;
+			y = column;
+			std::cout << x << " " << y << "\n";
+			system("pause");
+		}
 	}
-	else
+	catch (std::invalid_argument& exception)
 	{
-		std::cout << "Black AI player's turn\n";
-		std::cout << "Enter the coordinates of the pillar you want to place: ";
-		const auto& [row, column] = ai2->GetNextAction();
-		x = row;
-		y = column;
-		std::cout << x << " " << y << "\n";
-		system("pause");
+		std::cerr << exception.what() << "\n";
+		throw (std::invalid_argument("TIE"));
 	}
 	//place pillar and switch player
 	try
@@ -174,6 +190,7 @@ void ConsoleRenderer::TakeInput(GameBoard* gameBoard)
 	catch (std::invalid_argument& exception)
 	{
 		std::cerr << exception.what() << "\n";
+		throw (std::invalid_argument("TIE"));
 		system("pause");
 	}
 }

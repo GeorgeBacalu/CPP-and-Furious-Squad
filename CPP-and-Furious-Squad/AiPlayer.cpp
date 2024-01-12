@@ -23,6 +23,12 @@ AiPlayer::~AiPlayer()
 Position AiPlayer::GetNextAction()
 {
     std::vector<Position> possibleActions = GenerateActions(m_gameBoard);
+
+    if (possibleActions.empty())
+    {
+        throw std::invalid_argument("TIE");
+    }
+
     std::reference_wrapper<Position> bestAction{ possibleActions[0] };
     int64_t bestStateActionHash = 0;
     std::bernoulli_distribution bernoulliDistribution(explorationRate); // generates "true" with explorationRate probability
@@ -53,6 +59,20 @@ Position AiPlayer::GetNextAction()
     }
     m_previousStateActions.emplace_back(bestStateActionHash);
     return bestAction;
+}
+
+Position AiPlayer::RandomAction()
+{
+    std::vector<Position> possibleActions = GenerateActions(m_gameBoard);   
+
+    if (possibleActions.empty())
+        throw std::invalid_argument("TIE");
+
+    Position action;
+
+    std::uniform_int_distribution<uint32_t> uniformDistribution(0, (uint32_t)possibleActions.size() - 1);
+    action = possibleActions[uniformDistribution(randomEngine)];
+    return action;
 }
 
 std::string_view AiPlayer::GetName() const 
