@@ -2,6 +2,7 @@
 #include <fstream>
 #include <random>
 #include <limits>
+#include <math.h>
 
 std::random_device randomDevice;
 std::mt19937 randomEngine(randomDevice());
@@ -22,7 +23,7 @@ AiPlayer::~AiPlayer()
 
 Position AiPlayer::GetNextAction()
 {
-    std::vector<Position> possibleActions = GenerateActions(m_gameBoard);
+    std::vector<Position> possibleActions = GenerateNonAdjacentActions(m_gameBoard);
 
     if (possibleActions.empty())
     {
@@ -64,7 +65,7 @@ Position AiPlayer::GetNextAction()
 
 Position AiPlayer::RandomAction()
 {
-    std::vector<Position> possibleActions = GenerateActions(m_gameBoard);   
+    std::vector<Position> possibleActions = GenerateNonAdjacentActions(m_gameBoard);   
 
     if (possibleActions.empty())
         throw std::invalid_argument("TIE");
@@ -83,15 +84,111 @@ std::string_view AiPlayer::GetName() const
 
 void AiPlayer::FreeReward(float target)
 {
-    for (auto it = m_previousStateActions.rbegin(); it != m_previousStateActions.rend(); ++it) 
+    for (auto it = m_previousStateActions.rbegin(); it != m_previousStateActions.rend(); ++it)
     {
         const auto& stateAction = *it;
         float& estimation = m_stateActionCosts[stateAction];
-        estimation += learningRate * (target - estimation);
-        target = estimation;
+
+        // Check if the current state is adjacent to the previous state
+        //if (IsAdjacentState(stateAction, m_previousStateActions))
+        //{
+        //    // Penalize the AI for adjacent positions
+        //    estimation -= learningRate;
+        //}
+        //else
+        {
+            // Update the estimation using the target
+            estimation += learningRate * (target - estimation);
+            target = estimation;
+        }
     }
     m_previousStateActions.clear();
 }
+
+bool AiPlayer::IsAdjacentState(int64_t currentState, const std::vector<int64_t>& previousStates) const
+{
+    // Implement the logic to check if the current state is adjacent to any of the previous states
+    // You may need to extract the positions from the hash values and compare them
+    // For simplicity, let's assume that currentState and previousStates contain row/column information in the hash values
+
+    // Extract positions from currentState
+    Position currentPos = ExtractPositionFromHash(currentState);
+
+    // Check adjacency with each previous state
+    for (const auto& prevState : previousStates)
+    {
+        Position prevPos = ExtractPositionFromHash(prevState);
+
+        // Check if the positions are adjacent (you may need to define the adjacency criteria)
+        if (ArePositionsAdjacent(currentPos, prevPos))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+Position AiPlayer::ExtractPositionFromHash(int64_t stateHash) const
+{
+    int row, column;
+
+    if (stateHash == 0)
+    {
+        row = 0;
+        column = 0;
+    }
+    else if (stateHash == 1)
+    {
+        row = 0;
+        column = GameBoard::kWidth - 1;
+    }
+    else if (stateHash == 2)
+    {
+        row = GameBoard::kHeight - 1;
+        column = 0;
+    }
+    else if (stateHash == 3)
+    {
+        row = GameBoard::kHeight - 1;
+        column = GameBoard::kWidth - 1;
+    }
+    else if (stateHash < 4 + GameBoard::kWidth - 2)
+    {
+        row = 0;
+        column = 1 + stateHash - 4;
+    }
+    else if (stateHash < 4 + 2 * (GameBoard::kWidth - 2) + GameBoard::kHeight - 2)
+    {
+        row = 1 + stateHash - (4 + GameBoard::kWidth - 2);
+        column = (stateHash % 2 == 0) ? 0 : GameBoard::kWidth - 1;
+    }
+    else
+    {
+        stateHash -= 4 + 2 * (GameBoard::kWidth - 2) + 2 * (GameBoard::kHeight - 2);
+
+        row = 1 + (stateHash - 1) / (GameBoard::kWidth - 2);
+        column = 1 + (stateHash - 1) % (GameBoard::kWidth - 2);
+    }
+
+    return { row, column };
+}
+
+
+bool AiPlayer::ArePositionsAdjacent(const Position& pos1, const Position& pos2) const
+{
+    // Check if the positions are adjacent in terms of right, left, up, or down
+    // For simplicity, let's assume that the positions are adjacent if they are on the same row or column
+
+    int row1 = static_cast<int>(pos1.first);
+    int column1 = static_cast<int>(pos1.second);
+    int row2 = static_cast<int>(pos2.first);
+    int column2 = static_cast<int>(pos2.second);
+
+    return (std::abs(row1 - row2) <= 1 && std::abs(column1 - column2) <= 1);
+
+}
+
 
 bool AiPlayer::isPositionValid(const Position& position,GameBoard& gameBoard)
 {
@@ -125,6 +222,23 @@ std::vector<Position> AiPlayer::GenerateActions(GameBoard& gameBoard) {
                 possibleActions.emplace_back(position);
         }
     return possibleActions;
+}
+
+std::vector<Position> AiPlayer::GenerateNonAdjacentActions(GameBoard& gameBoard)
+{
+    std::vector<Position> allPossibleActions = GenerateActions(gameBoard);
+
+    // Filter out actions that are adjacent to any of the previous actions
+    std::vector<Position> nonAdjacentActions;
+    for (const auto& action : allPossibleActions)
+    {
+        if (!IsAdjacentState(m_gameBoard.GetHashWithPosition(action), m_previousStateActions))
+        {
+			nonAdjacentActions.emplace_back(action);
+		}
+    }
+
+    return nonAdjacentActions;
 }
 
 void AiPlayer::SavePolicy() const {

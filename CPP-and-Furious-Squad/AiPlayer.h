@@ -13,6 +13,7 @@ class AiPlayer : public IPlayer {
 	std::unordered_map<int64_t, float> m_stateActionCosts;
 
 	std::vector<Position> GenerateActions(GameBoard& gameBoard);
+	std::vector<Position> GenerateNonAdjacentActions(GameBoard& gameBoard);
 	void SavePolicy() const;
 	void LoadPolicy();
 
@@ -28,4 +29,8 @@ public:
 	bool isPositionValid(const Position& position, GameBoard& gameBoard);
 
 	void FreeReward(float target);
+
+	bool IsAdjacentState(int64_t currentState, const std::vector<int64_t>& previousStates) const;
+	Position ExtractPositionFromHash(int64_t stateHash) const;
+	bool ArePositionsAdjacent(const Position& pos1, const Position& pos2) const;
 };

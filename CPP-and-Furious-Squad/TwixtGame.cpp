@@ -52,14 +52,17 @@ void TwixtGame::Run()
 	AiPlayer aiPlayer{ *gameBoard, "Ai_rewards.txt", Color::BLACK };
 	AiPlayer aiPlayer2{ *gameBoard, "Ai_rewards2.txt", Color::RED };
 
-	for(int i=0;i<1;++i)
+	for(int i=0;i<100;++i)
 	{
-		std::cout<<"Game "<<i+1<<"\n";
+		//std::cout<<"Game "<<i+1<<"\n";
+		if(i%10==0)
+			std::cout<<"Game "<<i+1<<"\n";
 		gameBoard->ResetGame();
 		while (true)
 		{
 			//add key listener
-			ConsoleRenderer::Render(gameBoard);
+			//ConsoleRenderer::Render(gameBoard);
+			//system("pause");
 			try
 			{
 				//ConsoleRenderer::TakeInput(gameBoard);
@@ -68,19 +71,25 @@ void TwixtGame::Run()
 			}
 			catch (const std::invalid_argument& exception)
 			{
-				std::cerr << exception.what() << "\n";
+				//std::cerr << exception.what() << "\n";
+				aiPlayer.FreeReward(0.0f);
+				aiPlayer2.FreeReward(0.0f);
 				break;
 			}
 			if (gameBoard->CheckWin(Color::BLACK))
 			{
 				ConsoleRenderer::Render(gameBoard);
 				std::cout << "Black wins!\n";
+				aiPlayer.FreeReward(1.0f);
+				aiPlayer2.FreeReward(-1.0f);
 				break;
 			}
 			if (gameBoard->CheckWin(Color::RED))
 			{
 				ConsoleRenderer::Render(gameBoard);
 				std::cout << "Red wins!\n";
+				aiPlayer.FreeReward(-1.0f);
+				aiPlayer2.FreeReward(1.0f);
 				break;
 			}
 		}

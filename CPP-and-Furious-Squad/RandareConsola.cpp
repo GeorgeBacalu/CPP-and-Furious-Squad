@@ -63,28 +63,28 @@ void ConsoleRenderer::TakeInputWithAi2(GameBoard* gb, AiPlayer* ai, AiPlayer* ai
 	{
 		if (gb->GetPlayerTurn())
 		{
-			std::cout << "Red AI player's turn\n";
-			std::cout << "Enter the coordinates of the pillar you want to place: ";
+			/*std::cout << "Red AI player's turn\n";
+			std::cout << "Enter the coordinates of the pillar you want to place: ";*/
 			const auto& [row, column] = ai->RandomAction();
 			x = row;
 			y = column;
-			std::cout << x << " " << y << "\n";
+			//std::cout << x << " " << y << "\n";
 			//system("pause");
 		}
 		else
 		{
-			std::cout << "Black AI player's turn\n";
-			std::cout << "Enter the coordinates of the pillar you want to place: ";
+			/*std::cout << "Black AI player's turn\n";
+			std::cout << "Enter the coordinates of the pillar you want to place: ";*/
 			const auto& [row, column] = ai2->GetNextAction();
 			x = row;
 			y = column;
-			std::cout << x << " " << y << "\n";
+			//std::cout << x << " " << y << "\n";
 			//system("pause");
 		}
 	}
 	catch (std::invalid_argument& exception)
 	{
-		std::cerr << exception.what() << "\n";
+		//std::cerr << exception.what() << "\n";
 		throw (std::invalid_argument("TIE"));
 	}
 	//place pillar and switch player
