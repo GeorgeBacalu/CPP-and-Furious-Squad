@@ -53,7 +53,6 @@ public:
 	const std::vector<Pillar>& GetBlackPillars();
 	const std::vector<Bridge>& GetBridges();
 	const std::vector<Pillar>& GetEndPillars();
-	uint16_t GetAvailablePieces(IPiece* pieceType, Color color);
 	bool getRedPillarsSpent() const;
 	bool getRedBridgesSpent() const;
 	bool getBlackPillarsSpent() const;
@@ -103,10 +102,9 @@ public:
 	void PlacePillarQT(uint16_t row, uint16_t column);
 
 	// Check intersection methods
-	bool CheckNoIntersections();
-	bool Intersects(const Bridge& bridge1, const Bridge& bridge2);
-	bool IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2);
-	bool IntersectsOnAxis(size_t start1, size_t end1, size_t start2, size_t end2);
+	bool CheckNoIntersections(const Bridge& newBridge);
+	bool DoBridgesIntersect(const Bridge& bridge1, const Bridge& bridge2);
+	bool INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3);
 
 	// Game flow methods
 	void LoadGame();
@@ -127,7 +125,7 @@ public:
 		std::unordered_map<T, bool> visited;
 		std::unordered_map<T, T> parent;
 
-		for(const auto& row : adjacencyList)
+		for (const auto& row : adjacencyList)
 			for (const auto& node : row)
 			{
 				visited[node] = false;
@@ -143,7 +141,7 @@ public:
 		{
 			T current = queue.front();
 			queue.pop();
-			for (const auto & node : adjacencyList[current])
+			for (const auto& node : adjacencyList[current])
 			{
 				if (!visited[node])
 				{

@@ -166,6 +166,8 @@ void ConsoleRenderer::Render(GameBoard* gameBoard)
 
 void ConsoleRenderer::TakeInput(GameBoard* gameBoard)
 {
+	for(const Bridge& bridge : gameBoard->GetBridges())
+		std::cout << bridge << "\n";
 	if (gameBoard->GetPlayerTurn())
 		std::cout << "Red player's turn\n";
 	else

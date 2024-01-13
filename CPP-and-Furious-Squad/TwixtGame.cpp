@@ -1,5 +1,6 @@
 #include "TwixtGame.h"
 #include "AiPlayer.h"
+#include "HumanPlayer.h"
 //#include "ConsoleRenderer.h"
 #include <fstream>
 #include <thread>
@@ -49,49 +50,72 @@ void TwixtGame::Run()
 	}*/
 	//gameBoard->setMatrix(matrix);
 
-	AiPlayer aiPlayer{ *gameBoard, "Ai_rewards.txt", Color::BLACK };
-	AiPlayer aiPlayer2{ *gameBoard, "Ai_rewards2.txt", Color::RED };
+	//AiPlayer aiPlayer{ *gameBoard, "Ai_rewards.txt", Color::BLACK };
+	//AiPlayer aiPlayer2{ *gameBoard, "Ai_rewards2.txt", Color::RED };
 
-	for(int i=0;i<100;++i)
+	//for(int i=0;i<100;++i)
+	//{
+	//	//std::cout<<"Game "<<i+1<<"\n";
+	//	if(i%10==0)
+	//		std::cout<<"Game "<<i+1<<"\n";
+	//	gameBoard->ResetGame();
+	//	while (true)
+	//	{
+	//		//add key listener
+	//		//ConsoleRenderer::Render(gameBoard);
+	//		//system("pause");
+	//		try
+	//		{
+	//			//ConsoleRenderer::TakeInput(gameBoard);
+	//			//ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
+	//			ConsoleRenderer::TakeInputWithAi2(gameBoard, &aiPlayer2, &aiPlayer);
+	//		}
+	//		catch (const std::invalid_argument& exception)
+	//		{
+	//			//std::cerr << exception.what() << "\n";
+	//			aiPlayer.FreeReward(0.0f);
+	//			aiPlayer2.FreeReward(0.0f);
+	//			break;
+	//		}
+	//		if (gameBoard->CheckWin(Color::BLACK))
+	//		{
+	//			ConsoleRenderer::Render(gameBoard);
+	//			std::cout << "Black wins!\n";
+	//			aiPlayer.FreeReward(1.0f);
+	//			aiPlayer2.FreeReward(-1.0f);
+	//			break;
+	//		}
+	//		if (gameBoard->CheckWin(Color::RED))
+	//		{
+	//			ConsoleRenderer::Render(gameBoard);
+	//			std::cout << "Red wins!\n";
+	//			aiPlayer.FreeReward(-1.0f);
+	//			aiPlayer2.FreeReward(1.0f);
+	//			break;
+	//		}
+	//	}
+	//}
+
+	HumanPlayer humanPlayer{ "Human Player"};
+	gameBoard->ResetGame();
+	while (true)
 	{
-		//std::cout<<"Game "<<i+1<<"\n";
-		if(i%10==0)
-			std::cout<<"Game "<<i+1<<"\n";
-		gameBoard->ResetGame();
-		while (true)
+		//add key listener
+		ConsoleRenderer::Render(gameBoard);
+		ConsoleRenderer::TakeInput(gameBoard);
+		//ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
+		//ConsoleRenderer::TakeInputWithAi2(gameBoard, &aiPlayer2, &aiPlayer);
+		if (gameBoard->CheckWin(Color::BLACK))
 		{
-			//add key listener
-			//ConsoleRenderer::Render(gameBoard);
-			//system("pause");
-			try
-			{
-				//ConsoleRenderer::TakeInput(gameBoard);
-				//ConsoleRenderer::TakeInputWithAi(gameBoard, &aiPlayer);
-				ConsoleRenderer::TakeInputWithAi2(gameBoard, &aiPlayer2, &aiPlayer);
-			}
-			catch (const std::invalid_argument& exception)
-			{
-				//std::cerr << exception.what() << "\n";
-				aiPlayer.FreeReward(0.0f);
-				aiPlayer2.FreeReward(0.0f);
-				break;
-			}
-			if (gameBoard->CheckWin(Color::BLACK))
-			{
-				ConsoleRenderer::Render(gameBoard);
-				std::cout << "Black wins!\n";
-				aiPlayer.FreeReward(1.0f);
-				aiPlayer2.FreeReward(-1.0f);
-				break;
-			}
-			if (gameBoard->CheckWin(Color::RED))
-			{
-				ConsoleRenderer::Render(gameBoard);
-				std::cout << "Red wins!\n";
-				aiPlayer.FreeReward(-1.0f);
-				aiPlayer2.FreeReward(1.0f);
-				break;
-			}
+			ConsoleRenderer::Render(gameBoard);
+			std::cout << "Black wins!\n";
+			break;
+		}
+		if (gameBoard->CheckWin(Color::RED))
+		{
+			ConsoleRenderer::Render(gameBoard);
+			std::cout << "Red wins!\n";
+			break;
 		}
 	}
 
