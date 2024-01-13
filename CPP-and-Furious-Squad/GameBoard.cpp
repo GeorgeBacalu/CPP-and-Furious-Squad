@@ -7,7 +7,8 @@ static uint16_t kAvailableBlackPillars{ 50 };
 static uint16_t kAvailableRedBridges{ 50 };
 static uint16_t kAvailableBlackBridges{ 50 };
 
-GameBoard::GameBoard() : m_matrix{}, m_adjacencyList{ kWidth * kHeight }, m_redPaths{}, m_blackPaths{}, m_redPillars{}, m_blackPillars{}, m_bridges{}, m_endPillars{}, redBridges{ 0 }, blackBridges{ 0 }
+GameBoard::GameBoard() : m_matrix{}, m_adjacencyList{ kWidth * kHeight }, m_redPaths{}, m_blackPaths{}, m_redPillars{}, m_blackPillars{}, m_bridges{}, m_endPillars{}, redBridges{ 0 }, blackBridges{ 0 },
+redPillarsSpent{ false }, redBridgesSpent{ false }, blackPillarsSpent{ false }, blackBridgesSpent{ false }
 {
 }
 

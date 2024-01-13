@@ -382,8 +382,7 @@ void Window::stopEditing()
     if(!winnerFound)
         checkWinner(g->GetPlayerTurn());
     editButton->setVisible(true);
-    g->SwitchPlayerTurn();
-    update();
+    advanceTurn();
 }
 void Window::startEditing()
 {
