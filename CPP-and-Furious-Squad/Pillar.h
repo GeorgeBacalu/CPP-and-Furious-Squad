@@ -15,8 +15,8 @@ class Bridge;
 class Pillar : public IPiece
 {
 public:
-	static const size_t kWidth{ 4 };
-	static const size_t kHeight{ 4 };
+	static const size_t kWidth{ 24 };
+	static const size_t kHeight{ 24 };
 private:
 	Position m_position;
 	Color m_color : 2;

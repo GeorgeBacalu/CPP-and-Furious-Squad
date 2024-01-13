@@ -7,7 +7,7 @@ static uint16_t kAvailableBlackPillars{ 50 };
 static uint16_t kAvailableRedBridges{ 50 };
 static uint16_t kAvailableBlackBridges{ 50 };
 
-GameBoard::GameBoard() : m_matrix{}, m_adjacencyList{ kWidth * kHeight }, m_redPaths{}, m_blackPaths{}, m_redPillars{}, m_blackPillars{}, m_bridges{}, m_endPillars{}
+GameBoard::GameBoard() : m_matrix{}, m_adjacencyList{ kWidth * kHeight }, m_redPaths{}, m_blackPaths{}, m_redPillars{}, m_blackPillars{}, m_bridges{}, m_endPillars{},redBridges{0},blackBridges{0}
 {
 }
 
@@ -233,6 +233,10 @@ void GameBoard::RemoveBridge(const Bridge& bridge)
 	}
 
 	nrBridges--;
+	if (bridge.GetColor() == Color::RED)
+		redBridges--;
+	else
+		blackBridges--;
 	const auto& [startRow, startColumn] = bridge.GetStartPillar().GetPosition();
 	const auto& [endRow, endColumn] = bridge.GetEndPillar().GetPosition();
 
@@ -416,7 +420,7 @@ void GameBoard::UpdateAvailablePieces(const std::vector<Bridge>& newBridges, con
 				availableBridges--;
 			}
 			else
-				break;//rest of the checks to be implemented later 
+				break;
 		}
 
 	}
@@ -629,6 +633,45 @@ void GameBoard::ResetGame()
 	m_blackPillars = {};
 	m_bridges = {};
 	m_endPillars = {};
+}
+bool GameBoard::getRedPillarsSpent() const
+{
+	return redPillarsSpent;
+}
+bool GameBoard::getRedBridgesSpent() const
+{
+	return redBridgesSpent;
+}
+bool GameBoard::getBlackPillarsSpent() const
+{
+	return blackPillarsSpent;
+}
+bool GameBoard::getBlackBridgesSpent() const
+{
+	return blackBridgesSpent;
+}
+uint16_t GameBoard::getRedBridgesCount()
+{
+	return redBridges;
+}
+uint16_t GameBoard::getBlackBridgesCount()
+{
+	return blackBridges;
+}
+void GameBoard::setRedBridgesCount(uint16_t count)
+{
+	redBridges = count;
+}
+void GameBoard::setBlackBridgesCount(uint16_t count)
+{
+	blackBridges = count;
+}
+void GameBoard::checkPieces()
+{
+	redPillarsSpent = (m_redPillars.size() == MAX_AVAILABLE_PILLARS);
+	blackPillarsSpent = (m_blackPillars.size() == MAX_AVAILABLE_PILLARS);
+	redBridgesSpent = (redBridges == MAX_AVAILABLE_BRIDGES);
+	blackBridgesSpent = (blackBridges == MAX_AVAILABLE_BRIDGES);
 }
 
 // Related to AI player

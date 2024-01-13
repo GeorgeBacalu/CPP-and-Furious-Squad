@@ -9,10 +9,11 @@ Window::Window(QWidget* parent)
     layout = new QGridLayout;
     centralWidget->setLayout(layout);
     g = GameBoard::GetInstance();
-    setupUi();
+    chooseGameMode();
 }
 void Window::setupUi()
 {
+    clearLayout(layout);
     QPushButton* newGameButton = new QPushButton("New Game", this);
     connect(newGameButton, &QPushButton::clicked, this, &Window::newGame);
     layout->addWidget(newGameButton, 0, 0);
@@ -207,7 +208,7 @@ void Window::paintEvent(QPaintEvent* event)
         painter.drawLine(start, end);
 
         QColor turnColor = (g->GetPlayerTurn()) ? Qt::red : Qt::black;
-        QString turnText = (g->GetPlayerTurn()) ? "Red Player's Turn" : "Black Player's Turn";
+        QString turnText = QString::fromStdString((g->GetPlayerTurn()) ? (player1+"s Turn") : (player2+"s Turn"));
         painter.setPen(QPen(turnColor));
         painter.setFont(QFont("Arial", 10));
         painter.drawText(rect(), Qt::AlignTop | Qt::AlignHCenter, turnText);
@@ -238,29 +239,33 @@ void Window::onCircleClick()
     }
     else
     {
-        if (turnNumber == 1)
-        {
-            QMessageBox msgBox;
-            msgBox.setText("Do you want to switch your color");
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::No);
-            int answer = msgBox.exec();
-            if (answer == QMessageBox::Yes)
-            {
-            }
-        }
         if (placedPillar)
         {
             QMessageBox::warning(this, "Invalid Action", "You already placed a pillar");
             return;
         }
         QColor newColor = (playerTurn) ? Qt::red : Qt::black;
+        if (g->GetPlayerTurn())
+        {
+            if (g->getRedPillarsSpent())
+            {
+                QMessageBox::warning(this, "Invalid Action", "You have no pillars left");
+                return;
+            }
+        }
+        else
+            if (g->getBlackPillarsSpent())
+            {
+                QMessageBox::warning(this, "Invalid Action", "You have no pillars left");
+                return;
+            }
         try
         {
             Pillar p;
             p.SetPosition(Position(row, col));
             p.SetColor((playerTurn) ? Color::RED : Color::BLACK);
             g->PlacePillarQT(row, col);
+            g->checkPieces();
             clickedCircle->setColor(newColor);
             std::vector<Bridge> newBridges{ g->ProcessBridgesForNewPillar(p) };
             PlaceBridgesFromOptions(newBridges, newBridges.size());
@@ -288,12 +293,31 @@ void Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, u
         dialog->setBridgeOptions(bridgeOptions);
         //add the bridge from the placeable bridges and update the UI 
         connect(dialog, &BridgeOptions::addBridgeClicked, this, [&]() {
+            if (g->GetPlayerTurn())
+            {
+                if (g->getRedBridgesSpent())
+                {
+                    QMessageBox::warning(this, "Invalid Action", "You have no bridges left");
+                    return;
+                }
+            }
+            else
+                if (g->getBlackBridgesSpent())
+                {
+                    QMessageBox::warning(this, "Invalid Action", "You have no bridges left");
+                    return;
+                }
             int optionIndex = dialog->getSelectedOptionIndex();
             if (optionIndex >= 0 && optionIndex < dialog->getPlaceable().size()) {
                 std::vector<Bridge> bridges = g->GetBridges();
                 bridges.push_back(dialog->getPlaceable()[optionIndex]);
                 g->SetBridges(bridges);
+                if (g->GetPlayerTurn())
+                    g->setRedBridgesCount(g->getRedBridgesCount()+1);
+                else
+                    g->setBlackBridgesCount(g->getBlackBridgesCount() + 1);
                 updateUiForPlaceableBridges(dialog->getBridgeOptions(), dialog);
+                g->checkPieces();
                 checkWinner(g->GetPlayerTurn());
                 update();
             }
@@ -407,11 +431,87 @@ void Window::advanceTurn()
         QMessageBox::warning(this, "Invalid Action", "Please place your pillar");
         return;
     }
-    g->SwitchPlayerTurn();
+    if (g->getRedPillarsSpent() && g->getBlackPillarsSpent())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("DRAW");
+        return;
+    }
     turnNumber++;
+    g->SwitchPlayerTurn();
+    update();
+    if (turnNumber == 1 && !secondPlayerIsAI)
+    {
+        QMessageBox msgBox;
+        msgBox.setText(QString::fromStdString(player2+" do you want to switch your color?"));
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::No);
+        int answer = msgBox.exec();
+        QCoreApplication::processEvents();
+        if (answer == QMessageBox::Yes)
+            std::swap(player1, player2);
+    }
     update();
     placedPillar = false;
     
+}
+void Window::chooseGameMode()
+{
+    QLabel* label = new QLabel("Please select your GameMode", this);
+    layout->addWidget(label, 0, 0, Qt::AlignCenter);
+
+    QPushButton* GameButton = new QPushButton("Normal Mode", this);
+    connect(GameButton, &QPushButton::clicked, [=]() {
+        normalGameMode = true;
+        chooseGameType();
+        });
+    layout->addWidget(GameButton, 1, 0, Qt::AlignCenter);
+}
+void Window::chooseGameType()
+{
+    clearLayout(layout);
+    QLabel* label = new QLabel("Please select your oponent", this);
+    layout->addWidget(label, 0, 0, Qt::AlignCenter);
+
+    QPushButton* GameButton = new QPushButton("Player vs Player ", this);
+    connect(GameButton, &QPushButton::clicked, this, &Window::getPlayerNames);
+    layout->addWidget(GameButton, 1, 0, Qt::AlignCenter);
+}
+void Window::getPlayerNames()
+{
+    clearLayout(layout);
+    QLabel* player1Label = new QLabel("Enter Player1's Name:", this);
+    layout->addWidget(player1Label, 0, 0);
+
+    QLineEdit* name1LineEdit = new QLineEdit(this);
+    layout->addWidget(name1LineEdit, 0, 1);
+    QLabel* player2Label = new QLabel("Enter Player2's Name:", this);
+    layout->addWidget(player2Label, 1, 0);
+
+    QLineEdit* name2LineEdit = new QLineEdit(this);
+    layout->addWidget(name2LineEdit, 1, 1);
+    if (secondPlayerIsAI)
+    {
+        player2Label->setVisible(false);
+        name2LineEdit->setVisible(false);
+    }
+    QPushButton* getPlayerButton = new QPushButton("Next", this);
+    connect(getPlayerButton, &QPushButton::clicked, this, [=]() {
+        QString name = name1LineEdit->text();
+        player1 = name.toStdString();
+        if (!secondPlayerIsAI)
+        {
+            name = name2LineEdit->text();
+            player2 = name.toStdString();
+        }
+        else
+            player2 = "AI";
+        setupUi();
+        });
+    if(!secondPlayerIsAI)
+        layout->addWidget(getPlayerButton, 2, 0, Qt::AlignCenter);
+    else
+        layout->addWidget(getPlayerButton, 1, 0, Qt::AlignCenter);
 }
 Window::~Window()
 {}

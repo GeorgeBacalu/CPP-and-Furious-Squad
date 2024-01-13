@@ -36,6 +36,9 @@ public:
     void startEditing();
     void updateUiForPlaceableBridges(const std::vector<Bridge>& bridgeOptions,BridgeOptions* dialog);
     void advanceTurn();
+    void chooseGameMode();
+    void chooseGameType();
+    void getPlayerNames();
 private:
     QGridLayout* layout;
     GameBoard* g;
@@ -44,9 +47,12 @@ private:
     QPushButton* stopEditButton;
     QPushButton* nextTurn;
     uint16_t turnNumber;
+    std::string player1;
+    std::string player2;
     bool winnerFound;
     bool editing;
     bool paintGameBoard;
     bool placedPillar;
     bool secondPlayerIsAI;
+    bool normalGameMode;
 };
