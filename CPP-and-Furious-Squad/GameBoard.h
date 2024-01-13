@@ -86,7 +86,7 @@ public:
 	void BFS(const Pillar& start);
 	bool CheckWin(Color playerColor);
 	void InitEndPillars();
-	void checkPieces();
+	void checkPieces(bool playerTurn);
 
 	const bool IsPositionValid(const Position& position);
 

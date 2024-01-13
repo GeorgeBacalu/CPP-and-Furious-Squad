@@ -237,7 +237,7 @@ void GameBoard::RemoveBridge(const Bridge& bridge)
 		redBridges--;
 	else
 		blackBridges--;
-	checkPieces();
+	checkPieces(m_playerTurn);
 	const auto& [startRow, startColumn] = bridge.GetStartPillar().GetPosition();
 	const auto& [endRow, endColumn] = bridge.GetEndPillar().GetPosition();
 
@@ -675,12 +675,18 @@ void GameBoard::setBlackBridgesCount(uint16_t count)
 {
 	blackBridges = count;
 }
-void GameBoard::checkPieces()
+void GameBoard::checkPieces(bool playerTurn)
 {
-	redPillarsSpent = (m_redPillars.size() == MAX_AVAILABLE_PILLARS);
-	blackPillarsSpent = (m_blackPillars.size() == MAX_AVAILABLE_PILLARS);
-	redBridgesSpent = (redBridges == MAX_AVAILABLE_BRIDGES);
-	blackBridgesSpent = (blackBridges == MAX_AVAILABLE_BRIDGES);
+	if (playerTurn)
+	{
+		redPillarsSpent = (m_redPillars.size() == MAX_AVAILABLE_PILLARS);
+		redBridgesSpent = (redBridges == MAX_AVAILABLE_BRIDGES);
+	}
+	else
+	{
+		blackPillarsSpent = (m_blackPillars.size() == MAX_AVAILABLE_PILLARS);
+		blackBridgesSpent = (blackBridges == MAX_AVAILABLE_BRIDGES);
+	}
 }
 
 // Related to AI player

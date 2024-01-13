@@ -10,6 +10,7 @@
 #include<qmessagebox.h>
 #include <QPushButton>
 #include <GameBoard.h>
+#include <AiPlayer.h>
 #include"BridgeOptions.h"
 #include"CircleWidget.h"
 #include"WinnerDialog.h"
@@ -51,6 +52,7 @@ private:
     uint16_t turnNumber;
     std::string player1;
     std::string player2;
+    AiPlayer* aiPlayer;
     bool winnerFound;
     bool editing;
     bool paintGameBoard;

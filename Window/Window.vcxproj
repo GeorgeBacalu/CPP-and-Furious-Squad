@@ -121,6 +121,9 @@
   <ItemGroup>
     <ClInclude Include="WinnerDialog.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Ai_rewards.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
     <Import Project="$(QtMsBuild)\qt.targets" />
