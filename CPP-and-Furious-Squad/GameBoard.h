@@ -15,7 +15,13 @@ public:
 private:
 	bool m_playerTurn{ true };
 	bool m_invalid{ false };
+	bool redPillarsSpent;
+	bool redBridgesSpent;
+	bool blackPillarsSpent;
+	bool blackBridgesSpent;
 	uint16_t nrBridges{ 0 };
+	uint16_t redBridges;
+	uint16_t blackBridges;
 	std::array<std::array<std::optional<Pillar>, kWidth>, kHeight> m_matrix;
 	std::vector<std::vector<Pillar>> m_adjacencyList;
 	std::vector<std::vector<Pillar>> m_redPaths;
@@ -48,6 +54,12 @@ public:
 	const std::vector<Bridge>& GetBridges();
 	const std::vector<Pillar>& GetEndPillars();
 	uint16_t GetAvailablePieces(IPiece* pieceType, Color color);
+	bool getRedPillarsSpent() const;
+	bool getRedBridgesSpent() const;
+	bool getBlackPillarsSpent() const;
+	bool getBlackBridgesSpent() const;
+	uint16_t getRedBridgesCount();
+	uint16_t getBlackBridgesCount();
 	void SetPlayerTurn(bool playerTurn);
 	void SetInvalid(bool invalid);
 	void SetMatrix(const std::array<std::array<std::optional<Pillar>, kWidth>, kHeight>& matrix);
@@ -58,6 +70,8 @@ public:
 	void SetBlackPillars(const std::vector<Pillar>& blackPillars);
 	void SetBridges(const std::vector<Bridge>& bridges);
 	void SetEndPillars(const std::vector<Pillar>& endPillars);
+	void setRedBridgesCount(uint16_t count);
+	void setBlackBridgesCount(uint16_t count);
 
 	// Overloaded operators
 	std::optional<Pillar>& operator[](const Position& position);
@@ -72,11 +86,13 @@ public:
 	void BFS(const Pillar& start);
 	bool CheckWin(Color playerColor);
 	void InitEndPillars();
+	void checkPieces();
 
 	const bool IsPositionValid(const Position& position);
 
 	// Player move methods
 	void PlacePillar(uint16_t row, uint16_t column);
+	void AddBridge(const bool& playerTurn, const Bridge& bridge);
 	void ProcessNextMove(Pillar& newPillar);
 	void ValidateNewPillarPlacement(const Pillar& newPillar, Color playerColor);
 	std::vector<Bridge> ProcessBridgesForNewPillar(const Pillar& newPillar);
@@ -85,7 +101,6 @@ public:
 	void RemoveBridge(const Bridge& bridge);
 	//QT player move methods
 	void PlacePillarQT(uint16_t row, uint16_t column);
-	std::vector<Bridge> ProcessNextMoveQT(Pillar& newPillar);
 
 	// Check intersection methods
 	bool CheckNoIntersections();

@@ -245,20 +245,8 @@ void Window::onCircleClick()
             return;
         }
         QColor newColor = (playerTurn) ? Qt::red : Qt::black;
-        if (g->GetPlayerTurn())
-        {
-            if (g->getRedPillarsSpent())
-            {
-                QMessageBox::warning(this, "Invalid Action", "You have no pillars left");
-                return;
-            }
-        }
-        else
-            if (g->getBlackPillarsSpent())
-            {
-                QMessageBox::warning(this, "Invalid Action", "You have no pillars left");
-                return;
-            }
+        if (pillarsSpent(g->GetPlayerTurn()))
+            return;
         try
         {
             Pillar p;
@@ -293,29 +281,14 @@ void Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, u
         dialog->setBridgeOptions(bridgeOptions);
         //add the bridge from the placeable bridges and update the UI 
         connect(dialog, &BridgeOptions::addBridgeClicked, this, [&]() {
-            if (g->GetPlayerTurn())
+            if (bridgesSpent(g->GetPlayerTurn()))
             {
-                if (g->getRedBridgesSpent())
-                {
-                    QMessageBox::warning(this, "Invalid Action", "You have no bridges left");
-                    return;
-                }
+                dialog->reject();
+                return;
             }
-            else
-                if (g->getBlackBridgesSpent())
-                {
-                    QMessageBox::warning(this, "Invalid Action", "You have no bridges left");
-                    return;
-                }
             int optionIndex = dialog->getSelectedOptionIndex();
             if (optionIndex >= 0 && optionIndex < dialog->getPlaceable().size()) {
-                std::vector<Bridge> bridges = g->GetBridges();
-                bridges.push_back(dialog->getPlaceable()[optionIndex]);
-                g->SetBridges(bridges);
-                if (g->GetPlayerTurn())
-                    g->setRedBridgesCount(g->getRedBridgesCount()+1);
-                else
-                    g->setBlackBridgesCount(g->getBlackBridgesCount() + 1);
+                g->AddBridge(g->GetPlayerTurn(), dialog->getPlaceable()[optionIndex]);
                 updateUiForPlaceableBridges(dialog->getBridgeOptions(), dialog);
                 g->checkPieces();
                 checkWinner(g->GetPlayerTurn());
@@ -435,7 +408,12 @@ void Window::advanceTurn()
     {
         QMessageBox msgBox;
         msgBox.setText("DRAW");
-        return;
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        int answer = msgBox.exec();
+        QCoreApplication::processEvents();
+        if (answer == QMessageBox::Ok)
+            return;
     }
     turnNumber++;
     g->SwitchPlayerTurn();
@@ -512,6 +490,46 @@ void Window::getPlayerNames()
         layout->addWidget(getPlayerButton, 2, 0, Qt::AlignCenter);
     else
         layout->addWidget(getPlayerButton, 1, 0, Qt::AlignCenter);
+}
+bool Window::pillarsSpent(bool playerTurn)
+{
+    if (playerTurn)
+    {
+        if (g->getRedPillarsSpent())
+        {
+            QMessageBox::warning(this, "Invalid Action", "You have no pillars left");
+            placedPillar = true;
+            return true;
+        }
+    }
+    else
+        if (g->getBlackPillarsSpent())
+        {
+            QMessageBox::warning(this, "Invalid Action", "You have no pillars left");
+            placedPillar = true;
+            return true;
+        }
+    return false;
+}
+bool Window::bridgesSpent(bool playerTurn)
+{
+    if (playerTurn)
+    {
+        if (g->getRedBridgesSpent())
+        {
+            QMessageBox::warning(this, "Invalid Action", "You have no bridges left");
+            placedPillar = true;
+            return true;
+        }
+    }
+    else
+        if (g->getBlackBridgesSpent())
+        {
+            QMessageBox::warning(this, "Invalid Action", "You have no bridges left");
+            placedPillar = true;
+            return true;
+        }
+    return false;
 }
 Window::~Window()
 {}

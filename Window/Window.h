@@ -39,6 +39,8 @@ public:
     void chooseGameMode();
     void chooseGameType();
     void getPlayerNames();
+    bool pillarsSpent(bool playerTurn);
+    bool bridgesSpent(bool playerTurn);
 private:
     QGridLayout* layout;
     GameBoard* g;

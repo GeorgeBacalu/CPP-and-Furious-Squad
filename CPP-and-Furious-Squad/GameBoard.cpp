@@ -237,6 +237,7 @@ void GameBoard::RemoveBridge(const Bridge& bridge)
 		redBridges--;
 	else
 		blackBridges--;
+	checkPieces();
 	const auto& [startRow, startColumn] = bridge.GetStartPillar().GetPosition();
 	const auto& [endRow, endColumn] = bridge.GetEndPillar().GetPosition();
 
@@ -597,6 +598,14 @@ void GameBoard::LoadBridgesFromFile(const std::string& filename)
 		}
 	}
 	fb.close();
+}
+void GameBoard::AddBridge(const bool& playerTurn, const Bridge& bridge)
+{
+	m_bridges.push_back(bridge);
+	if (playerTurn)
+		redBridges++;
+	else
+		blackBridges++;
 }
 
 void GameBoard::SaveGame()
