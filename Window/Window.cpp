@@ -9,6 +9,7 @@ Window::Window(QWidget* parent)
     layout = new QGridLayout;
     centralWidget->setLayout(layout);
     g = GameBoard::GetInstance();
+    aiPlayer = new  AiPlayer{ *g, "Ai_rewards.txt", Color::BLACK };
     chooseGameMode();
 }
 void Window::setupUi()
@@ -253,7 +254,7 @@ void Window::onCircleClick()
             p.SetPosition(Position(row, col));
             p.SetColor((playerTurn) ? Color::RED : Color::BLACK);
             g->PlacePillarQT(row, col);
-            g->checkPieces();
+            g->checkPieces(playerTurn);
             clickedCircle->setColor(newColor);
             std::vector<Bridge> newBridges{ g->ProcessBridgesForNewPillar(p) };
             PlaceBridgesFromOptions(newBridges, newBridges.size());
@@ -290,7 +291,7 @@ void Window::PlaceBridgesFromOptions(const std::vector<Bridge>& bridgeOptions, u
             if (optionIndex >= 0 && optionIndex < dialog->getPlaceable().size()) {
                 g->AddBridge(g->GetPlayerTurn(), dialog->getPlaceable()[optionIndex]);
                 updateUiForPlaceableBridges(dialog->getBridgeOptions(), dialog);
-                g->checkPieces();
+                g->checkPieces(g->GetPlayerTurn());
                 checkWinner(g->GetPlayerTurn());
                 update();
             }
@@ -353,7 +354,14 @@ void Window::checkWinner(bool playerTurn)
     if (g->CheckWin(player))
     {
         QColor winnerColor = (playerTurn) ? Qt::red : Qt::black;
-        QString winnerMessage = (playerTurn) ? "Player RED Wins!" : "Player BLACK Wins!";
+        if (secondPlayerIsAI)
+        {
+            if (winnerColor == Qt::black)
+                aiPlayer->FreeReward(1.0f);
+            else
+                aiPlayer->FreeReward(-1.0f);
+        }
+        QString winnerMessage = (playerTurn) ? (QString::fromStdString(player1+" wins!")) : (QString::fromStdString(player2 + " wins!"));
         WinnerDialog* winnerDialog = new WinnerDialog(winnerMessage, winnerColor, this);
         winnerDialog->show();
         QCoreApplication::processEvents();
@@ -429,6 +437,31 @@ void Window::advanceTurn()
         if (answer == QMessageBox::Yes)
             std::swap(player1, player2);
     }
+    if (!g->GetPlayerTurn() && secondPlayerIsAI)
+    {
+        try
+        {
+            const auto& [row, col] = aiPlayer->GetNextAction();
+            Pillar p;
+            p.SetPosition(Position(row, col));
+            p.SetColor(Color::BLACK);
+            g->PlacePillarQT(row, col);
+            CircleWidget* Circle = qobject_cast<CircleWidget*>(layout->itemAtPosition(row, col)->widget());
+            Circle->setColor(Qt::black);
+            std::vector<Bridge> newBridges{ g->ProcessBridgesForNewPillar(p) };
+            for (const auto& it : newBridges)
+            {
+                g->AddBridge(g->GetPlayerTurn(), it);
+                checkWinner(g->GetPlayerTurn());
+            }
+
+        }
+        catch (std::invalid_argument& exception)
+        {
+            std::cerr << exception.what() << "\n";
+        }
+        g->SwitchPlayerTurn();
+    }
     update();
     placedPillar = false;
     
@@ -451,9 +484,16 @@ void Window::chooseGameType()
     QLabel* label = new QLabel("Please select your oponent", this);
     layout->addWidget(label, 0, 0, Qt::AlignCenter);
 
-    QPushButton* GameButton = new QPushButton("Player vs Player ", this);
-    connect(GameButton, &QPushButton::clicked, this, &Window::getPlayerNames);
-    layout->addWidget(GameButton, 1, 0, Qt::AlignCenter);
+    QPushButton* PVPButton = new QPushButton("Player vs Player ", this);
+    connect(PVPButton, &QPushButton::clicked, this, &Window::getPlayerNames);
+    layout->addWidget(PVPButton, 1, 0, Qt::AlignCenter);
+
+    QPushButton* PVEButton = new QPushButton("Player vs Entity ", this);
+    connect(PVEButton, &QPushButton::clicked, this, [=]() {
+        secondPlayerIsAI = true;
+        getPlayerNames();
+        });
+    layout->addWidget(PVEButton, 2, 0, Qt::AlignCenter);
 }
 void Window::getPlayerNames()
 {
