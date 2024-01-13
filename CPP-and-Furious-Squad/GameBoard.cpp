@@ -235,8 +235,8 @@ void GameBoard::RemoveBridge(const Bridge& bridge)
 	nrBridges--;
 	const auto& [startRow, startColumn] = bridge.GetStartPillar().GetPosition();
 	const auto& [endRow, endColumn] = bridge.GetEndPillar().GetPosition();
-	auto& startPillarAdjList = m_adjacencyList[startRow * kWidth + startColumn];
 
+	auto& startPillarAdjList = m_adjacencyList[startRow * kWidth + startColumn];
 	startPillarAdjList.erase(std::remove_if(startPillarAdjList.begin(), startPillarAdjList.end(),
 		[&](const Pillar& pillar) {
 			return pillar == bridge.GetEndPillar();
@@ -279,7 +279,7 @@ void GameBoard::BFS(const Pillar& start)
 		}
 		else
 		{
-			if (current != start && (column == 0 || column  == kWidth - 1))
+			if (current != start && (column == 0 || column == kWidth - 1))
 			{
 				paths.push_back(path);
 				path.clear();
@@ -303,7 +303,7 @@ bool GameBoard::CheckWin(Color playerColor)
 		const auto& [startRow, startColumn] = path.front().GetPosition();
 		const auto& [endRow, endColumn] = path.back().GetPosition();
 		if (playerColor == Color::RED && ((startRow == 0 && endRow == kHeight - 1) || (startRow == kHeight - 1 && endRow == 0)) ||
-		   (playerColor == Color::BLACK && ((startColumn == 0 && endColumn == kWidth - 1) || (startColumn == kWidth - 1 && endColumn == 0))))
+			(playerColor == Color::BLACK && ((startColumn == 0 && endColumn == kWidth - 1) || (startColumn == kWidth - 1 && endColumn == 0))))
 			return true;
 	}
 	return false;
@@ -407,7 +407,7 @@ void GameBoard::UpdateAvailablePieces(const std::vector<Bridge>& newBridges, con
 	{
 		auto& availableBridges = (playerColor == Color::RED) ? kAvailableRedBridges : kAvailableBlackBridges;
 		std::vector<Bridge> chosenBridges = playerColor == Color::RED ? ConsoleRenderer::PlaceRandomBridgesFromOptions(newBridges, newBridges.size()) : ConsoleRenderer::PlaceRandomBridgesFromOptions(newBridges, newBridges.size());
-		availableBridges -=  chosenBridges.size();
+		availableBridges -= chosenBridges.size();
 		for (const auto& bridge : chosenBridges)
 		{
 			if (availableBridges > 0)
@@ -477,14 +477,18 @@ bool GameBoard::CheckNoIntersections()
 
 bool INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3)
 {
-	return (pillar3.GetPosition().second - pillar1.GetPosition().second) * (pillar2.GetPosition().first - pillar1.GetPosition().first) >
-		(pillar2.GetPosition().second - pillar1.GetPosition().second) * (pillar3.GetPosition().first - pillar1.GetPosition().first);
+	const auto& [rowPillar1, columnPillar1] = pillar1.GetPosition();
+	const auto& [rowPillar2, columnPillar2] = pillar2.GetPosition();
+	const auto& [rowPillar3, columnPillar3] = pillar3.GetPosition();
+	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) > (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
 }
 
 bool INTERS_EQ(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3)
 {
-	return (pillar3.GetPosition().second - pillar1.GetPosition().second) * (pillar2.GetPosition().first - pillar1.GetPosition().first) ==
-		(pillar2.GetPosition().second - pillar1.GetPosition().second) * (pillar3.GetPosition().first - pillar1.GetPosition().first);
+	const auto& [rowPillar1, columnPillar1] = pillar1.GetPosition();
+	const auto& [rowPillar2, columnPillar2] = pillar2.GetPosition();
+	const auto& [rowPillar3, columnPillar3] = pillar3.GetPosition();
+	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) == (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
 }
 
 bool GameBoard::Intersects(const Bridge& bridge1, const Bridge& bridge2)
@@ -495,10 +499,10 @@ bool GameBoard::Intersects(const Bridge& bridge1, const Bridge& bridge2)
 	const auto& end2 = bridge2.GetEndPillar().GetPosition();
 	return (start1 == start2 || start1 == end2 || end1 == start2 || end1 == end2) && IntersectsOnSameAxis(bridge1, bridge2);*/
 
-	auto [p1,p2, p3, p4] = std::tuple{ bridge1.GetStartPillar(), bridge1.GetEndPillar(), bridge2.GetStartPillar(), bridge2.GetEndPillar() };
-	if(INTERS_EQ(p1,p3,p4) or INTERS_EQ(p2,p3,p4) or INTERS_EQ(p3,p1,p2) or INTERS_EQ(p4,p1,p2))
+	auto [pillar1, pillar2, pillar3, pillar4] = std::tuple{ bridge1.GetStartPillar(), bridge1.GetEndPillar(), bridge2.GetStartPillar(), bridge2.GetEndPillar() };
+	if (INTERS_EQ(pillar1, pillar3, pillar4) or INTERS_EQ(pillar2, pillar3, pillar4) or INTERS_EQ(pillar3, pillar1, pillar2) or INTERS_EQ(pillar4, pillar1, pillar2))
 		return false;
-	return INTERS(p1,p3,p4) != INTERS(p2,p3,p4) and INTERS(p1,p2,p3) != INTERS(p1,p2,p4);
+	return INTERS(pillar1, pillar3, pillar4) != INTERS(pillar2, pillar3, pillar4) and INTERS(pillar1, pillar2, pillar3) != INTERS(pillar1, pillar2, pillar4);
 }
 
 bool GameBoard::IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2)
