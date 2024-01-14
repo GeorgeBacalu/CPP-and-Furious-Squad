@@ -10,6 +10,13 @@
 class GameBoard
 {
 public:
+	enum class Orientation
+	{
+		COLINEAR,
+		CLOCKWISE,
+		COUNTERCLOCKWISE
+	};
+
 	static constexpr size_t kWidth{ 24 };
 	static constexpr size_t kHeight{ 24 };
 private:
@@ -101,18 +108,24 @@ public:
 	//QT player move methods
 	void PlacePillarQT(uint16_t row, uint16_t column);
 
+	// Check intersection methods - old
+	/*bool CheckNoIntersections(const Bridge& newBridge);
+	bool Intersects(const Bridge& bridge1, const Bridge& bridge2);
+	bool INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3);
+	bool INTERS_EQ(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3);
+	bool IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2);
+	bool IntersectsOnAxis(size_t start1, size_t end1, size_t start2, size_t end2);*/
+
 	// Check intersection methods - new
 	/*bool CheckNoIntersections(const Bridge& newBridge);
 	bool DoBridgesIntersect(const Bridge& bridge1, const Bridge& bridge2);
 	bool INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3);*/
 
-	// Check intersection methods - old
+	// Check intersection methods - final
 	bool CheckNoIntersections(const Bridge& newBridge);
-	bool Intersects(const Bridge& bridge1, const Bridge& bridge2);
-	bool INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3);
-	bool INTERS_EQ(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3);
-	bool IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2);
-	bool IntersectsOnAxis(size_t start1, size_t end1, size_t start2, size_t end2);
+	bool DoBridgesIntersect(const Bridge& bridge1, const Bridge& bridge2);
+	Orientation GetOrientation(Position& position1, Position& position2, Position& position3);
+	bool OnSegment(Position& position1, Position& position2, Position& position3);
 
 	// Game flow methods
 	void LoadGame();
