@@ -466,47 +466,47 @@ void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 	}
 }
 
-// Check intersection methods - old
+// Check intersection methods - final
 
-//bool GameBoard::CheckNoIntersections(const Bridge& newBridge)
-//{
-//	if (m_bridges.empty())
-//		return true;
-//	for (const auto& existingBridge : m_bridges)
-//		if (Intersects(existingBridge, newBridge))
-//			return false;
-//	return true;
-//}
-//
-//bool GameBoard::Intersects(const Bridge& bridge1, const Bridge& bridge2)
-//{
-//	/*const auto& start1 = bridge1.GetStartPillar().GetPosition();
-//	const auto& end1 = bridge1.GetEndPillar().GetPosition();
-//	const auto& start2 = bridge2.GetStartPillar().GetPosition();
-//	const auto& end2 = bridge2.GetEndPillar().GetPosition();
-//	return (start1 == start2 || start1 == end2 || end1 == start2 || end1 == end2) && IntersectsOnSameAxis(bridge1, bridge2);*/
-//
-//	auto [pillar1, pillar2, pillar3, pillar4] = std::tuple{ bridge1.GetStartPillar(), bridge1.GetEndPillar(), bridge2.GetStartPillar(), bridge2.GetEndPillar() };
-//	if (INTERS_EQ(pillar1, pillar3, pillar4) or INTERS_EQ(pillar2, pillar3, pillar4) or INTERS_EQ(pillar3, pillar1, pillar2) or INTERS_EQ(pillar4, pillar1, pillar2))
-//		return false;
-//	return INTERS(pillar1, pillar3, pillar4) != INTERS(pillar2, pillar3, pillar4) and INTERS(pillar1, pillar2, pillar3) != INTERS(pillar1, pillar2, pillar4);
-//}
-//
-//bool GameBoard::INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3)
-//{
-//	const auto& [rowPillar1, columnPillar1] = pillar1.GetPosition();
-//	const auto& [rowPillar2, columnPillar2] = pillar2.GetPosition();
-//	const auto& [rowPillar3, columnPillar3] = pillar3.GetPosition();
-//	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) > (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
-//}
-//
-//bool GameBoard::INTERS_EQ(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3)
-//{
-//	const auto& [rowPillar1, columnPillar1] = pillar1.GetPosition();
-//	const auto& [rowPillar2, columnPillar2] = pillar2.GetPosition();
-//	const auto& [rowPillar3, columnPillar3] = pillar3.GetPosition();
-//	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) == (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
-//}
+bool GameBoard::CheckNoIntersections(const Bridge& newBridge)
+{
+	if (m_bridges.empty())
+		return true;
+	for (const auto& existingBridge : m_bridges)
+		if (Intersects(existingBridge, newBridge))
+			return false;
+	return true;
+}
+
+bool GameBoard::Intersects(const Bridge& bridge1, const Bridge& bridge2)
+{
+	/*const auto& start1 = bridge1.GetStartPillar().GetPosition();
+	const auto& end1 = bridge1.GetEndPillar().GetPosition();
+	const auto& start2 = bridge2.GetStartPillar().GetPosition();
+	const auto& end2 = bridge2.GetEndPillar().GetPosition();
+	return (start1 == start2 || start1 == end2 || end1 == start2 || end1 == end2) && IntersectsOnSameAxis(bridge1, bridge2);*/
+
+	auto [pillar1, pillar2, pillar3, pillar4] = std::tuple{ bridge1.GetStartPillar(), bridge1.GetEndPillar(), bridge2.GetStartPillar(), bridge2.GetEndPillar() };
+	if (INTERS_EQ(pillar1, pillar3, pillar4) or INTERS_EQ(pillar2, pillar3, pillar4) or INTERS_EQ(pillar3, pillar1, pillar2) or INTERS_EQ(pillar4, pillar1, pillar2))
+		return false;
+	return INTERS(pillar1, pillar3, pillar4) != INTERS(pillar2, pillar3, pillar4) and INTERS(pillar1, pillar2, pillar3) != INTERS(pillar1, pillar2, pillar4);
+}
+
+bool GameBoard::INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3)
+{
+	const auto& [rowPillar1, columnPillar1] = pillar1.GetPosition();
+	const auto& [rowPillar2, columnPillar2] = pillar2.GetPosition();
+	const auto& [rowPillar3, columnPillar3] = pillar3.GetPosition();
+	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) > (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
+}
+
+bool GameBoard::INTERS_EQ(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3)
+{
+	const auto& [rowPillar1, columnPillar1] = pillar1.GetPosition();
+	const auto& [rowPillar2, columnPillar2] = pillar2.GetPosition();
+	const auto& [rowPillar3, columnPillar3] = pillar3.GetPosition();
+	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) == (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
+}
 //
 //bool GameBoard::IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2)
 //{
@@ -590,61 +590,61 @@ void GameBoard::RemovePillar(uint16_t row, uint16_t column)
 //	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) > (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
 //}
 
-// Check intersection methods - final
+// Check intersection methods - new v2
 
-bool GameBoard::CheckNoIntersections(const Bridge& newBridge)
-{
-	if (m_bridges.empty())
-		return true;
-	for (const auto& existingBridge : m_bridges)
-		if (DoBridgesIntersect(existingBridge, newBridge))
-			return false;
-	return true;
-}
-
-bool GameBoard::DoBridgesIntersect(const Bridge& bridge1, const Bridge& bridge2) {
-	Position startPosition1 = bridge1.GetStartPillar().GetPosition();
-	Position endPosition1 = bridge1.GetEndPillar().GetPosition();
-	Position startPosition2 = bridge2.GetStartPillar().GetPosition();
-	Position endPosition2 = bridge2.GetEndPillar().GetPosition();
-
-	// Check all 4 orientations necessary for general and special case
-	Orientation orientation1 = GetOrientation(startPosition1, endPosition1, startPosition2);
-	Orientation orientation2 = GetOrientation(startPosition1, endPosition1, endPosition2);
-	Orientation orientation3 = GetOrientation(startPosition2, endPosition2, startPosition1);
-	Orientation orientation4 = GetOrientation(startPosition2, endPosition2, endPosition1);
-
-	// General case
-	if (orientation1 != orientation2 && orientation3 != orientation4)
-		return true;
-
-	// Special cases
-	// If bridges are connected by a pillar in 'V' shape consider it's not an intersection
-	if (startPosition1 == endPosition2 || startPosition2 == endPosition1 && bridge1.GetColor() == bridge2.GetColor())
-		return false;
-	
-	// p1 - startPosition1; q1 - endPosition1; p2 - startPosition2; q2 - endPosition2
-	return orientation1 == COLINEAR && OnSegment(startPosition1, startPosition2, endPosition1) || // p1, q1 and p2 are collinear and p2 lies on segment p1q1 
-		orientation2 == COLINEAR && OnSegment(startPosition1, endPosition2, endPosition1) || // p1, q1 and q2 are collinear and q2 lies on segment p1q1 
-		orientation3 == COLINEAR && OnSegment(startPosition2, startPosition1, endPosition2) || // p2, q2 and p1 are collinear and p1 lies on segment p2q2 
-		orientation4 == COLINEAR && OnSegment(startPosition2, endPosition1, endPosition2); // p2, q2 and q1 are collinear and q1 lies on segment p2q2 
-}
-
-GameBoard::Orientation GameBoard::GetOrientation(Position& position1, Position& position2, Position& position3) {
-	const auto& [row1, column1] = position1;
-	const auto& [row2, column2] = position2;
-	const auto& [row3, column3] = position3;
-	int16_t val = (column2 - column1) * (row3 - row2) - (row2 - row1) * (column3 - column2);
-	return (val == 0) ? COLINEAR : (val > 0) ? CLOCKWISE : COUNTERCLOCKWISE;
-}
-
-bool GameBoard::OnSegment(Position& position1, Position& position2, Position& position3)
-{
-	const auto& [row1, column1] = position1;
-	const auto& [row2, column2] = position2;
-	const auto& [row3, column3] = position3;
-	return row2 <= std::max(row1, row3) && row2 >= std::min(row1, row3) && column2 <= std::max(column1, column3) && column2 >= std::min(column1, column3);
-}
+//bool GameBoard::CheckNoIntersections(const Bridge& newBridge)
+//{
+//	if (m_bridges.empty())
+//		return true;
+//	for (const auto& existingBridge : m_bridges)
+//		if (DoBridgesIntersect(existingBridge, newBridge))
+//			return false;
+//	return true;
+//}
+//
+//bool GameBoard::DoBridgesIntersect(const Bridge& bridge1, const Bridge& bridge2) {
+//	Position startPosition1 = bridge1.GetStartPillar().GetPosition();
+//	Position endPosition1 = bridge1.GetEndPillar().GetPosition();
+//	Position startPosition2 = bridge2.GetStartPillar().GetPosition();
+//	Position endPosition2 = bridge2.GetEndPillar().GetPosition();
+//
+//	// Check all 4 orientations necessary for general and special case
+//	Orientation orientation1 = GetOrientation(startPosition1, endPosition1, startPosition2);
+//	Orientation orientation2 = GetOrientation(startPosition1, endPosition1, endPosition2);
+//	Orientation orientation3 = GetOrientation(startPosition2, endPosition2, startPosition1);
+//	Orientation orientation4 = GetOrientation(startPosition2, endPosition2, endPosition1);
+//
+//	// General case
+//	if (orientation1 != orientation2 && orientation3 != orientation4)
+//		return true;
+//
+//	// Special cases
+//	// If bridges are connected by a pillar in 'V' shape consider it's not an intersection
+//	if (startPosition1 == endPosition2 || startPosition2 == endPosition1 && bridge1.GetColor() == bridge2.GetColor())
+//		return false;
+//	
+//	// p1 - startPosition1; q1 - endPosition1; p2 - startPosition2; q2 - endPosition2
+//	return orientation1 == COLINEAR && OnSegment(startPosition1, startPosition2, endPosition1) || // p1, q1 and p2 are collinear and p2 lies on segment p1q1 
+//		orientation2 == COLINEAR && OnSegment(startPosition1, endPosition2, endPosition1) || // p1, q1 and q2 are collinear and q2 lies on segment p1q1 
+//		orientation3 == COLINEAR && OnSegment(startPosition2, startPosition1, endPosition2) || // p2, q2 and p1 are collinear and p1 lies on segment p2q2 
+//		orientation4 == COLINEAR && OnSegment(startPosition2, endPosition1, endPosition2); // p2, q2 and q1 are collinear and q1 lies on segment p2q2 
+//}
+//
+//GameBoard::Orientation GameBoard::GetOrientation(Position& position1, Position& position2, Position& position3) {
+//	const auto& [row1, column1] = position1;
+//	const auto& [row2, column2] = position2;
+//	const auto& [row3, column3] = position3;
+//	int16_t val = (column2 - column1) * (row3 - row2) - (row2 - row1) * (column3 - column2);
+//	return (val == 0) ? COLINEAR : (val > 0) ? CLOCKWISE : COUNTERCLOCKWISE;
+//}
+//
+//bool GameBoard::OnSegment(Position& position1, Position& position2, Position& position3)
+//{
+//	const auto& [row1, column1] = position1;
+//	const auto& [row2, column2] = position2;
+//	const auto& [row3, column3] = position3;
+//	return row2 <= std::max(row1, row3) && row2 >= std::min(row1, row3) && column2 <= std::max(column1, column3) && column2 >= std::min(column1, column3);
+//}
 
 // Game flow methods
 
