@@ -109,58 +109,126 @@ void ConsoleRenderer::TakeInputWithAi2(GameBoard* gb, AiPlayer* ai, AiPlayer* ai
 void ConsoleRenderer::Render(GameBoard* gameBoard)
 {
 	system("CLS");
-	std::cout << "   ";
+	std::cout << "    ";
+	char space = ' ';
 	for (int i = 1; i < GameBoard::kWidth - 1; ++i)
-		std::cout << i;
-	std::cout << "\n   ";
+	{
+		if(i>=10)
+			std::cout << i << space;
+		else
+			std::cout << i << space << space;
+	}
+	std::cout << "\n    ";
 	for (int i = 1; i < GameBoard::kWidth - 1; ++i)
 	{
 		if (gameBoard->GetMatrix()[0][i].has_value())
 			if (static_cast<int>(gameBoard->GetMatrix()[0][i].value().GetColor()) == 0)
-				std::cout << "R";
+			{
+				if(i>=10)
+					std::cout << "R" << space;
+				else
+					std::cout << "R" << space << space;
+			}
 			else
-				std::cout << "B";
+			{
+				if (i >= 10)
+					std::cout << "B" << space;
+				else
+					std::cout << "B" << space << space;
+			}
 		else
-			std::cout << ".";
+		{
+				std::cout << "." << space << space;
+		}
 	}
-	std::cout << "\n   " << std::setfill('-') << std::setw(GameBoard::kWidth - 1) << "\n";
+	std::cout << "\n   " << std::setfill('-') << std::setw(GameBoard::kWidth*3 - 3) << "\n";
 	for (int i = 1; i < GameBoard::kWidth - 1; ++i)
 	{
 		if (gameBoard->GetMatrix()[i][0].has_value())
 			if (static_cast<int>(gameBoard->GetMatrix()[i][0].value().GetColor()) == 0)
-				std::cout << i << "R|";
+			{
+				if(i>=10)
+					std::cout << i << "R|";
+				else
+					std::cout << i << "R|" << space;
+			}
 			else
-				std::cout << i << "B|";
+			{
+				if (i >= 10)
+					std::cout << i << "B|";
+				else
+					std::cout << i << "B|" << space;
+			}
 		else
-			std::cout << i << ".|";
+		{
+			if (i >= 10)
+				std::cout << i << ".|";
+			else
+				std::cout << i << space << ".|";
+		}
 		for (int j = 1; j < GameBoard::kHeight - 1; ++j)
 		{
 			if (gameBoard->GetMatrix()[i][j].has_value())
 				if (static_cast<int>(gameBoard->GetMatrix()[i][j].value().GetColor()) == 0)
-					std::cout << "R";
+				{
+					std::cout << "R" << space << space;
+				}
 				else
-					std::cout << "B";
+				{		
+					std::cout << "B" << space << space;
+				}
 			else
-				std::cout << ".";
+			{
+															
+				std::cout << "." << space<<space;
+			}
 		}
 		if (gameBoard->GetMatrix()[i][GameBoard::kHeight - 1].has_value())
 			if (static_cast<int>(gameBoard->GetMatrix()[i][GameBoard::kHeight - 1].value().GetColor()) == 0)
-				std::cout << "|R\n";
+			{
+									if (i >= 10)
+						std::cout << "|R\n";
+					else
+						std::cout << "|R\n";
+			}
 			else
-				std::cout << "|B\n";
+			{
+													if (i >= 10)
+						std::cout << "|B\n";
+					else
+						std::cout << "|B\n";
+			}
 		else
-			std::cout << "|.\n";
+		{
+												if (i >= 10)
+						std::cout << "|.\n";
+					else
+						std::cout << "|.\n";
+		}
 	}
-	std::cout << "   " << std::setfill('-') << std::setw(GameBoard::kWidth - 1) << "\n";
-	std::cout << "   ";
+	std::cout << "   " << std::setfill('-') << std::setw(GameBoard::kWidth*3 - 3) << "\n";
+	std::cout << "    ";
 	for (int i = 1; i < GameBoard::kWidth - 1; ++i)
 		if (gameBoard->GetMatrix()[GameBoard::kWidth - 1][i].has_value())
 			if (static_cast<int>(gameBoard->GetMatrix()[GameBoard::kWidth - 1][i].value().GetColor()) == 0)
-				std::cout << "R";
+			{
+									if(i>=10)
+						std::cout << "R" << space;
+					else
+						std::cout << "R" << space << space;
+			}
 			else
-				std::cout << "B";
+			{
+													if (i >= 10)
+						std::cout << "B" << space;
+					else
+						std::cout << "B" << space << space;
+			}
 		else
-			std::cout << ".";
+		{
+			std::cout << "." << space << space;
+		
+		}
 	std::cout << "\nDimension: " << GameBoard::kWidth << "\n";
 }
 
