@@ -480,52 +480,52 @@ bool GameBoard::CheckNoIntersections(const Bridge& newBridge)
 
 bool GameBoard::Intersects(const Bridge& bridge1, const Bridge& bridge2)
 {
-	/*const auto& start1 = bridge1.GetStartPillar().GetPosition();
+	const auto& start1 = bridge1.GetStartPillar().GetPosition();
 	const auto& end1 = bridge1.GetEndPillar().GetPosition();
 	const auto& start2 = bridge2.GetStartPillar().GetPosition();
 	const auto& end2 = bridge2.GetEndPillar().GetPosition();
-	return (start1 == start2 || start1 == end2 || end1 == start2 || end1 == end2) && IntersectsOnSameAxis(bridge1, bridge2);*/
+	return (start1 == start2 || start1 == end2 || end1 == start2 || end1 == end2) && IntersectsOnSameAxis(bridge1, bridge2);
 
-	auto [pillar1, pillar2, pillar3, pillar4] = std::tuple{ bridge1.GetStartPillar(), bridge1.GetEndPillar(), bridge2.GetStartPillar(), bridge2.GetEndPillar() };
+	/*auto [pillar1, pillar2, pillar3, pillar4] = std::tuple{ bridge1.GetStartPillar(), bridge1.GetEndPillar(), bridge2.GetStartPillar(), bridge2.GetEndPillar() };
 	if (INTERS_EQ(pillar1, pillar3, pillar4) or INTERS_EQ(pillar2, pillar3, pillar4) or INTERS_EQ(pillar3, pillar1, pillar2) or INTERS_EQ(pillar4, pillar1, pillar2))
 		return false;
-	return INTERS(pillar1, pillar3, pillar4) != INTERS(pillar2, pillar3, pillar4) and INTERS(pillar1, pillar2, pillar3) != INTERS(pillar1, pillar2, pillar4);
+	return INTERS(pillar1, pillar3, pillar4) != INTERS(pillar2, pillar3, pillar4) and INTERS(pillar1, pillar2, pillar3) != INTERS(pillar1, pillar2, pillar4);*/
 }
 
-bool GameBoard::INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3)
+//bool GameBoard::INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3)
+//{
+//	const auto& [rowPillar1, columnPillar1] = pillar1.GetPosition();
+//	const auto& [rowPillar2, columnPillar2] = pillar2.GetPosition();
+//	const auto& [rowPillar3, columnPillar3] = pillar3.GetPosition();
+//	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) > (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
+//}
+//
+//bool GameBoard::INTERS_EQ(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3)
+//{
+//	const auto& [rowPillar1, columnPillar1] = pillar1.GetPosition();
+//	const auto& [rowPillar2, columnPillar2] = pillar2.GetPosition();
+//	const auto& [rowPillar3, columnPillar3] = pillar3.GetPosition();
+//	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) == (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
+//}
+
+bool GameBoard::IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2)
 {
-	const auto& [rowPillar1, columnPillar1] = pillar1.GetPosition();
-	const auto& [rowPillar2, columnPillar2] = pillar2.GetPosition();
-	const auto& [rowPillar3, columnPillar3] = pillar3.GetPosition();
-	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) > (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
+	const auto& [startRow1, startColumn1] = bridge1.GetStartPillar().GetPosition();
+	const auto& [endRow1, endColumn1] = bridge1.GetEndPillar().GetPosition();
+	const auto& [startRow2, startColumn2] = bridge2.GetStartPillar().GetPosition();
+	const auto& [endRow2, endColumn2] = bridge2.GetEndPillar().GetPosition();
+
+	if (startRow1 == endRow1)
+		return startRow2 == endRow2 && startRow1 == startRow2 && IntersectsOnAxis(startColumn1, endColumn1, startColumn2, endColumn2);
+	else if (startColumn1 == endColumn1)
+		return startColumn2 == endColumn2 && startColumn1 == startColumn2 && IntersectsOnAxis(startRow1, endRow1, startRow2, endRow2);
+	return false;
 }
 
-bool GameBoard::INTERS_EQ(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3)
+bool GameBoard::IntersectsOnAxis(size_t start1, size_t end1, size_t start2, size_t end2)
 {
-	const auto& [rowPillar1, columnPillar1] = pillar1.GetPosition();
-	const auto& [rowPillar2, columnPillar2] = pillar2.GetPosition();
-	const auto& [rowPillar3, columnPillar3] = pillar3.GetPosition();
-	return (columnPillar3 - columnPillar1) * (rowPillar2 - rowPillar1) == (columnPillar2 - columnPillar1) * (rowPillar3 - rowPillar1);
+	return (start1 < end1) ? (start1 < start2 && start2 < end1) : (start1 > start2 && start2 > end1);
 }
-//
-//bool GameBoard::IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2)
-//{
-//	const auto& [startRow1, startColumn1] = bridge1.GetStartPillar().GetPosition();
-//	const auto& [endRow1, endColumn1] = bridge1.GetEndPillar().GetPosition();
-//	const auto& [startRow2, startColumn2] = bridge2.GetStartPillar().GetPosition();
-//	const auto& [endRow2, endColumn2] = bridge2.GetEndPillar().GetPosition();
-//
-//	if (startRow1 == endRow1)
-//		return startRow2 == endRow2 && startRow1 == startRow2 && IntersectsOnAxis(startColumn1, endColumn1, startColumn2, endColumn2);
-//	else if (startColumn1 == endColumn1)
-//		return startColumn2 == endColumn2 && startColumn1 == startColumn2 && IntersectsOnAxis(startRow1, endRow1, startRow2, endRow2);
-//	return false;
-//}
-//
-//bool GameBoard::IntersectsOnAxis(size_t start1, size_t end1, size_t start2, size_t end2)
-//{
-//	return (start1 < end1) ? (start1 < start2 && start2 < end1) : (start1 > start2 && start2 > end1);
-//}
 
 // Check intersection methods - new
 

@@ -111,10 +111,10 @@ public:
 	// Check intersection methods - final
 	bool CheckNoIntersections(const Bridge& newBridge);
 	bool Intersects(const Bridge& bridge1, const Bridge& bridge2);
-	bool INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3);
-	bool INTERS_EQ(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3);
-	/*bool IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2);
-	bool IntersectsOnAxis(size_t start1, size_t end1, size_t start2, size_t end2);*/
+	/*bool INTERS(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3);
+	bool INTERS_EQ(const Pillar& pillar1, const Pillar& pillar2, const Pillar& pillar3);*/
+	bool IntersectsOnSameAxis(const Bridge& bridge1, const Bridge& bridge2);
+	bool IntersectsOnAxis(size_t start1, size_t end1, size_t start2, size_t end2);
 
 	// Check intersection methods - new
 	/*bool CheckNoIntersections(const Bridge& newBridge);
