@@ -6,10 +6,10 @@ using GameBoard::Orientation::CLOCKWISE;
 using GameBoard::Orientation::COUNTERCLOCKWISE;
 
 static GameBoard* instance = nullptr;
-static uint16_t kAvailableRedPillars{ 50 };
-static uint16_t kAvailableBlackPillars{ 50 };
-static uint16_t kAvailableRedBridges{ 50 };
-static uint16_t kAvailableBlackBridges{ 50 };
+static uint16_t kAvailableRedPillars{ MAX_AVAILABLE_PILLARS };
+static uint16_t kAvailableBlackPillars{ MAX_AVAILABLE_PILLARS };
+static uint16_t kAvailableRedBridges{ MAX_AVAILABLE_BRIDGES };
+static uint16_t kAvailableBlackBridges{ MAX_AVAILABLE_BRIDGES };
 
 GameBoard::GameBoard() : m_matrix{}, m_adjacencyList{ kWidth * kHeight }, m_redPaths{}, m_blackPaths{}, m_redPillars{}, m_blackPillars{}, m_bridges{}, m_endPillars{}, redBridges{ 0 }, blackBridges{ 0 },
 redPillarsSpent{ false }, redBridgesSpent{ false }, blackPillarsSpent{ false }, blackBridgesSpent{ false }
