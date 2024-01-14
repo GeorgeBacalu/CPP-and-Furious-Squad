@@ -82,6 +82,11 @@ std::string_view AiPlayer::GetName() const
     return m_policyName;
 }
 
+std::unordered_map<int64_t, float> AiPlayer::GetStateActionCosts() const
+{
+    return m_stateActionCosts;
+}
+
 void AiPlayer::FreeReward(float target)
 {
     for (auto it = m_previousStateActions.rbegin(); it != m_previousStateActions.rend(); ++it)

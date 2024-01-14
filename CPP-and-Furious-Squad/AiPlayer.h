@@ -15,7 +15,7 @@ class AiPlayer : public IPlayer {
 	std::vector<Position> GenerateActions(GameBoard& gameBoard);
 	std::vector<Position> GenerateNonAdjacentActions(GameBoard& gameBoard);
 	void SavePolicy() const;
-	void LoadPolicy();
+	
 
 	void SetPolicyName(std::string_view policyName);
 public:
@@ -25,6 +25,9 @@ public:
 	Position GetNextAction() override;
 	Position RandomAction();
 	std::string_view GetName() const override;
+	std::unordered_map<int64_t, float> GetStateActionCosts() const;
+
+	void LoadPolicy();
 
 	bool isPositionValid(const Position& position, GameBoard& gameBoard);
 
